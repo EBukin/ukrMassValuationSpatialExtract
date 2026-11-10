@@ -1,0 +1,93 @@
+---
+title: "Data"
+lang: en
+---
+
+The inputs come in three kinds: rasters **you provide**, public data that a script **downloads**, and the **simulated reference** inputs committed to the repository. Soil, crop and DEM data are never committed.
+
+## You provide
+
+### Soil: SoilGrids 250 m
+
+- **Source:** ISRIC SoilGrids 2.0, mean predictions, clipped to Ukraine.
+- **Licence:** CC BY 4.0. Attribution: ISRIC – World Soil Information, SoilGrids.
+- **Folder:** `soil_dir` in `00-setup.R`. The scripts read 28 GeoTIFFs from it: `{bdod,cec,cfvo,clay,nitrogen,ocd,phh2o,sand,silt}_{0-5cm,5-15cm,15-30cm}_mean.tif` and `ocs_0-30cm_mean.tif`.
+- **Grid:** Interrupted Goode Homolosine (WGS 84), 250 × 250 m, Float32, NoData `-3.4e+38`. All 28 layers share one grid (checked with `terra::compareGeom()`).
+- **Units:** SoilGrids *mapped units* (integers stored as floats). The pipeline does not convert them:
+
+| Property | Description | Mapped unit | Divide by | Conventional unit |
+|---|---|---|---|---|
+| `bdod` | Bulk density of the fine earth fraction | cg/cm³ | 100 | kg/dm³ |
+| `cec` | Cation exchange capacity at pH 7 | mmol(c)/kg | 10 | cmol(c)/kg |
+| `cfvo` | Volumetric fraction of coarse fragments (> 2 mm) | cm³/dm³ (vol ‰) | 10 | vol % |
+| `clay` | Clay content (< 0.002 mm) | g/kg | 10 | % |
+| `nitrogen` | Total nitrogen | cg/kg | 100 | g/kg |
+| `ocd` | Organic carbon density | hg/m³ | 10 | kg/m³ |
+| `ocs` | Organic carbon stock, 0–30 cm | t/ha | 10 | kg/m² |
+| `phh2o` | pH in water | pH × 10 | 10 | pH |
+| `sand` | Sand content (> 0.05 mm) | g/kg | 10 | % |
+| `silt` | Silt content (0.002–0.05 mm) | g/kg | 10 | % |
+
+### Crop cover: annual classified maps, 2019–2025
+
+- **Source:** classified crop-cover maps of Ukraine, one GeoTIFF per year.
+- **Licence:** to be confirmed.
+- **Folder:** `crop_dir` in `00-setup.R`. File names are written out in full, one object per year:
+
+| Object in `00-setup.R` | File | Grid |
+|---|---|---|
+| `crop_2019` | `GEE_15102019.tif` | 90772 × 134691 pixels, larger extent |
+| `crop_2020` | `ukr_2020.tif` | 88823 × 132874 pixels |
+| `crop_2021` | `Ukr_October2021.tif` | same as 2020 |
+| `crop_2022` | `Ukraine_August2022_corr.tif` | same as 2020 |
+| `crop_2023` | `Ukraine_2023_01_September.tif` | same as 2020 |
+| `crop_2024` | `Ukraine_september_2024.tif` | same as 2020 |
+| `crop_2025_summer` | `SummerMap_Ukraine_2025_WB.tif` | same size, origin shifted by about 2 m |
+| `crop_2025_winter` | `Winter2025_Rape_Cereal.tif` | same size, origin shifted by about 2 m |
+
+All maps are EPSG:32636 (UTM zone 36N), 10 m, unsigned 8-bit, LZW-compressed. Only the 2019 map declares a NoData value (0), but 0 is background in every year, so every script sets `NAflag(r) <- 0`. The class codes and their grouping are on the [Crop cover](crop.qmd) page.
+
+## Downloaded by `00b-download.R`
+
+The download script skips files already on disk, so a second run downloads nothing. All requests use one `curl` handle with `ssl_options = 2`, which turns off the certificate revocation check: on the network where this was built, HTTPS requests to HDX and to the AWS buckets fail with the Schannel error `CRYPT_E_NO_REVOCATION_CHECK`. Base R `download.file()` fails there too, so the `curl` package is used.
+
+### Oblast boundaries: OCHA COD-AB Ukraine
+
+- **Source:** OCHA Common Operational Dataset, Administrative Boundaries (COD-AB), Ukraine, via the Humanitarian Data Exchange: <https://data.humdata.org/dataset/cod-ab-ukr>. File `ukr_admin_boundaries.shp.zip` (81.5 MB), version of 2026-01-26.
+- **Licence:** CC BY-IGO. Attribution: OCHA, COD-AB Ukraine.
+- **Use:** the ADM1 layer (27 units). The fields `adm1_pcode`, `adm1_name1` and `adm1_name` are renamed to `oblast_pcode`, `oblast_ua` and `oblast_en`, and written to `data/interim/oblasts.gpkg` in EPSG:4326.
+- **Note:** COD-AB uses the adjectival English names, so Poltava oblast is `"Poltavska"` (`UA53`). In `00-setup.R`: `study_oblast_en <- "Poltavska"`.
+
+### Elevation: Copernicus DEM GLO-30
+
+- **Source:** Copernicus DEM, GLO-30 (1 arc-second, about 30 m) by default, from the public AWS bucket `https://copernicus-dem-30m.s3.amazonaws.com`. `dem_product <- "GLO-90"` in `00-setup.R` switches to the 90 m product.
+- **Tiles:** the 1° × 1° tiles that intersect Poltava oblast plus a 10 km buffer.
+- **Licence and attribution:** © DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018, provided under COPERNICUS by the European Union and ESA; all rights reserved. Free of charge for any use.
+- **Use:** the tiles are joined in a virtual mosaic, `data/interim/dem.vrt`. The [Relief](relief.qmd) page explains how the mosaic handles the tiles north of 50°N.
+
+### Optional: OpenStreetMap roads
+
+`00b-download.R` ends with a commented-out block that reads real OSM roads with `osmextract` (main = `motorway`, `trunk`, `primary`; local = `secondary`, `tertiary`). The reference dataset uses the simulated roads below.
+
+## Simulated reference inputs (committed)
+
+`01-simulate-reference.R` generated the reference inputs **once**, with `set.seed(20261110)`. They are committed as GeoParquet in EPSG:4326 and are never regenerated: the script aborts if `parcels.parquet` exists.
+
+| File | Content |
+|---|---|
+| `data/clean/reference/parcels.parquet` | 1,000 parcels: `parcel_id`, `case` (`interior`, `border`, `nodata`), `area_ha`, `oblast`, `h3_6`, `h3_5` |
+| `data/clean/reference/elevators.parquet` | 30 elevator points: `elevator_id` |
+| `data/clean/reference/roads.parquet` | 54 roads (4 main, 50 local): `road_id`, `type` |
+
+How they were built is on the [Reference inputs](reference.qmd) page.
+
+### Reading GeoParquet
+
+The sf build used here has no GDAL Parquet driver, so the files are written and read with `arrow` and `geoarrow` (loaded in `00-setup.R`):
+
+```r
+arrow::write_parquet(x, path)                                        # write an sf object
+x <- arrow::read_parquet(path, as_data_frame = FALSE) |> st_as_sf()  # read it back as sf
+```
+
+`as_data_frame = FALSE` is required: without it, the geometry column stays a `geoarrow_vctr`. The geometry type and CRS are stored as geoarrow metadata on the column; the files have no GeoParquet `geo` key, so other tools may read the geometry as WKB without a CRS (it is EPSG:4326).

@@ -1,0 +1,13 @@
+---
+title: "Spatial covariates for mass valuation of agricultural land in Ukraine"
+format:
+  html:
+    toc: false
+    include-in-header:
+      text: '<meta http-equiv="refresh" content="0; url=en/index.html">'
+---
+
+This page redirects to the English version.
+
+- [English](en/index.qmd)
+- [Українська](uk/index.html)

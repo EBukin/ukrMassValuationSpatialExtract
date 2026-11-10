@@ -1,0 +1,104 @@
+---
+title: "Soil"
+lang: en
+---
+
+Twenty variables describe the topsoil (0–30 cm): ten SoilGrids properties, each measured two ways, as the **mean over the parcel polygon** and as the **value at the parcel centroid**. Parcels without soil data get a filled value, and the `source` column says how it was filled. Script: `04-soil.R`.
+
+## Variables
+
+Units are SoilGrids **mapped units**, not converted (see [Data](data.qmd) for the conversion factors).
+
+| Property | Polygon mean | Centroid | Unit | Meaning |
+|---|---|---|---|---|
+| bdod | `soil_bdod_0_30cm_mean` | `soil_bdod_0_30cm_centroid` | cg/cm³ | Bulk density of the fine earth fraction |
+| cec | `soil_cec_0_30cm_mean` | `soil_cec_0_30cm_centroid` | mmol(c)/kg | Cation exchange capacity at pH 7 |
+| cfvo | `soil_cfvo_0_30cm_mean` | `soil_cfvo_0_30cm_centroid` | cm³/dm³ | Volumetric fraction of coarse fragments |
+| clay | `soil_clay_0_30cm_mean` | `soil_clay_0_30cm_centroid` | g/kg | Clay content |
+| nitrogen | `soil_nitrogen_0_30cm_mean` | `soil_nitrogen_0_30cm_centroid` | cg/kg | Total nitrogen |
+| ocd | `soil_ocd_0_30cm_mean` | `soil_ocd_0_30cm_centroid` | hg/m³ | Organic carbon density |
+| ocs | `soil_ocs_0_30cm_mean` | `soil_ocs_0_30cm_centroid` | t/ha | Organic carbon stock, 0–30 cm |
+| phh2o | `soil_phh2o_0_30cm_mean` | `soil_phh2o_0_30cm_centroid` | pH × 10 | pH in water |
+| sand | `soil_sand_0_30cm_mean` | `soil_sand_0_30cm_centroid` | g/kg | Sand content |
+| silt | `soil_silt_0_30cm_mean` | `soil_silt_0_30cm_centroid` | g/kg | Silt content |
+
+## Method
+
+### Topsoil 0–30 cm
+
+SoilGrids gives each property for the depth layers 0–5, 5–15 and 15–30 cm. One topsoil value is their **thickness-weighted average**, computed per pixel:
+
+$$
+\text{topsoil}_{0\text{–}30} = \frac{5 \cdot d_{0\text{–}5} + 10 \cdot d_{5\text{–}15} + 15 \cdot d_{15\text{–}30}}{30}
+$$
+
+The organic carbon stock `ocs` is already given for 0–30 cm and is used as is.
+
+Each depth raster is first cropped to the extent of Poltava and its neighbouring oblasts, in the soil CRS (Interrupted Goode Homolosine). The arithmetic runs on that cropped grid. The rasters are never resampled or reprojected; the 10 topsoil layers are saved as `data/interim/soil_topsoil_0_30cm.tif`. The parcels are transformed to the soil CRS instead.
+
+### Polygon mean vs centroid
+
+- **`_mean`:** `exactextractr::exact_extract(soil, parcels, "mean")`. Every 250 m pixel that the parcel touches counts, weighted by the share of the pixel inside the parcel. NoData pixels are skipped, so a parcel partly on soil data gets the mean of its covered part, and counts as `observed`.
+- **`_centroid`:** `terra::extract()` at the parcel centroid: the value of the one pixel under the centre point.
+
+A 3 ha parcel is much smaller than one 250 m pixel (6.25 ha), so the two often agree. They differ when a parcel straddles pixel edges or lies near NoData.
+
+### Filling NoData
+
+A parcel on towns, rivers or the reservoir has no soil value. The fill uses the mean of the soil raster over a larger zone around the parcel, in this order:
+
+1. **`h3_6`:** the mean over the parcel's H3 resolution-6 cell (about 34 km²);
+2. **`h3_5`:** if that cell has no soil data, the mean over its H3 resolution-5 cell (about 240 km²);
+3. **`oblast`:** if that is empty too, the mean over the parcel's own oblast (Poltava or a neighbour).
+
+The zone means also use `exact_extract(..., "mean")`, so they skip NoData pixels. The H3 cell IDs come from the parcel file; the hexagon polygons are rebuilt from the IDs with `h3o::h3_from_strings()` and `st_as_sfc()`.
+
+In code:
+
+```r
+value = coalesce(value_raw, h3_6_value, h3_5_value, oblast_value)
+source = case_when(!is.na(value_raw) ~ "observed", !is.na(h3_6_value) ~ "h3_6",
+                   !is.na(h3_5_value) ~ "h3_5", !is.na(oblast_value) ~ "oblast")
+```
+
+The fill is applied to the `_mean` and `_centroid` variables separately: a parcel can have an observed polygon mean and a filled centroid value. In this run, 16,100 soil rows are observed, 3,400 are filled from H3 resolution 6, 500 from H3 resolution 5, and none from the oblast mean. Most filled rows belong to the `nodata` parcels, as intended:
+
+```{r}
+#| label: tbl-soil-source
+#| tbl-cap: "Soil rows (parcel × soil variable, 20 per parcel) by parcel case and `source`. From `output/tables/soil_source_by_case.csv`."
+soil_source <- read.csv("../../output/tables/soil_source_by_case.csv")
+knitr::kable(soil_source, format.args = list(big.mark = ","))
+```
+
+### Swapping the fill zones
+
+The fill zones sit in one block of `04-soil.R`, marked `FILL ZONES`. To fill from administrative units instead of H3 cells:
+
+1. read COD-AB ADM2 (rayon) or ADM3 (hromada) from `data/raw/cod-ab` (the shapefile zip has all levels);
+2. add the zone code to the parcels with `st_join()`;
+3. replace the two H3 zone blocks with the same `exact_extract(soil, zones, "mean", append_cols = <zone code>)` call on those polygons, and join on the zone code.
+
+## Centroid vs polygon mean
+
+How much does the measurement method matter? The figure compares the two values for each parcel and property. Points on the dashed line have equal values.
+
+![Soil 0–30 cm: value at the parcel centroid vs mean over the parcel polygon, one panel per property. Blue: both values observed; orange: at least one filled.](../figures/soil_centroid_vs_polygon.png){#fig-soil fig-alt="Ten scatter plots, one per soil property, of the centroid value against the polygon mean for 1,000 parcels. In every panel the points lie tightly along the 45-degree line; observed parcels (blue) are closest to it, while filled parcels (orange) scatter more widely, most visibly for cfvo, bdod and nitrogen."}
+
+```{r}
+#| label: tbl-soil-compare
+#| tbl-cap: "Agreement between centroid value and polygon mean. `observed`: parcels where both values are observed; `all`: all 1,000 parcels. From `output/tables/soil_centroid_vs_polygon.csv`."
+soil_compare <- read.csv("../../output/tables/soil_centroid_vs_polygon.csv")
+soil_compare <- soil_compare[, c("label", "rows", "pearson", "spearman", "mean_abs_diff", "n")]
+names(soil_compare) <- c("Property (unit)", "Rows", "Pearson", "Spearman", "Mean abs. difference", "n")
+knitr::kable(soil_compare, digits = 3)
+```
+
+Correlations are above 0.97 on observed parcels for every property. The mean absolute difference is small relative to the range of values, but not zero: implementations that use the centroid and those that use the polygon mean will not match exactly.
+
+## Script: `04-soil.R`
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../04-soil.R
+```

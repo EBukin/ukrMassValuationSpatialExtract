@@ -1,0 +1,79 @@
+---
+title: "Relief"
+lang: en
+---
+
+Six variables describe the relief of each parcel: elevation, slope and aspect exposure, computed from the Copernicus DEM over the **whole parcel polygon**. Script: `05-relief.R`.
+
+## Variables
+
+| Variable | Unit | Meaning |
+|---|---|---|
+| `relief_elev_mean` | m | Coverage-weighted mean elevation over the parcel |
+| `relief_slope_mean` | degrees | Coverage-weighted mean slope over the parcel |
+| `relief_slope_max` | degrees | Maximum slope over the pixels the parcel touches |
+| `relief_elev_range` | m | Maximum minus minimum elevation over the pixels the parcel touches |
+| `relief_aspect_south` | index, −1 to 1 | Coverage-weighted mean southness: 1 = faces south, −1 = faces north, 0 = flat or east/west |
+| `relief_aspect_east` | index, −1 to 1 | Coverage-weighted mean eastness: 1 = faces east, −1 = faces west, 0 = flat or north/south |
+
+All rows have `source = "observed"`; no parcel has a missing value.
+
+## Methodology
+
+The methodology was set by the project lead and is binding:
+
+- **Polygon statistics only.** Every statistic comes from the whole parcel polygon via `exactextractr::exact_extract()`, each pixel weighted by the share of it inside the parcel; never from the centroid or from pixel centres.
+- **Aspect** is measured clockwise from north, in degrees.
+- **Flat pixels.** A pixel with a slope below `flat_slope_deg` (0.5° in `00-setup.R`) contributes 0 to both aspect variables, since its aspect is meaningless.
+- **Metric distances.** Slope and aspect are computed with distances in metres or with a geodesic-aware method; never with degrees treated as metres, and never in Web Mercator.
+- **Small parcels.** A parcel smaller than one pixel still gets values.
+- **Complete output.** Every parcel gets a value for every variable.
+
+### Steps
+
+1. **Crop.** `crop(rast("data/interim/dem.vrt"), <parcels' extent + 0.02°>)`. The margin gives `terrain()` neighbouring pixels at the edge of every parcel. The DEM stays in EPSG:4326 and is never resampled or reprojected.
+2. **Slope and aspect.** `terrain(dem, c("slope", "aspect"), unit = "degrees")`. For longitude/latitude data, terra computes the cell distances needed for slope and aspect on the WGS 84 ellipsoid (from `?terra::terrain`: "Distances (needed for slope and aspect) for longitude/latitude data are computed on the WGS84 ellipsoid with Karney's algorithm"). So no degree is treated as a metre.
+3. **Aspect encoding.** Aspect is a circular angle: 359° and 1° are both north, so averaging degrees would be wrong. Each pixel's aspect is turned into two components, with flat pixels set to 0:
+
+   ```r
+   south <- ifel(slope < flat_slope_deg, 0, -cos(aspect * pi / 180))
+   east  <- ifel(slope < flat_slope_deg, 0,  sin(aspect * pi / 180))
+   ```
+
+   Aspect 180° (south) gives `south = 1`, `east = 0`; aspect 90° (east) gives `south = 0`, `east = 1`. The parcel value is the coverage-weighted mean of each component.
+4. **Extract.** One `exact_extract(c(elev, slope, south, east), parcels, c("mean", "max", "min"))`. `"mean"` weights each pixel by its coverage fraction. `"max"` and `"min"` take every pixel the parcel touches, however little, so a parcel smaller than one pixel still gets a range and a maximum slope.
+
+## DEM product
+
+The default is **Copernicus GLO-30** (1 arc-second, about 30 m; `dem_product <- "GLO-30"`). Setting `dem_product <- "GLO-90"` in `00-setup.R` and running `00b-download.R` switches every step to the 90 m product. GLO-30 covers Poltava oblast plus 10 km with 11 one-degree tiles, and `05-relief.R` runs in about 40 seconds.
+
+## Limitations
+
+### A surface model, not a terrain model
+
+The Copernicus DEM is a **digital surface model**: it shows the height of the top surface, including buildings and tree canopy, not the bare ground. Water surfaces are flattened. In this dataset, **89 parcels** on the Kremenchuk reservoir and other water bodies have a mean slope of 0 and an elevation range of 0, and their aspect variables are 0 (all pixels flat). Over forests and towns, slopes include canopy and building edges.
+
+### Coarser tiles north of 50°N
+
+Copernicus tiles have a longitude spacing that grows with latitude: 1 arc-second south of 50°N, but **1.5 arc-seconds from 50°N to 60°N**. Poltava oblast spans both zones (its northern strip lies above 50°N).
+
+The virtual mosaic is built in `00b-download.R` with `vrt(files_ok, options = c("-resolution", "highest"))`, so the mosaic sits on the finest grid, 1 arc-second. GDAL fills that grid from the coarser northern tiles by repeating their pixels (nearest neighbour, on the fly, when the data are read). No other resampling takes place, and no new elevation values are invented.
+
+The cost: in the northern strip, one column in every three repeats its neighbour. That can add small stair-steps in the east–west direction to slope and aspect there. Comparisons with other implementations in the north of the oblast should allow for this.
+
+## Summary
+
+```{r}
+#| label: tbl-relief-summary
+#| tbl-cap: "Relief quantiles over the 1,000 parcels. From `output/tables/relief_summary.csv`."
+relief_summary <- read.csv("../../output/tables/relief_summary.csv")
+knitr::kable(relief_summary, digits = 2)
+```
+
+## Script: `05-relief.R`
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../05-relief.R
+```

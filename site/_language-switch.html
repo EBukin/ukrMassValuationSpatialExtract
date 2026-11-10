@@ -1,0 +1,22 @@
+<script>
+// Language menu: "English" and "Українська" open the same page in the other
+// language folder (en/ <-> uk/). On Ukrainian pages, navbar page links go to uk/ too.
+document.addEventListener("DOMContentLoaded", function () {
+  var path = window.location.pathname;
+  var inEn = path.indexOf("/en/") >= 0;
+  var inUk = path.indexOf("/uk/") >= 0;
+  var page = (inEn || inUk) ? (path.substring(path.lastIndexOf("/") + 1) || "index.html") : "index.html";
+  var prefix = (inEn || inUk) ? "../" : "";
+  document.querySelectorAll("#quarto-header a[href]").forEach(function (a) {
+    var text = a.textContent.trim();
+    var href = a.getAttribute("href");
+    if (text === "English") {
+      a.setAttribute("href", prefix + "en/" + page);
+    } else if (text === "Українська") {
+      a.setAttribute("href", prefix + "uk/" + page);
+    } else if (inUk && href.indexOf("://") < 0 && href.indexOf("en/") >= 0) {
+      a.setAttribute("href", href.replace("en/", "uk/"));
+    }
+  });
+});
+</script>

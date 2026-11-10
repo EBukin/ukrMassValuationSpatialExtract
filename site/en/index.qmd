@@ -1,0 +1,76 @@
+---
+title: "Spatial covariates for mass valuation of agricultural land"
+subtitle: "A reference dataset for Poltava oblast, Ukraine"
+lang: en
+---
+
+## Objective
+
+This project sets a baseline for computing spatial covariates for the mass valuation of agricultural land in Ukraine.
+
+It builds a **reference dataset**: a fixed set of 1,000 simulated land parcels, with 81 spatial covariates per parcel, computed from a controlled set of inputs. Other implementations (other software, tools or teams) can run the same calculations on the same parcels and compare their results with this one.
+
+The covariates cover four families:
+
+| Family | Variables | What it measures | Page |
+|---|---|---|---|
+| Distance | 6 | Distance on the sphere to the nearest elevator, main road and local road, from the parcel centroid and from its edge | [Distance](distance.qmd) |
+| Soil | 20 | Ten SoilGrids topsoil (0–30 cm) properties, as the parcel polygon mean and as the value at the centroid | [Soil](soil.qmd) |
+| Relief | 6 | Elevation, slope and aspect exposure from the Copernicus 30 m DEM, over the whole parcel polygon | [Relief](relief.qmd) |
+| Crop cover | 49 | Share of the parcel in 7 land-cover groups, for each year 2019–2025 | [Crop cover](crop.qmd) |
+
+All 81 variables are listed on the [Output](output.qmd) page.
+
+## Study area
+
+The study area is **Poltava oblast** (COD-AB P-code `UA53`, English name in COD-AB "Poltavska"). It suits a reference test because it has:
+
+- towns (Poltava, Kremenchuk, Lubny and others), where soil maps have no data;
+- the Dnipro river and the Kremenchuk reservoir, where soil maps have no data and the DEM is flat;
+- seven neighbouring oblasts, so that some parcels cross an oblast boundary;
+- a band north of 50°N where the Copernicus DEM tiles have a coarser longitude spacing.
+
+![Reference parcels (centroids), elevators and roads in Poltava oblast. Details on the [Reference inputs](reference.qmd) page.](../figures/parcels-map.png){fig-alt="Map of Poltava oblast with 1,000 parcel centroids coloured by case: interior parcels spread across the oblast, border parcels along its boundary, and nodata parcels clustered on grey soil-NoData areas, mostly along the Kremenchuk reservoir in the south-west. Thirty black triangles mark elevators, four long straight lines cross the oblast as main roads, and fifty short lines are local roads."}
+
+## What the dataset is for
+
+- **A gold standard.** The parcels, elevators and roads are simulated once and committed to the repository. They never change, so results from different tools can be compared row by row.
+- **Hard cases on purpose.** 15 % of the parcels cross an oblast boundary and 15 % sit on soil NoData (towns, rivers, the reservoir), to test how each implementation handles edges and missing data.
+- **Explicit methods.** Every choice (distance on the sphere, coverage-weighted polygon means, fill order for missing soil values, the 2025 crop rule) is documented on these pages, next to the code that implements it.
+
+The output is one long table, `parcel_id | variable | value | source`, with 81,000 rows (see [Output](output.qmd)).
+
+## Quick start
+
+1. Clone the repository and open it in R (4.6 or later) from the project root.
+2. Restore the packages:
+
+   ```r
+   renv::restore()
+   ```
+
+3. Set the paths to your own soil and crop rasters in `00-setup.R` (`soil_dir`, `crop_dir` and the eight `crop_*` file names). See [Data](data.qmd).
+4. Download the public inputs (oblast boundaries and DEM tiles), once:
+
+   ```r
+   source("00b-download.R")
+   ```
+
+5. Run the scripts in order, each with `source()`. Every script sources `00-setup.R` itself.
+
+   ```r
+   source("02-diagnostics.R")
+   source("03-distance.R")
+   source("04-soil.R")
+   source("05-relief.R")
+   source("06-crop.R")
+   source("07-crop-2025.R")
+   source("21-combine.R")
+   source("22-descriptives.R")
+   ```
+
+`01-simulate-reference.R` is **not** part of the normal run. It created the committed reference inputs once and aborts if they already exist. The full run order, with inputs and outputs, is on the [Pipeline](pipeline.qmd) page.
+
+## Repository
+
+Code: <https://github.com/EBukin/ukrMassValuationSpatialExtract>. The repository ships no external data: soil and crop rasters are provided by the user, public inputs are downloaded by a script, and only the simulated reference inputs, the results and this website are committed.

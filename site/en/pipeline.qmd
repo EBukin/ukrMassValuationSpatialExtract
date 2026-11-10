@@ -1,0 +1,128 @@
+---
+title: "Pipeline"
+lang: en
+---
+
+The project is a set of short, numbered R scripts in the project root. Each is run with `source()` from the project root and sources `00-setup.R` first. Each extraction script writes one long table to `data/interim/`; `21-combine.R` binds them into the final table.
+
+## Run order
+
+| Script | In | Out | Purpose | Time |
+|---|---|---|---|---|
+| `00-setup.R` | — | packages, parameters and paths in the session; output folders | Shared setup, sourced by every script | — |
+| `00b-download.R` | internet | `data/raw/cod-ab/`, `data/raw/dem/GLO-30/`, `data/interim/oblasts.gpkg`, `data/interim/dem.vrt` | Download the public inputs once; existing files are skipped | 8 s (cached) |
+| `01-simulate-reference.R` | `oblasts.gpkg`, soil clay 0–5 cm, crop 2024 | `data/clean/reference/parcels.parquet`, `elevators.parquet`, `roads.parquet` | Simulate the fixed reference inputs. **Ran once; not part of the normal run** | 7 s |
+| `02-diagnostics.R` | `oblasts.gpkg`, reference files, soil clay 0–5 cm | `output/figures/parcels-map.png`, `parcels-zoom.png` | Map the reference inputs; print counts and areas by case and oblast | 17 s |
+| `03-distance.R` | reference files | `data/interim/long_distance.parquet`, `output/tables/distance_sphere_vs_ellipsoid.csv` | Distance to the nearest elevator, main road and local road | 40 s |
+| `04-soil.R` | parcels, `oblasts.gpkg`, 28 SoilGrids rasters | `data/interim/soil_topsoil_0_30cm.tif`, `long_soil.parquet` | Topsoil 0–30 cm properties, polygon mean and centroid, NoData filled | 30 s |
+| `05-relief.R` | parcels, `dem.vrt` | `data/interim/long_relief.parquet` | Elevation, slope and aspect exposure over the parcel polygon | 40 s |
+| `06-crop.R` | parcels, crop maps 2019–2024 | `data/interim/long_crop.parquet` | Share of each parcel in 7 crop groups, 2019–2024 | 32 s |
+| `07-crop-2025.R` | parcels, crop 2025 summer and winter maps | `data/interim/long_crop_2025.parquet` | Crop group shares in 2025, winter crops over summer | 17 s |
+| `21-combine.R` | the five `long_*.parquet` files | `output/tables/spatial_covariates.parquet`, `spatial_covariates.csv` | Bind and check: 81 variables per parcel | 10 s |
+| `22-descriptives.R` | `spatial_covariates.parquet`, parcels | `output/tables/*.csv` summaries, `output/figures/soil_centroid_vs_polygon.png` | Descriptive statistics | 10 s |
+
+Times are rough, from one run on a Windows laptop with GLO-30 and the rasters on local disk. A full run, without downloads, takes about 3–4 minutes.
+
+## Data flow
+
+```{mermaid}
+flowchart LR
+  subgraph provided["You provide"]
+    soil[("SoilGrids<br/>28 rasters")]
+    crop[("Crop maps<br/>2019–2025")]
+  end
+  subgraph downloaded["00b-download.R"]
+    codab[("COD-AB<br/>oblasts.gpkg")]
+    dem[("Copernicus DEM<br/>dem.vrt")]
+  end
+  ref["01-simulate-reference.R<br/>(ran once)"]
+  refdata[("parcels, elevators,<br/>roads (committed)")]
+  diag["02-diagnostics.R"]
+  dist["03-distance.R"]
+  soilsc["04-soil.R"]
+  relief["05-relief.R"]
+  crop1924["06-crop.R"]
+  crop25["07-crop-2025.R"]
+  comb["21-combine.R"]
+  desc["22-descriptives.R"]
+  out[("spatial_covariates.parquet<br/>81,000 rows")]
+  figs[("tables and figures<br/>output/")]
+
+  codab --> ref
+  soil --> ref
+  crop --> ref
+  ref --> refdata
+  refdata --> diag
+  codab --> diag
+  refdata --> dist
+  refdata --> soilsc
+  soil --> soilsc
+  codab --> soilsc
+  refdata --> relief
+  dem --> relief
+  refdata --> crop1924
+  crop --> crop1924
+  refdata --> crop25
+  crop --> crop25
+  dist --> comb
+  soilsc --> comb
+  relief --> comb
+  crop1924 --> comb
+  crop25 --> comb
+  comb --> out
+  out --> desc
+  diag --> figs
+  desc --> figs
+```
+
+## Design rules
+
+- **Simple code for novices.** tidyverse, `sf`, `terra` and `exactextractr`; short scripts and few comments. No helper functions, no package code, no regular expressions. File paths, year labels and variable names are written out in full, and each crop year has its own block.
+- **No reprojection or resampling of rasters.** Each extraction transforms the parcels to the raster's own CRS instead. The only raster operations are the virtual DEM mosaic, `crop()`, per-pixel arithmetic on rasters that share a grid, and `terrain()`.
+- **Projections.** `crs_work <- "EPSG:3035"` (equal-area, metres) is used to build the parcel shapes, compute `area_ha` and draw the maps. Distances are measured on the sphere, in EPSG:4326.
+- **One long table.** Columns `parcel_id | variable | value | source`. Each measurement method is its own variable (`_mean`, `_centroid`, `_edge`, `_max`, `_range`).
+- **Guard checks.** Scripts stop with `cli_abort()` when a check fails: row counts, missing values, value ranges.
+
+## Setup script
+
+All parameters and paths live in `00-setup.R`:
+
+- `n_parcels <- 1000`
+- `study_oblast_en <- "Poltavska"` (COD-AB English name of Poltava oblast)
+- `crs_work <- "EPSG:3035"`
+- `dem_product <- "GLO-30"` (or `"GLO-90"`)
+- `flat_slope_deg <- 0.5`
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../00-setup.R
+```
+
+## Download script
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../00b-download.R
+```
+
+## Combine script
+
+`21-combine.R` binds the five long tables and stops if any parcel × variable pair appears twice, if any value is missing, if `source` has a value outside the four levels, or if a parcel does not have exactly 81 variables.
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../21-combine.R
+```
+
+## Descriptives script
+
+`22-descriptives.R` writes the summary tables shown on the indicator pages and on [Output](output.qmd).
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../22-descriptives.R
+```

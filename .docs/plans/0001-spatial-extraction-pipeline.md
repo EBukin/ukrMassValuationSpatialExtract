@@ -531,7 +531,7 @@ Methodology from the user:
 
 ### T13: website, English (Quarto)
 
-- [ ] **Writer brief.** Use the `quarto:quarto-authoring` skill.
+- [x] **Writer brief.** Use the `quarto:quarto-authoring` skill.
   - Structure:
     - `site/_quarto.yml`: website, `output-dir: ../docs`, navbar with the pages and a **language menu** (English ↔ Українська) linking each page to its counterpart;
     - `site/index.qmd`: redirects or links to `en/index.html`.
@@ -562,7 +562,7 @@ Methodology from the user:
   - Figures and tables are read from the committed `output/`; nothing is recomputed at render time.
   - **The parcel maps** (`parcels-map.png`, `parcels-zoom.png`) and the soil figure must appear on the site. The user reviews the maps there.
   - Replace `README.md` with a short version: objective, a link to the site `https://ebukin.github.io/ukrMassValuationSpatialExtract/`, quick start, run order.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - `quarto render site` succeeds with no warnings about missing files;
   - every embedded script matches the root file;
   - all 81 variables are listed;

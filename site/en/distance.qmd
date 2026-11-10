@@ -1,0 +1,78 @@
+---
+title: "Distance"
+lang: en
+---
+
+Six variables give the distance in **metres** from each parcel to the nearest elevator, the nearest main road and the nearest local road, measured from the parcel **centroid** and from the parcel **edge**. Script: `03-distance.R`.
+
+## Variables
+
+| Variable | Unit | Meaning |
+|---|---|---|
+| `dist_elevator_centroid` | m | Distance from the parcel centroid to the nearest elevator |
+| `dist_elevator_edge` | m | Distance from the parcel polygon to the nearest elevator |
+| `dist_road_main_centroid` | m | Distance from the parcel centroid to the nearest main road |
+| `dist_road_main_edge` | m | Distance from the parcel polygon to the nearest main road |
+| `dist_road_local_centroid` | m | Distance from the parcel centroid to the nearest local road |
+| `dist_road_local_edge` | m | Distance from the parcel polygon to the nearest local road |
+
+All rows have `source = "observed"`.
+
+## Method
+
+### Distances on the sphere
+
+Parcels, elevators and roads are kept in EPSG:4326 (longitude/latitude). With `sf_use_s2(TRUE)`, `sf` measures distances with the **s2** library, on a sphere (radius 6,371 km), so no flat projection distorts them. The parcel centroid is also computed on the sphere.
+
+### Nearest feature only
+
+For each parcel, `st_nearest_feature()` finds the nearest feature, and `st_distance(..., by_element = TRUE)` measures the distance to that feature only. The script wraps this in one line:
+
+```r
+nearest_dist <- function(from, to) as.numeric(st_distance(from, to[st_nearest_feature(from, to), ], by_element = TRUE))
+```
+
+### Centroid vs edge
+
+- **Centroid:** the distance from the parcel's centre point.
+- **Edge:** the distance from the parcel polygon itself, that is from its closest boundary point. It is **0** when the feature touches or crosses the parcel (some parcels are crossed by a road).
+
+So the edge distance is never larger than the centroid distance. The script checks this for every parcel.
+
+### Checks in the script
+
+- 6 rows per parcel and no missing values.
+- Edge ≤ centroid for every parcel and feature type.
+- **Spot check:** for one parcel of each case, the minimum distance to *all* features (brute force) matches the nearest-feature distance within 1 mm.
+- **Sphere vs ellipsoid:** the same parcel–feature pairs are measured again with `sf_use_s2(FALSE)`, which uses `lwgeom` on the WGS 84 ellipsoid. The script stops if the mean relative gap reaches 0.5 %.
+
+## Sphere vs ellipsoid gap
+
+The sphere is a simplification of the Earth's shape. On the WGS 84 ellipsoid, the same distances differ by 0.09–0.17 % on average (mean relative gap per variable): at most about 160 m on distances of up to 53 km. The relative gap is computed only where the ellipsoidal distance is above 0.
+
+```{r}
+#| label: tbl-sphere-ellipsoid
+#| tbl-cap: "Gap between spherical (s2) and ellipsoidal (lwgeom) distances, per variable. From `output/tables/distance_sphere_vs_ellipsoid.csv`."
+gap <- read.csv("../../output/tables/distance_sphere_vs_ellipsoid.csv")
+names(gap) <- c("Variable", "Mean gap (m)", "Max gap (m)", "Mean relative gap (%)")
+knitr::kable(gap, digits = c(0, 1, 1, 3))
+```
+
+Implementations that use the ellipsoid (for example GeographicLib, PostGIS `geography`, or `sf` with s2 off) should expect differences of this size, not exact matches.
+
+## Summary
+
+```{r}
+#| label: tbl-distance-summary
+#| tbl-cap: "Distance quantiles over the 1,000 parcels, in metres. From `output/tables/distance_summary.csv`."
+dist_summary <- read.csv("../../output/tables/distance_summary.csv")
+knitr::kable(dist_summary, digits = 0, format.args = list(big.mark = ","))
+```
+
+## Script: `03-distance.R`
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../03-distance.R
+```

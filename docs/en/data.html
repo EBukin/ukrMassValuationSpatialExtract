@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data – Spatial covariates, Ukraine</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-e9072c35d400738dd8f5400c9614cb45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Spatial covariates, Ukraine</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../en/index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../en/data.html" aria-current="page"> 
+<span class="menu-text">Data</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../en/pipeline.html"> 
+<span class="menu-text">Pipeline</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-indicators" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Indicators</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-indicators">    
+        <li>
+    <a class="dropdown-item" href="../en/reference.html">
+ <span class="dropdown-text">Reference inputs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/distance.html">
+ <span class="dropdown-text">Distance</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/soil.html">
+ <span class="dropdown-text">Soil</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/relief.html">
+ <span class="dropdown-text">Relief</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/crop.html">
+ <span class="dropdown-text">Crop cover</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../en/output.html"> 
+<span class="menu-text">Output</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-language" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text">Language</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-language">    
+        <li>
+    <a class="dropdown-item" href="../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../uk/index.html">
+ <span class="dropdown-text">Українська</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/EBukin/ukrMassValuationSpatialExtract"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#you-provide" id="toc-you-provide" class="nav-link active" data-scroll-target="#you-provide">You provide</a>
+  <ul class="collapse">
+  <li><a href="#soil-soilgrids-250-m" id="toc-soil-soilgrids-250-m" class="nav-link" data-scroll-target="#soil-soilgrids-250-m">Soil: SoilGrids 250 m</a></li>
+  <li><a href="#crop-cover-annual-classified-maps-20192025" id="toc-crop-cover-annual-classified-maps-20192025" class="nav-link" data-scroll-target="#crop-cover-annual-classified-maps-20192025">Crop cover: annual classified maps, 2019–2025</a></li>
+  </ul></li>
+  <li><a href="#downloaded-by-00b-download.r" id="toc-downloaded-by-00b-download.r" class="nav-link" data-scroll-target="#downloaded-by-00b-download.r">Downloaded by <code>00b-download.R</code></a>
+  <ul class="collapse">
+  <li><a href="#oblast-boundaries-ocha-cod-ab-ukraine" id="toc-oblast-boundaries-ocha-cod-ab-ukraine" class="nav-link" data-scroll-target="#oblast-boundaries-ocha-cod-ab-ukraine">Oblast boundaries: OCHA COD-AB Ukraine</a></li>
+  <li><a href="#elevation-copernicus-dem-glo-30" id="toc-elevation-copernicus-dem-glo-30" class="nav-link" data-scroll-target="#elevation-copernicus-dem-glo-30">Elevation: Copernicus DEM GLO-30</a></li>
+  <li><a href="#optional-openstreetmap-roads" id="toc-optional-openstreetmap-roads" class="nav-link" data-scroll-target="#optional-openstreetmap-roads">Optional: OpenStreetMap roads</a></li>
+  </ul></li>
+  <li><a href="#simulated-reference-inputs-committed" id="toc-simulated-reference-inputs-committed" class="nav-link" data-scroll-target="#simulated-reference-inputs-committed">Simulated reference inputs (committed)</a>
+  <ul class="collapse">
+  <li><a href="#reading-geoparquet" id="toc-reading-geoparquet" class="nav-link" data-scroll-target="#reading-geoparquet">Reading GeoParquet</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Data</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The inputs come in three kinds: rasters <strong>you provide</strong>, public data that a script <strong>downloads</strong>, and the <strong>simulated reference</strong> inputs committed to the repository. Soil, crop and DEM data are never committed.</p>
+<section id="you-provide" class="level2">
+<h2 class="anchored" data-anchor-id="you-provide">You provide</h2>
+<section id="soil-soilgrids-250-m" class="level3">
+<h3 class="anchored" data-anchor-id="soil-soilgrids-250-m">Soil: SoilGrids 250 m</h3>
+<ul>
+<li><strong>Source:</strong> ISRIC SoilGrids 2.0, mean predictions, clipped to Ukraine.</li>
+<li><strong>Licence:</strong> CC BY 4.0. Attribution: ISRIC – World Soil Information, SoilGrids.</li>
+<li><strong>Folder:</strong> <code>soil_dir</code> in <code>00-setup.R</code>. The scripts read 28 GeoTIFFs from it: <code>{bdod,cec,cfvo,clay,nitrogen,ocd,phh2o,sand,silt}_{0-5cm,5-15cm,15-30cm}_mean.tif</code> and <code>ocs_0-30cm_mean.tif</code>.</li>
+<li><strong>Grid:</strong> Interrupted Goode Homolosine (WGS 84), 250 × 250 m, Float32, NoData <code>-3.4e+38</code>. All 28 layers share one grid (checked with <code>terra::compareGeom()</code>).</li>
+<li><strong>Units:</strong> SoilGrids <em>mapped units</em> (integers stored as floats). The pipeline does not convert them:</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Description</th>
+<th>Mapped unit</th>
+<th>Divide by</th>
+<th>Conventional unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>bdod</code></td>
+<td>Bulk density of the fine earth fraction</td>
+<td>cg/cm³</td>
+<td>100</td>
+<td>kg/dm³</td>
+</tr>
+<tr class="even">
+<td><code>cec</code></td>
+<td>Cation exchange capacity at pH 7</td>
+<td>mmol(c)/kg</td>
+<td>10</td>
+<td>cmol(c)/kg</td>
+</tr>
+<tr class="odd">
+<td><code>cfvo</code></td>
+<td>Volumetric fraction of coarse fragments (&gt; 2 mm)</td>
+<td>cm³/dm³ (vol ‰)</td>
+<td>10</td>
+<td>vol %</td>
+</tr>
+<tr class="even">
+<td><code>clay</code></td>
+<td>Clay content (&lt; 0.002 mm)</td>
+<td>g/kg</td>
+<td>10</td>
+<td>%</td>
+</tr>
+<tr class="odd">
+<td><code>nitrogen</code></td>
+<td>Total nitrogen</td>
+<td>cg/kg</td>
+<td>100</td>
+<td>g/kg</td>
+</tr>
+<tr class="even">
+<td><code>ocd</code></td>
+<td>Organic carbon density</td>
+<td>hg/m³</td>
+<td>10</td>
+<td>kg/m³</td>
+</tr>
+<tr class="odd">
+<td><code>ocs</code></td>
+<td>Organic carbon stock, 0–30 cm</td>
+<td>t/ha</td>
+<td>10</td>
+<td>kg/m²</td>
+</tr>
+<tr class="even">
+<td><code>phh2o</code></td>
+<td>pH in water</td>
+<td>pH × 10</td>
+<td>10</td>
+<td>pH</td>
+</tr>
+<tr class="odd">
+<td><code>sand</code></td>
+<td>Sand content (&gt; 0.05 mm)</td>
+<td>g/kg</td>
+<td>10</td>
+<td>%</td>
+</tr>
+<tr class="even">
+<td><code>silt</code></td>
+<td>Silt content (0.002–0.05 mm)</td>
+<td>g/kg</td>
+<td>10</td>
+<td>%</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="crop-cover-annual-classified-maps-20192025" class="level3">
+<h3 class="anchored" data-anchor-id="crop-cover-annual-classified-maps-20192025">Crop cover: annual classified maps, 2019–2025</h3>
+<ul>
+<li><strong>Source:</strong> classified crop-cover maps of Ukraine, one GeoTIFF per year.</li>
+<li><strong>Licence:</strong> to be confirmed.</li>
+<li><strong>Folder:</strong> <code>crop_dir</code> in <code>00-setup.R</code>. File names are written out in full, one object per year:</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Object in <code>00-setup.R</code></th>
+<th>File</th>
+<th>Grid</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>crop_2019</code></td>
+<td><code>GEE_15102019.tif</code></td>
+<td>90772 × 134691 pixels, larger extent</td>
+</tr>
+<tr class="even">
+<td><code>crop_2020</code></td>
+<td><code>ukr_2020.tif</code></td>
+<td>88823 × 132874 pixels</td>
+</tr>
+<tr class="odd">
+<td><code>crop_2021</code></td>
+<td><code>Ukr_October2021.tif</code></td>
+<td>same as 2020</td>
+</tr>
+<tr class="even">
+<td><code>crop_2022</code></td>
+<td><code>Ukraine_August2022_corr.tif</code></td>
+<td>same as 2020</td>
+</tr>
+<tr class="odd">
+<td><code>crop_2023</code></td>
+<td><code>Ukraine_2023_01_September.tif</code></td>
+<td>same as 2020</td>
+</tr>
+<tr class="even">
+<td><code>crop_2024</code></td>
+<td><code>Ukraine_september_2024.tif</code></td>
+<td>same as 2020</td>
+</tr>
+<tr class="odd">
+<td><code>crop_2025_summer</code></td>
+<td><code>SummerMap_Ukraine_2025_WB.tif</code></td>
+<td>same size, origin shifted by about 2 m</td>
+</tr>
+<tr class="even">
+<td><code>crop_2025_winter</code></td>
+<td><code>Winter2025_Rape_Cereal.tif</code></td>
+<td>same size, origin shifted by about 2 m</td>
+</tr>
+</tbody>
+</table>
+<p>All maps are EPSG:32636 (UTM zone 36N), 10 m, unsigned 8-bit, LZW-compressed. Only the 2019 map declares a NoData value (0), but 0 is background in every year, so every script sets <code>NAflag(r) &lt;- 0</code>. The class codes and their grouping are on the <a href="../en/crop.html">Crop cover</a> page.</p>
+</section>
+</section>
+<section id="downloaded-by-00b-download.r" class="level2">
+<h2 class="anchored" data-anchor-id="downloaded-by-00b-download.r">Downloaded by <code>00b-download.R</code></h2>
+<p>The download script skips files already on disk, so a second run downloads nothing. All requests use one <code>curl</code> handle with <code>ssl_options = 2</code>, which turns off the certificate revocation check: on the network where this was built, HTTPS requests to HDX and to the AWS buckets fail with the Schannel error <code>CRYPT_E_NO_REVOCATION_CHECK</code>. Base R <code>download.file()</code> fails there too, so the <code>curl</code> package is used.</p>
+<section id="oblast-boundaries-ocha-cod-ab-ukraine" class="level3">
+<h3 class="anchored" data-anchor-id="oblast-boundaries-ocha-cod-ab-ukraine">Oblast boundaries: OCHA COD-AB Ukraine</h3>
+<ul>
+<li><strong>Source:</strong> OCHA Common Operational Dataset, Administrative Boundaries (COD-AB), Ukraine, via the Humanitarian Data Exchange: <a href="https://data.humdata.org/dataset/cod-ab-ukr" class="uri">https://data.humdata.org/dataset/cod-ab-ukr</a>. File <code>ukr_admin_boundaries.shp.zip</code> (81.5 MB), version of 2026-01-26.</li>
+<li><strong>Licence:</strong> CC BY-IGO. Attribution: OCHA, COD-AB Ukraine.</li>
+<li><strong>Use:</strong> the ADM1 layer (27 units). The fields <code>adm1_pcode</code>, <code>adm1_name1</code> and <code>adm1_name</code> are renamed to <code>oblast_pcode</code>, <code>oblast_ua</code> and <code>oblast_en</code>, and written to <code>data/interim/oblasts.gpkg</code> in EPSG:4326.</li>
+<li><strong>Note:</strong> COD-AB uses the adjectival English names, so Poltava oblast is <code>"Poltavska"</code> (<code>UA53</code>). In <code>00-setup.R</code>: <code>study_oblast_en &lt;- "Poltavska"</code>.</li>
+</ul>
+</section>
+<section id="elevation-copernicus-dem-glo-30" class="level3">
+<h3 class="anchored" data-anchor-id="elevation-copernicus-dem-glo-30">Elevation: Copernicus DEM GLO-30</h3>
+<ul>
+<li><strong>Source:</strong> Copernicus DEM, GLO-30 (1 arc-second, about 30 m) by default, from the public AWS bucket <code>https://copernicus-dem-30m.s3.amazonaws.com</code>. <code>dem_product &lt;- "GLO-90"</code> in <code>00-setup.R</code> switches to the 90 m product.</li>
+<li><strong>Tiles:</strong> the 1° × 1° tiles that intersect Poltava oblast plus a 10 km buffer.</li>
+<li><strong>Licence and attribution:</strong> © DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018, provided under COPERNICUS by the European Union and ESA; all rights reserved. Free of charge for any use.</li>
+<li><strong>Use:</strong> the tiles are joined in a virtual mosaic, <code>data/interim/dem.vrt</code>. The <a href="../en/relief.html">Relief</a> page explains how the mosaic handles the tiles north of 50°N.</li>
+</ul>
+</section>
+<section id="optional-openstreetmap-roads" class="level3">
+<h3 class="anchored" data-anchor-id="optional-openstreetmap-roads">Optional: OpenStreetMap roads</h3>
+<p><code>00b-download.R</code> ends with a commented-out block that reads real OSM roads with <code>osmextract</code> (main = <code>motorway</code>, <code>trunk</code>, <code>primary</code>; local = <code>secondary</code>, <code>tertiary</code>). The reference dataset uses the simulated roads below.</p>
+</section>
+</section>
+<section id="simulated-reference-inputs-committed" class="level2">
+<h2 class="anchored" data-anchor-id="simulated-reference-inputs-committed">Simulated reference inputs (committed)</h2>
+<p><code>01-simulate-reference.R</code> generated the reference inputs <strong>once</strong>, with <code>set.seed(20261110)</code>. They are committed as GeoParquet in EPSG:4326 and are never regenerated: the script aborts if <code>parcels.parquet</code> exists.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>data/clean/reference/parcels.parquet</code></td>
+<td>1,000 parcels: <code>parcel_id</code>, <code>case</code> (<code>interior</code>, <code>border</code>, <code>nodata</code>), <code>area_ha</code>, <code>oblast</code>, <code>h3_6</code>, <code>h3_5</code></td>
+</tr>
+<tr class="even">
+<td><code>data/clean/reference/elevators.parquet</code></td>
+<td>30 elevator points: <code>elevator_id</code></td>
+</tr>
+<tr class="odd">
+<td><code>data/clean/reference/roads.parquet</code></td>
+<td>54 roads (4 main, 50 local): <code>road_id</code>, <code>type</code></td>
+</tr>
+</tbody>
+</table>
+<p>How they were built is on the <a href="../en/reference.html">Reference inputs</a> page.</p>
+<section id="reading-geoparquet" class="level3">
+<h3 class="anchored" data-anchor-id="reading-geoparquet">Reading GeoParquet</h3>
+<p>The sf build used here has no GDAL Parquet driver, so the files are written and read with <code>arrow</code> and <code>geoarrow</code> (loaded in <code>00-setup.R</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_parquet</span>(x, path)                                        <span class="co"># write an sf object</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(path, <span class="at">as_data_frame =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> <span class="fu">st_as_sf</span>()  <span class="co"># read it back as sf</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>as_data_frame = FALSE</code> is required: without it, the geometry column stays a <code>geoarrow_vctr</code>. The geometry type and CRS are stored as geoarrow metadata on the column; the files have no GeoParquet <code>geo</code> key, so other tools may read the geometry as WKB without a CRS (it is EPSG:4326).</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+// Language menu: "English" and "Українська" open the same page in the other
+// language folder (en/ <-> uk/). On Ukrainian pages, navbar page links go to uk/ too.
+document.addEventListener("DOMContentLoaded", function () {
+  var path = window.location.pathname;
+  var inEn = path.indexOf("/en/") >= 0;
+  var inUk = path.indexOf("/uk/") >= 0;
+  var page = (inEn || inUk) ? (path.substring(path.lastIndexOf("/") + 1) || "index.html") : "index.html";
+  var prefix = (inEn || inUk) ? "../" : "";
+  document.querySelectorAll("#quarto-header a[href]").forEach(function (a) {
+    var text = a.textContent.trim();
+    var href = a.getAttribute("href");
+    if (text === "English") {
+      a.setAttribute("href", prefix + "en/" + page);
+    } else if (text === "Українська") {
+      a.setAttribute("href", prefix + "uk/" + page);
+    } else if (inUk && href.indexOf("://") < 0 && href.indexOf("en/") >= 0) {
+      a.setAttribute("href", href.replace("en/", "uk/"));
+    }
+  });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ebukin\.github\.io\/ukrMassValuationSpatialExtract\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Simulated reference parcels; real public and user-provided rasters. See the Data page for licences.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
