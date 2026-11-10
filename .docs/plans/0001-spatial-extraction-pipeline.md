@@ -1,6 +1,6 @@
-# Spatial extraction pipeline: reference parcels to a long table of covariates
+# Spatial extraction pipeline: reference parcels in Poltava oblast to a long table of covariates, and a bilingual website
 
-- **Date:** 2026-11-10 (v2, after independent review and user decisions)
+- **Date:** 2026-11-10 (v3: Poltava study area, execution review, parallel R sessions, website)
 - **Author:** Eduard Bukin (drafted with Claude)
 - **Status:** draft
 
@@ -8,13 +8,18 @@
 
 A set of short R scripts in the project root, each run with `source()`, that:
 
-1. download the public inputs (oblast boundaries, DEM);
-2. generate **once** a fixed reference set of 1,000 parcels, elevators and roads, committed to git;
+1. download the public inputs (oblast boundaries, a 30 m DEM for Poltava oblast);
+2. generate **once** a fixed reference set of 1,000 parcels, elevators and roads in **Poltava oblast**, committed to git;
 3. extract distance, soil, relief and crop-cover covariates for every parcel;
 4. write one long table, `parcel_id | variable | value | source`, with **81 variables per parcel**;
 5. print and save descriptive statistics.
 
-A one-page README walks a novice through the repository. The repo ships no external data: users provide the soil and crop rasters, public inputs are downloaded by a script, and only the simulated reference inputs and the results are committed. A fresh clone plus `renv::restore()`, the two input paths and the scripts in order reproduces everything.
+On top of that:
+
+- a **bilingual website** (English first, then Ukrainian, with a language switch), built with Quarto and published on **GitHub Pages**. Section by section, it explains every indicator, the methodology and the variable names, and embeds the full code of each script;
+- a short README that points to the site.
+
+The repo ships no external data. Users provide the soil and crop rasters, public inputs are downloaded by a script, and only the simulated reference inputs, the results and the website are committed.
 
 ## How to execute this plan (orchestration)
 
@@ -22,106 +27,138 @@ An **orchestrator agent** runs this plan by dispatching sub-agents.
 
 **What the orchestrator does:**
 - dispatches and checks; it **never writes code and never runs R itself**;
-- for each task, dispatches one **writer** sub-agent, then one **verifier** sub-agent, using the briefs in "Tasks";
-- reads only the sub-agents' reports, not the code or the console output, to save context;
+- for each task, dispatches one **writer** sub-agent, then one **verifier** sub-agent (Agent tool, `general-purpose`, model `opus`), using the briefs in "Tasks". The kickoff prompt is in `.docs/handoffs/0001-execute-plan-0001.md`;
+- reads only the sub-agents' reports, never code or console output, to save context;
 - if a verifier reports a failure, dispatches a new writer with the verifier's report and the original brief, then verifies again, at most 3 rounds. After that it stops and reports to the user;
 - ticks the task's checkbox in this file when its verification passes, and keeps **Status** current (`active` while running, `done` at the end);
-- **never commits**. Commits happen only when the user asks;
-- asks the user only at the stop points named in the tasks.
+- **commits and pushes** only at the milestones marked "Commit point", and only if the user has authorised that for this run (see "Autonomy"). Otherwise it stops at each commit point and asks;
+- stops for the user only at the stop points named in the tasks.
 
 **Every sub-agent brief must include:**
 - this plan's path and the task ID;
 - the instruction to read the project `CLAUDE.md`, then "Design rules", "Decisions", "Crop code table" and the task section before starting;
 - the instruction to do all R work through Positron's MCP server (the `run-r` skill: `mcp__positron__*` tools), never `Rscript` or `mcp-repl`;
-- the instruction to return a report of **at most 15 lines**: files changed, what was run, the pass/fail result of each acceptance check, and any deviation from the plan with its reason.
+- the session lifecycle from "R sessions": start its own session, use it for every call, then `quit()` it and hand back the foreground;
+- the instruction to return a report of **at most 15 lines**: files changed, what was run, the pass/fail result of each acceptance check, any deviation from the plan with its reason, and the words "session closed".
 
-**R sessions.**
-- All R runs through Positron's MCP server, in the user's Positron workspace.
-- **Writers** run code in the user's foreground R console (`execute_code`).
-- **Verifiers** start their own fresh R session, as the `run-r` skill describes:
-  1. get the R `runtimeId`;
-  2. call `workbench.action.language.runtime.startNewConsoleSession`;
-  3. pass its `session_id` to every call;
-  4. at the end, close it with `quit(save = "no")` and give the foreground back to the user's session.
+**Long jobs are approved in advance.** The `run-r` skill says not to start a long job without asking. For this plan, any job in a sub-agent's own session is approved, so sub-agents must not stop to ask.
 
-  A fresh session is the only real clean state; `rm(list = ls())` doesn't unload packages or reset `sf_use_s2()`.
-- **Only one sub-agent runs R at a time.** Writers may draft in parallel where the dependencies allow it, but every R run is serialised.
-- Never restart or clear the user's own session.
+### R sessions
 
-**Writer duties:** write the script, source it once, fix errors, and report.
+Parallel sessions were tested on 2026-11-10. Two agents ran 15-second jobs that overlapped in time, and both R processes were gone after `quit()`.
 
-**Verifier duties:**
-- Re-read the script against the design rules and acceptance criteria.
-- Source `00-setup.R` and then the script in a fresh session.
-- Check the outputs.
-- Report pass or fail per criterion. The verifier does not fix code.
+- All R runs through Positron's MCP server, in the user's Positron workspace. **No sub-agent runs code in the user's console.**
+- **Every R-running sub-agent (writer or verifier) starts its own R session at the beginning and closes it at the end:**
+  1. `run_positron_command` `workbench.action.language.runtime.getActiveSessions` with `["r"]`: note the R `runtimeId` and the user's foreground `sessionId`.
+  2. `run_positron_command` `workbench.action.language.runtime.startNewConsoleSession` with `[runtimeId]`, which returns the agent's `sessionId`.
+  3. Pass that `session_id` to **every** `execute_code` / `evaluate_code` call. Never rely on the foreground default, since all sessions share the display name `R 4.6.1`.
+  4. Finish with `execute_code` `quit(save = "no")` and `timeout_s` 5, even after a failure. The call always times out because the process dies; `list_sessions` then shows `exited` and the memory is freed.
+  5. `run_positron_command` `workbench.action.language.runtime.selectSession` with the user's `sessionId`, to hand the foreground back.
+- New sessions start in the project folder on the project's renv library (`.Rprofile` → `renv/activate.R`), as tested.
+- A fresh session is also the clean state verifiers need.
+- **Parallelism:** at most **3 R sessions** running at once. Never two agents in one session. Tasks that write the same file never run together, and T03 (downloads) runs alone.
+- Never restart, clear or `quit()` the user's own session.
+- If a report lacks "session closed", the orchestrator dispatches a small agent to `quit()` that session.
+- **The 600-second limit:** `execute_code` interrupts the kernel after `timeout_s` (at most 600). To stay under it:
+  - run one script, or one block of a script, per call, with `timeout_s = 600`;
+  - split the work into smaller calls where needed: one crop year per call while developing, one download block per call;
+  - **while developing only**, a sub-agent may run a long job in the background with `callr::r_bg(\(f) source(f), list("<script>.R"))` and poll it with `evaluate_code`. `callr` never appears in the project scripts.
+
+### Autonomy
+
+**Granted by the user on 2026-11-10.** The orchestrator runs from T01 to T16 without the user:
+
+1. **Commits and pushes** to `origin/main` at the commit points (A–D) are authorised. Stage explicit paths only; commit messages carry no AI attribution.
+2. **Enabling GitHub Pages** for the public repo is authorised.
+3. **The map review is waived.** The user reviews the maps later, on the website. The maps must be embedded there (T13).
+4. **Reading the OneDrive input folders** (soil, crop) is authorised, through R.
+
+The remaining stop points are failure cases only:
+- a package can't be installed;
+- no GeoParquet writer works;
+- no H3 route works (T01 step 3b);
+- a download still fails with the SSL workaround;
+- the soil layers are not on one grid.
+
+At a stop point the orchestrator reports to the user and waits.
 
 ## Context
 
 - The README objective: build a reference dataset of spatial covariates that other implementations (other software or teams) can compare against.
-- All decisions below were confirmed by the user in chat on 2026-11-10, after an independent review of v1.
-- The project `CLAUDE.md` has been updated to match this plan: root scripts, no `R/` package code, no vignettes, committed reference inputs.
-- `renv` is initialised (R 4.6.1; `renv.lock` holds only renv). None of the spatial packages are installed.
-- `.gitignore` ignores `data/raw/*` and `data/interim/*`. `data/clean/` and `output/` are tracked.
-- `data/raw/oblast.geojson` exists locally. It is **left in place and not used**; oblasts come from COD-AB.
+- All decisions below were confirmed by the user in chat on 2026-11-10, after two independent reviews.
+- The project `CLAUDE.md` matches this plan: root scripts, no `R/` package code, no vignettes, committed reference inputs, one R session per agent.
+- Git remote: `origin` = `https://github.com/EBukin/ukrMassValuationSpatialExtract` (public), branch `main`.
+- Quarto 1.9 is installed.
+- `renv` is initialised (R 4.6.1), and the user's console is on the project library. Only renv is installed.
+- `.gitignore` ignores `data/raw/*` and `data/interim/*`. `data/clean/`, `output/` and `docs/` are tracked.
+- `data/raw/oblast.geojson` is left in place and not used.
 - **`data/raw/` rule:** existing files are never edited, renamed or deleted. Download scripts may add new subfolders.
+- **Network:** HTTPS to HDX and to the AWS buckets fails with the Schannel error `CRYPT_E_NO_REVOCATION_CHECK`; CRAN works. Downloads need the revocation check off (T03).
 - Input folders, outside the repo, read-only:
   - soil: `C:/Users/wb532966/OneDrive - WBG/DEC/data-EB/ukrSoilgridsData/data-raw/ukr`
-    - SoilGrids GeoTIFFs, e.g. `clay_0-5cm_mean.tif`;
-    - units are in `../README.md`, e.g. clay in g/kg and pH × 10;
-    - the files may be OneDrive online-only; the user knows this, and they download on first read.
+    - SoilGrids GeoTIFFs, e.g. `clay_0-5cm_mean.tif`; units in `../README.md`;
+    - may be OneDrive online-only (the user knows this); they download on first read.
   - crop: `C:/Users/wb532966/OneDrive - WBG/DEC/data-EB/ukrCropCover/original-crop-cover-maps`
-    - one classified GeoTIFF per year, with a `.qml` legend beside each;
-    - all are EPSG:32636 (UTM 36N), 10 m, uint8, LZW, striped (not tiled);
-    - 2020–2025 share one grid of 132874×88823 pixels; 2019 is 134691×90772;
-    - only the 2019 map declares NoData (0). The others declare none, but 0 is background.
-- **Known heavy operations to avoid:**
-  - any whole-country raster computation on the 10 m crop maps (about 1.2e10 cells);
-  - slope and aspect on GLO-30 over the whole country.
+    - one classified GeoTIFF per year, EPSG:32636, 10 m, uint8, LZW, striped;
+    - 2020–2025 share 132874×88823 pixels; 2019 is 134691×90772;
+    - only the 2019 map declares NoData (0), but 0 is background in every year.
+- **COD-AB** (checked via the HDX API): resources `ukr_admin_boundaries.{shp,gdb,geojson}.zip`, modified 2026-01-26, licence CC BY-IGO. Field names are probably lowercase (`adm1_pcode`, `adm1_name`, `adm1_name1`); T03 maps them.
+- **Copernicus DEM:** bucket and tile naming confirmed (GLO-90 N50 E030 returns HTTP 200). North of 50°N, tiles have 1.5× the longitude spacing of the tiles to the south.
 
 ### Design rules (binding)
 
 - **Simple code for novices.** tidyverse, `dplyr`, `sf`, `terra`, `exactextractr`. Short scripts, few short comments.
-- **No helper functions, no `R/` folder, no vignettes.** Scripts sit in the project root.
-  - The only allowed exception is a one-line inline `nearest_dist()` in `03-distance.R`.
+- **No helper functions, no `R/` folder, no vignettes.** Scripts sit in the project root. Allowed exceptions:
+  - a one-line inline `nearest_dist()` in `03-distance.R`;
+  - an anonymous function inside `pmap()` in `01-simulate-reference.R`.
 - **No regular expressions, no clever loops, no `if` ladders.**
   - File paths, year labels and variable names are written out in full.
   - Each crop year gets its own explicit block.
-  - Allowed: vectorised calls (`curl::multi_download()`), literal `names_prefix =`, `sprintf("%03d", ...)`, and a single guard `if (...) cli_abort(...)`.
+  - Allowed:
+    - vectorised calls (`curl::multi_download()`);
+    - literal `names_prefix =`;
+    - `sprintf("%03d", ...)`;
+    - **any number of one-line guard checks** `if (<condition>) cli_abort(...)`.
 - **Each script header** states what it reads (In:), what it writes (Out:), and its purpose in one line.
 - **User-facing messages use cli** (`cli_inform()`, `cli_abort()`).
-- **Paths** are built from the project root via objects defined in `00-setup.R`, never with `setwd()`.
+- **Paths** come from objects defined in `00-setup.R`, never `setwd()`.
+- **No reprojection or resampling of rasters**; vectors are transformed to each raster's CRS instead. The only raster operations allowed are:
+  - the virtual mosaic of DEM tiles (`vrt()`);
+  - `crop()`;
+  - per-pixel arithmetic on rasters that share a grid (soil depths; slope and aspect);
+  - `terrain()`.
 - **Projections.**
-  - Parcels may arrive in any CRS.
-  - Each extraction block transforms the parcels to that raster's CRS (`st_transform(parcels, crs(r))`), extracts, and keeps only `parcel_id` plus the values.
-  - `crs_work <- "EPSG:3035"` (LAEA Europe, equal-area, metres) is used to build parcel shapes, compute `area_ha` and draw maps.
-- **Distances** are measured on the sphere: sf with s2 on lon/lat (EPSG:4326). They are cross-checked against ellipsoidal distances (T06).
+  - Each extraction block transforms the parcels to that raster's CRS, extracts, and keeps only `parcel_id` plus the values.
+  - `crs_work <- "EPSG:3035"` (equal-area, metres) is used to build parcel shapes, compute `area_ha` and draw maps.
+- **Distances** are measured on the sphere: sf with s2 on lon/lat (EPSG:4326), cross-checked against ellipsoidal distances.
 - **Long table.**
   - Columns: `parcel_id | variable | value | source`.
-  - **No `stat` column.** Each measurement method is its own variable: `_mean`, `_centroid`, `_edge`, `_max`, `_range`.
-  - `source` takes one of `observed`, `h3_6`, `h3_5`, `oblast`. Only soil rows can be non-`observed`.
+  - No `stat` column; each measurement method is its own variable (`_mean`, `_centroid`, `_edge`, `_max`, `_range`).
+  - `source` takes one of `observed`, `h3_6`, `h3_5`, `oblast`; only soil rows can be non-`observed`.
 
 ### Decisions (binding)
 
 | Topic | Decision |
 |---|---|
-| Reference inputs | One script, `01-simulate-reference.R`, generates 1,000 parcels, 60 elevators and the roads **once**. They are saved as GeoParquet in `data/clean/reference/`, in EPSG:4326, and committed. The script opens with a guard that aborts if the files already exist, so the pipeline never regenerates them. 10,000 parcels come later, as a separate decision. |
-| Parcels | Area 1–10 ha, mostly 2–4 ha, built in EPSG:3035. Rectangles and parallelograms. Cases: `interior`, `border` (crosses an oblast line), `town` (centre on soil NoData). Parcels may fall anywhere in Ukraine; maps are used as they are. |
-| Oblasts | OCHA COD-AB Ukraine (HDX `cod-ab-ukr`), ADM1 layer, 27 features expected. Field names are mapped from whatever the release uses to `oblast_pcode`, `oblast_ua`, `oblast_en`. |
-| DEM | Copernicus DEM, **`dem_product <- "GLO-90"` by default** (90 m). `"GLO-30"` is an opt-in the user runs; the plan never runs it. Tiles are combined with `terra::vrt(..., options = c("-resolution", "highest"))`. The README states that this is a surface model: trees and buildings are included. |
-| Elevators, roads | Simulated in the reference script. Roads are clipped to Ukraine and densified with `st_segmentize()` to ≤ 1 km, so every software interprets the lines the same way. Real OSM roads are an optional, commented-out block. |
-| Distance | Nearest feature only: `st_nearest_feature()` then `st_distance(..., by_element = TRUE)`. Measured from the centroid and from the edge. The gap between spherical and ellipsoidal distance is reported. |
-| Soil | One topsoil 0–30 cm variable per property. For bdod, cec, cfvo, clay, nitrogen, ocd, phh2o, sand and silt, the depths are merged per pixel as `(5·d0_5 + 10·d5_15 + 15·d15_30) / 30`, then extracted. `ocs` is already 0–30 cm. Each of the 10 properties gets `_mean` (coverage-weighted) and `_centroid`: **20 variables**. Values stay in SoilGrids mapped units. |
-| Soil NoData | Filled after extraction: H3 res-6 cell mean → H3 res-5 cell mean → oblast mean. The fill level goes in `source`. A marked "fill zones" block shows where users can swap in rayon or hromada polygons. Parcels with only partial soil coverage keep `observed`. |
-| Relief | User methodology (T08). **6 variables**, polygon only. `flat_slope_deg <- 0.5` is a slope threshold, not a resolution. |
-| Crop | **7 groups × 7 years = 49 variables**, named `crop_<group>_<year>`. Groups: `built`, `ag`, `forest`, `grass`, `bare`, `water`, `other`. One code → group table for all years (see "Crop code table"). Value 0 is NoData in every year. 2025: the winter crop pixels (2, 3) take precedence over the summer map, applied **per pixel inside each parcel**, never on the whole raster (T10). |
-| Outputs | `output/tables/spatial_covariates.parquet` is committed. `spatial_covariates.csv` is written but gitignored. Descriptives go to `output/tables/` and `output/figures/`. |
+| Study area | **Poltava oblast** (`study_oblast_en <- "Poltava"` in setup; the P-code is looked up from COD-AB). It has towns (Poltava, Kremenchuk, Lubny, ...), the Dnipro and the Kremenchuk reservoir, and 7 neighbouring oblasts. All simulated features lie inside Poltava. A `border` parcel may extend into a neighbour. |
+| Reference inputs | `01-simulate-reference.R` generates 1,000 parcels, 30 elevators and the roads **once**. They are written as GeoParquet in `data/clean/reference/`, in EPSG:4326, and committed. A guard aborts the script if the files already exist. |
+| Parcels | 1,000; area 1–10 ha, mostly 2–4 ha, built in EPSG:3035; rectangles and parallelograms. Cases: 70 % `interior`; 15 % `border`, crossing Poltava's boundary with a neighbouring oblast; 15 % `nodata`, centred on soil NoData (towns, rivers, the reservoir). At least 30 `nodata` parcels sit near a town and at least 30 near water (checked in T04). |
+| Oblasts | OCHA COD-AB Ukraine, ADM1, national file. Fields renamed to `oblast_pcode`, `oblast_ua`, `oblast_en`. |
+| DEM | Copernicus **GLO-30 by default** (`dem_product <- "GLO-30"`; `"GLO-90"` is the switch). Only tiles intersecting Poltava oblast plus a 10 km buffer, about 12 tiles. Merged with `vrt()` and **no resampling step of our own**. Tiles north of 50°N have coarser longitude spacing; the virtual mosaic repeats their pixels on the finer grid (GDAL nearest neighbour, on the fly, no extra computation). That can add small stair-steps to slope and aspect in Poltava's northern strip. The website documents this limitation. |
+| Elevators, roads | Simulated in the reference script, inside Poltava: 30 elevators, 4 main roads, 50 local roads. Roads are densified to ≤ 1 km with `st_segmentize()`. Real OSM roads are an optional, commented-out block. |
+| Distance | Nearest feature only: `st_nearest_feature()` then `st_distance(..., by_element = TRUE)`, from the centroid and from the edge. The gap between spherical and ellipsoidal distance is reported. |
+| Soil | One topsoil 0–30 cm variable per property: `(5·d0_5 + 10·d5_15 + 15·d15_30) / 30`, computed per pixel on the cropped grid. `ocs` is already 0–30 cm. The 10 properties × (`_mean`, `_centroid`) give **20 variables**. SoilGrids mapped units. |
+| Soil NoData | Fill order: H3 res-6 → H3 res-5 → oblast mean (Poltava and its neighbours). The level goes in `source`. A marked "fill zones" block shows where to swap in rayon or hromada polygons. Partial soil coverage counts as `observed`. |
+| Relief | User methodology (T08). **6 variables**, polygon only. `flat_slope_deg <- 0.5`. |
+| Crop | **7 groups × 7 years = 49 variables**, named `crop_<group>_<year>`. Groups: `built`, `ag`, `forest`, `grass`, `bare`, `water`, `other`. One code table for all years. 0 is NoData. 2025: winter crop pixels (2, 3) take precedence over summer, applied per pixel inside parcels. |
+| Variable count | 6 + 20 + 6 + 49 = **81**. |
+| Outputs | `output/tables/spatial_covariates.parquet` (committed); `spatial_covariates.csv` (written, gitignored); descriptives in `output/tables/` and `output/figures/`. |
+| Website | Quarto website in `site/`, rendered to `docs/` and served by GitHub Pages from `main` `/docs`. English pages in `site/en/`, Ukrainian in `site/uk/`, with a navbar language switch. Each script page embeds the full script verbatim from the root file. Variable names, code and file names stay in English on the Ukrainian pages. |
 | Script numbers | `00-setup.R`, `00b-download.R`, `01-simulate-reference.R`, `02-diagnostics.R`, `03-distance.R`, `04-soil.R`, `05-relief.R`, `06-crop.R`, `07-crop-2025.R`, `21-combine.R`, `22-descriptives.R`. |
-| Variable count | 6 distance + 20 soil + 6 relief + 49 crop = **81**. |
 
 ### Crop code table (harmonised across years, binding)
 
-Categories are matched by label. Some categories move between codes: "Not cultivated" is 22 in 2022 and 20 from 2023; "Damaged forest" is 23 in 2022 and 25 from 2024. No code means two unrelated things in different years, so **one `tribble(code, group)` in `00-setup.R` serves every year.** The wide table below is copied into the README, so users can see where each year's codes go.
+Categories are matched by label. "Not cultivated" is 22 in 2022 and 20 from 2023; "Damaged forest" is 23 in 2022 and 25 from 2024. No code means two unrelated things in different years, so **one `tribble(code, group)` in `00-setup.R` serves every year.** This wide table is reproduced on the website.
 
 | group | category | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 summer | 2025 winter |
 |---|---|---|---|---|---|---|---|---|---|
@@ -155,8 +192,6 @@ Categories are matched by label. Some categories move between codes: "Not cultiv
 | other | any code not listed | | | | | | | | |
 | (NoData) | 0 | NA | NA | NA | NA | NA | NA | NA | NA |
 
-The table as R code in `00-setup.R`:
-
 ```r
 crop_groups <- tribble(
   ~code, ~group,
@@ -170,57 +205,71 @@ crop_groups <- tribble(
 )
 ```
 
-Codes not in the table become `other`. Value 0 is set to NA when reading, with `NAflag(r) <- 0`.
-
 ## Tasks
 
-| Task | Can start after | Writer parallel with |
+| Task | Can start after | Parallel with |
 |---|---|---|
 | T01 environment and checks | — | — |
 | T02 `00-setup.R` | T01 | — |
-| T03 `00b-download.R` | T02 | — |
+| T03 `00b-download.R` | T02 | — (runs alone) |
 | T04 `01-simulate-reference.R` | T03 | — |
 | T05 `02-diagnostics.R` | T04 | T06–T10 |
-| T06–T10 extraction scripts | T04 (T08 also needs T03's DEM) | each other |
+| T06–T10 extraction scripts | T04 | each other (at most 3 R sessions) |
 | T11 `21-combine.R` | T06–T10 | — |
-| T12 `22-descriptives.R` | T11 | T13 |
-| T13 README | T11 | T12 |
-| T14 full run and handover | everything | — |
-
-R runs are always serialised; see "R sessions".
+| T12 `22-descriptives.R` | T11 | — |
+| T13 website, English | T12 | — |
+| T14 website, Ukrainian | T13 | — |
+| T15 GitHub Pages publish | T14 | — |
+| T16 full run and handover | T15 | — |
 
 ---
 
 ### T01: environment and checks
 
-- [ ] **Writer brief.**
-  1. In the user's R session, install into the project renv library: `tidyverse`, `sf`, `terra`, `exactextractr`, `arrow`, `h3jsr`, `curl`, `cli`, `lwgeom`, `osmextract`. Then run `renv::snapshot(type = "all")`, so every package and its version is in `renv.lock`. The implicit snapshot would record nothing, because no scripts exist yet.
-     - If `h3jsr` fails to install or load (it needs V8), report it. Stop point.
-  2. Check that GDAL has a Parquet driver: `"Parquet" %in% sf::st_drivers()$name`. If not, check that the `geoarrow` package can write sf. Report which works. Stop point if neither does.
-  3. Soil rasters:
-     - record the CRS, resolution, NoData and value range of the 28 files used in T07 (9 properties × 0-5, 5-15 and 15-30 cm, plus `ocs_0-30cm_mean.tif`);
-     - check that all 28 share one grid with `terra::compareGeom()`;
-     - check the CRS of the 7 crop files, and that 2020–2025 summer and winter share dimensions.
-  4. Write `.docs/notes/0001-input-raster-check.md` (follow `.docs/_templates/note.md`) with the findings.
+- [ ] **Writer brief**, in its own R session:
+  1. `renv::settings$snapshot.type("all")`.
+  2. Install into the project library, one or a few packages per call (600 s limit): `tidyverse`, `sf`, `terra`, `exactextractr`, `arrow`, `geoarrow`, `h3o`, `curl`, `cli`, `lwgeom`, `osmextract`, `knitr`, `rmarkdown`. Then `renv::snapshot()`.
+     - **No `h3jsr`**: it depends on V8 (JavaScript), which is fragile on Windows.
+  3b. **H3 route.** Prove with 3 test points in Poltava that `h3o` can do two things:
+     - return the res-6 and res-5 cell IDs of a point: `h3o::h3_from_points(points, resolution)`, then `as.character()`;
+     - turn cell IDs into hexagon polygons: `sf::st_as_sfc()` on the H3 vector, or `h3o::sfc()`.
+
+     Record the exact calls in the note. If `h3o` fails, try `h3r` (C bindings: `latLngToCell()`, `cellToBoundary()`). If both fail, it is a stop point; do not invent a non-H3 grid.
+  3. Choose **one** GeoParquet read/write pair that every script will use:
+     - if `"Parquet" %in% sf::st_drivers()$name`, use `st_write(..., driver = "Parquet")` and `st_read()`;
+     - otherwise, use `geoarrow` with `arrow::write_parquet()` / `read_parquet()` + `st_as_sf()`.
+
+     Round-trip a small sf object to prove it works. Record the exact two lines.
+  4. Test the SSL workaround with one small request:
+     - `curl::curl_fetch_memory("https://data.humdata.org/api/3/action/package_show?id=cod-ab-ukr", handle = curl::new_handle(ssl_options = 2))`, where 2 = no-revoke;
+     - if that fails, try `Sys.setenv(CURL_SSL_BACKEND = "openssl")` in a fresh session before curl loads;
+     - record which works.
+  5. Record raster facts:
+     - for the 28 soil files used in T07: CRS, resolution, NoData, and one grid (`compareGeom()`);
+     - for the 8 crop files: CRS and extent;
+     - for the 2025 summer and winter maps: origins, and their difference in metres.
+  6. Write `.docs/notes/0001-input-raster-check.md` (template `.docs/_templates/note.md`) with all findings, including the chosen GeoParquet pair and the SSL method.
 - [ ] **Acceptance:**
-  - `renv::status()` is clean and `renv.lock` lists every package above;
-  - the note covers all soil and crop files.
+  - `renv::status()` is clean and `renv.lock` lists the packages;
+  - the GeoParquet round trip and the SSL test pass;
+  - the note is complete.
 - [ ] **Stop points:**
-  - h3jsr unusable;
-  - no GeoParquet writer;
-  - soil layers not on one grid.
+  - a package can't be installed;
+  - no GeoParquet pair works;
+  - the SSL test fails both ways;
+  - soil layers are not on one grid.
 
 ### T02: `00-setup.R`
 
-- [ ] **Writer brief.** Create `00-setup.R`, which every other script sources first. It contains:
-  - `library()` for the T01 packages (`osmextract` excluded), `sf_use_s2(TRUE)`.
+- [ ] **Writer brief.** `00-setup.R` is sourced first by every script. It contains:
+  - `library()` for the T01 packages, excluding `osmextract`, `knitr` and `rmarkdown`; `sf_use_s2(TRUE)`.
   - Parameters, each with a one-line comment:
     - `n_parcels <- 1000`;
+    - `study_oblast_en <- "Poltava"`;
     - `crs_work <- "EPSG:3035"`;
-    - `dem_product <- "GLO-90"` (`"GLO-30"` allowed);
+    - `dem_product <- "GLO-30"` (or `"GLO-90"`);
     - `flat_slope_deg <- 0.5`.
-  - `soil_dir` and `crop_dir` (see Context).
-  - The crop file paths written out in full, one object per year:
+  - `soil_dir`, `crop_dir`, and the crop file objects `crop_2019` … `crop_2024`, `crop_2025_summer`, `crop_2025_winter`, written out in full:
 
     | Object | File |
     |---|---|
@@ -235,27 +284,26 @@ R runs are always serialised; see "R sessions".
 
   - `crop_groups`, exactly as in "Crop code table".
   - Paths, one object each:
-    - downloads: `codab_dir <- "data/raw/cod-ab"`, `dem_dir <- "data/raw/dem"`;
+    - `codab_dir`, `dem_dir`;
     - reference: `data/clean/reference/parcels.parquet`, `elevators.parquet`, `roads.parquet`;
-    - interim: `data/interim/oblasts.gpkg`, `dem.vrt`, `soil_topsoil_0_30cm.tif`, and each `long_*.parquet`;
-    - outputs: the files in `output/tables/` and `output/figures/`.
-  - `dir.create(..., recursive = TRUE, showWarnings = FALSE)` for every output folder.
+    - interim: `data/interim/oblasts.gpkg`, `dem.vrt`, `soil_topsoil_0_30cm.tif`, each `long_*.parquet`;
+    - all output files.
+  - `dir.create(..., recursive = TRUE, showWarnings = FALSE)` for the output folders.
 - [ ] **Acceptance:**
   - sources clean in a fresh session;
-  - `all(file.exists(<all input paths>))`;
+  - the 8 crop files and `soil_dir` exist; downloads and reference files are not checked here;
   - follows the design rules.
 
-### T03: `00b-download.R`
+### T03: `00b-download.R` (runs alone)
 
-- [ ] **Writer brief.** The header lists, for each download: source URL, licence, approximate size and destination. Each block skips files that already exist.
+- [ ] **Writer brief.** The header lists each download's source URL, licence, size and destination. Each block skips existing files. One handle is used for all downloads, using T01's SSL method, with a comment explaining why: `h <- curl::new_handle(ssl_options = 2)  # this network cannot check certificate revocation`.
   - **COD-AB block:**
-    - Find the current shapefile zip resource URL for HDX dataset `cod-ab-ukr` (via `https://data.humdata.org/api/3/action/package_show?id=cod-ab-ukr`) and hard-code it.
-    - Download to `codab_dir` and unzip.
-    - Read the ADM1 layer. Rename its P-code, Ukrainian name and English name fields to `oblast_pcode`, `oblast_ua` and `oblast_en`, using whatever names the release has; report them.
-    - Inform about the feature count (27 expected).
-    - Write `data/interim/oblasts.gpkg`.
+    - download the ADM1-containing zip (shapefile or geojson variant, whichever T01 confirms) into `codab_dir` and unzip;
+    - rename fields to `oblast_pcode`, `oblast_ua`, `oblast_en`, and report the original names;
+    - inform about the count (27 expected);
+    - write `data/interim/oblasts.gpkg`, all oblasts.
   - **DEM block:**
-    - Product table:
+    - product table:
 
       ```r
       dem_products <- tribble(
@@ -265,174 +313,169 @@ R runs are always serialised; see "R sessions".
       ) |> filter(product == dem_product)
       ```
 
-    - Tile boxes:
-      - `st_make_grid(cellsize = 1, offset = c(22, 44), n = c(19, 9), crs = 4326)`, keeping boxes that intersect the dissolved oblasts;
-      - tile ID: `str_c("Copernicus_DSM_COG_", code, "_N", lat, "_00_E", sprintf("%03d", lon), "_00_DEM")`, where lat and lon are the box's lower-left corner;
-      - URL: `{bucket}/{id}/{id}.tif`; destination: `file.path(dem_dir, dem_product, str_c(id, ".tif"))`.
-    - Download with `curl::multi_download()`. Tiles over the sea return 404; inform about the count and continue.
-    - Build `data/interim/dem.vrt` with `vrt(files, options = c("-resolution", "highest"))`. A comment explains that tiles north of 50°N have coarser longitude spacing.
-  - **Optional OSM roads**, commented out: `osmextract::oe_get("Ukraine", layer = "lines")`. Main roads are `highway %in% c("motorway","trunk","primary")`, local roads `c("secondary","tertiary")`. Output goes to `data/raw/osm/`, with a note that it replaces the simulated roads in `03-distance.R`.
+    - tile boxes from `st_make_grid(cellsize = 1, offset = c(22, 44), n = c(19, 9), crs = 4326)`, kept where they intersect Poltava plus 10 km;
+    - corner coordinates via `round()`;
+    - tile ID: `str_c("Copernicus_DSM_COG_", code, "_N", lat, "_00_E", sprintf("%03d", lon), "_00_DEM")`;
+    - URL: `{bucket}/{id}/{id}.tif`; destination: `file.path(dem_dir, dem_product, str_c(id, ".tif"))`;
+    - `res <- curl::multi_download(urls, dests, handle = h)`;
+    - `file.remove()` the destinations whose `status_code != 200`, because a 404 leaves an error page on disk;
+    - `vrt(files_ok, filename = dem_vrt_path)`, with **no** resolution or resampling options. A comment explains that the tiles north of 50°N have coarser longitude spacing, which GDAL repeats on the fly.
+  - **Optional OSM roads**, commented out: `osmextract::oe_get("Ukraine", layer = "lines")`. Main = `motorway`, `trunk`, `primary`; local = `secondary`, `tertiary`; output to `data/raw/osm/`.
 - [ ] **Acceptance:**
-  - runs with GLO-90;
-  - `oblasts.gpkg` exists with the three renamed fields;
-  - `rast(dem.vrt)` covers Ukraine;
+  - `oblasts.gpkg` has the three fields and includes Poltava;
+  - `rast(dem.vrt)` covers Poltava plus 10 km;
+  - no stub files remain;
   - a second run downloads nothing.
-- [ ] Note for the orchestrator: if a download exceeds the MCP call timeout, the writer may run it in a separate R session and poll for completion.
 
 ### T04: `01-simulate-reference.R` (run once, then committed)
 
 - [ ] **Writer brief.**
-  - **In:** `oblasts.gpkg`, `clay_0-5cm_mean.tif`. **Out:** `data/clean/reference/parcels.parquet`, `elevators.parquet`, `roads.parquet` (GeoParquet, EPSG:4326, using the writer chosen in T01).
-  - First line after the setup: `if (file.exists(parcels_path)) cli_abort("Reference inputs already exist. They are fixed: do not regenerate.")`. The header explains that this script ran once to create the committed reference, and is not part of the normal run.
+  - **In:** `oblasts.gpkg`, `clay_0-5cm_mean.tif`, `crop_2024` (only to tell towns from water when checking). **Out:** the three reference files, written with T01's GeoParquet pair, in EPSG:4326.
+  - Guard: `if (file.exists(parcels_path)) cli_abort("Reference inputs already exist. They are fixed: do not regenerate.")`. The header explains that this ran once to create the committed reference, and is not part of the normal run.
+  - **While T04 is open**, writers may delete `data/clean/reference/*` before re-sourcing.
   - `set.seed(20261110)`.
-  - **Parcel centres**, in EPSG:3035, split 70 % `interior`, 15 % `border`, 15 % `town`:
-    - `interior`: `st_sample()` in the dissolved country, keeping points more than 1 km from any oblast boundary;
-    - `border`: `st_sample()` on the internal oblast boundaries (oblast boundary lines minus the national outline), dropping points within 1 km of the national border;
-    - `town`: `terra::spatSample()` on the soil NA cells, masked to Ukraine, shifted by at most 100 m.
-  - **Shape**, inline in `mutate()` and `pmap()`, no helper function:
+  - `poltava` = the oblast where `oblast_en == study_oblast_en`; neighbours = oblasts touching it. Work in EPSG:3035.
+  - Parcel centres:
+    - `interior` (700): `st_sample(poltava)`, keeping points more than 1 km from Poltava's boundary;
+    - `border` (150): `st_sample()` on the parts of Poltava's boundary shared with neighbouring oblasts;
+    - `nodata` (150): `terra::spatSample()` on the soil NA cells inside Poltava shrunk by 1 km, shifted by at most 100 m.
+  - Shape, inline in `mutate()` and `pmap()`:
     - `area_ha = pmin(pmax(rlnorm(n, log(3), 0.25), 1), 10)`;
     - aspect ratio `runif(n, 1.5, 6)`;
     - angle `runif(n, 0, pi)`;
     - shear `if_else(runif(n) < 0.5, 0, runif(n, 0.2, 0.5))`.
 
-    Build each parcel from a unit square by applying scale, then shear, then rotation, then translation to the centre.
-  - **Parcel attributes:**
-    - `parcel_id` (`sprintf("P%05d", ...)`), `case`, `area_ha` (recomputed with `st_area` in EPSG:3035);
-    - `oblast` = `oblast_pcode` with the largest overlap (`st_join(..., largest = TRUE)`);
-    - `h3_6`, `h3_5` = H3 cells of the WGS84 centroid (`h3jsr::point_to_cell()`).
-  - **Elevators:** 60 points from `st_sample()` in the country, with `elevator_id`.
-  - **Roads:**
-    - main: 10 lines between random pairs of oblast centroids;
-    - local: 150 lines from random points, 5–20 km long in a random direction;
-    - all clipped to the country (`st_intersection`), densified to ≤ 1 km (`st_segmentize(dfMaxLength = 1000)` in EPSG:3035), with `road_id` and `type`.
-  - Transform everything to EPSG:4326 and write. Print counts by case, an area summary and road counts.
-- [ ] **Acceptance:**
+    Build from a unit square by scale → shear → rotate → translate.
+  - Attributes:
+    - `parcel_id` (`sprintf("P%05d", ...)`), `case`, `area_ha` (`st_area` in EPSG:3035);
+    - `oblast` (largest overlap);
+    - `h3_6`, `h3_5`: H3 cell IDs (character) of the WGS84 centroid, using the calls recorded in T01's note (`h3o`).
+  - Elevators: 30 points from `st_sample(poltava)`.
+  - Roads:
+    - main: 4 lines crossing Poltava between random points on its boundary;
+    - local: 50 lines of 5–20 km from random points in a random direction;
+    - all clipped to Poltava and densified to ≤ 1 km (`st_segmentize(dfMaxLength = 1000)`), with `road_id` and `type`.
+  - Print counts by case, an area summary, and road counts.
+- [ ] **Acceptance**, checked from the outputs; the verifier does not re-run the script and only confirms that the guard aborts:
   - 1,000 parcels with unique IDs and valid geometries;
-  - at least 75 % of areas in 2–4 ha, all in 1–10 ha;
-  - every `border` parcel intersects at least 2 oblasts;
-  - at least 80 % of `town` parcels have more than 50 % of their area on soil NoData;
-  - none of `oblast`, `h3_6` or `h3_5` is NA;
-  - all features lie inside Ukraine;
-  - re-sourcing aborts with the guard message.
-- [ ] **Stop point:** report the outputs to the orchestrator, which asks the user to look at the maps from T05 before anything is committed. The user commits.
+  - at least 75 % in 2–4 ha, all in 1–10 ha;
+  - every `border` parcel intersects Poltava and at least one neighbour;
+  - at least 70 % of `nodata` parcels have more than 50 % of their area on soil NoData;
+  - among `nodata` parcels, at least 30 have crop code 1 (built) as the majority pixel in 2024, and at least 30 have water (13 or 14) in the parcel or within 500 m. If either count is short, the writer adds targeted samples and reports it;
+  - elevators and roads lie inside Poltava.
+- [ ] The map review is waived (see "Autonomy"). The verifier's checks decide.
+- [ ] **Commit point A** (after T05 passes): `data/clean/reference/*.parquet`, `00-setup.R`, `00b-download.R`, `01-simulate-reference.R`, `02-diagnostics.R`, `renv.lock`, `renv/settings.json`, `.docs/notes/0001-input-raster-check.md`, this plan.
 
 ### T05: `02-diagnostics.R`
 
 - [ ] **Writer brief.**
   - **In:** oblasts, the reference files, `clay_0-5cm_mean.tif`. **Out:** `output/figures/parcels-map.png`, `output/figures/parcels-zoom.png`.
-  - National map in EPSG:3035: oblast outlines, parcels as points coloured by `case`, elevators, roads by type.
-  - Zoom map: three panels showing one `interior`, one `border` and one `town` parcel with their surroundings. The town panel shows the soil NoData area.
+  - Poltava map in EPSG:3035: Poltava and its neighbours' outlines, parcels coloured by `case`, elevators, roads by type, and the soil NoData area shaded.
+  - Zoom: three panels, one parcel each for `interior`, `border` and `nodata`.
   - Print counts and areas by `case` and `oblast`.
-- [ ] **Acceptance:** both PNGs exist and look right; the verifier views them with Read. The table prints.
+- [ ] **Acceptance:** both PNGs exist and look right (the verifier views them with Read); the table prints.
 
 ### T06: `03-distance.R`
 
 - [ ] **Writer brief.**
-  - **In:** the reference files, transformed to EPSG:4326. **Out:** `data/interim/long_distance.parquet`, `output/tables/distance_sphere_vs_ellipsoid.csv`.
-  - Variables, in metres, each computed as `st_distance(from, to[st_nearest_feature(from, to), ], by_element = TRUE)`, with "from" being `st_centroid()` or the polygon:
+  - **In:** the reference files in EPSG:4326. **Out:** `data/interim/long_distance.parquet`, `output/tables/distance_sphere_vs_ellipsoid.csv`.
+  - Variables, in metres, via `st_distance(from, to[st_nearest_feature(from, to), ], by_element = TRUE)`:
     - `dist_elevator_centroid`, `dist_elevator_edge`;
     - `dist_road_main_centroid`, `dist_road_main_edge`;
     - `dist_road_local_centroid`, `dist_road_local_edge`.
-  - `pivot_longer()` to `parcel_id | variable | value`, with `value = as.numeric(...)` and `source = "observed"`.
-  - **Check block:**
-    - recompute the same nearest pairs with `sf_use_s2(FALSE)`, which gives ellipsoidal distance via lwgeom, then switch s2 back on;
-    - write per variable: the mean and maximum absolute gap in metres, and the mean relative gap in %;
-    - print the summary.
+  - Long format, with `value = as.numeric()` and `source = "observed"`.
+  - Check block: recompute the same pairs with `sf_use_s2(FALSE)` (ellipsoidal via lwgeom), then turn s2 back on. Write per variable the mean and max absolute gap in m and the mean relative gap in %, and print it.
 - [ ] **Acceptance:**
   - 6 rows per parcel, no NA;
-  - every edge distance ≤ its centroid distance;
-  - the ellipsoid gap table exists, with mean relative gap < 0.5 %;
-  - a spot check of 3 parcels against `st_distance()` to all features gives the same minimum.
+  - edge ≤ centroid;
+  - mean relative gap < 0.5 %;
+  - a 3-parcel spot check against all features matches.
 
 ### T07: `04-soil.R`
 
 - [ ] **Writer brief.**
   - **In:** parcels, oblasts, 28 SoilGrids rasters. **Out:** `data/interim/soil_topsoil_0_30cm.tif`, `data/interim/long_soil.parquet`.
-  - Topsoil stack, one explicit expression per property, paths in full:
+  - Crop each depth raster to Poltava plus its neighbours (in the soil CRS) before the arithmetic. One explicit expression per property:
 
     ```r
     # Topsoil 0-30 cm: thickness-weighted average of the 0-5, 5-15 and 15-30 cm layers
-    soil_clay_0_30cm <- (5  * rast(file.path(soil_dir, "clay_0-5cm_mean.tif")) +
-                         10 * rast(file.path(soil_dir, "clay_5-15cm_mean.tif")) +
-                         15 * rast(file.path(soil_dir, "clay_15-30cm_mean.tif"))) / 30
+    soil_clay_0_30cm <- (5  * crop(rast(file.path(soil_dir, "clay_0-5cm_mean.tif")),   study_box) +
+                         10 * crop(rast(file.path(soil_dir, "clay_5-15cm_mean.tif")),  study_box) +
+                         15 * crop(rast(file.path(soil_dir, "clay_15-30cm_mean.tif")), study_box)) / 30
     ```
 
-    Do this for bdod, cec, cfvo, clay, nitrogen, ocd, phh2o, sand and silt. Add `ocs_0-30cm_mean.tif` as `soil_ocs_0_30cm`. Combine with `c()`, name the layers, and `writeRaster()` the stack.
-  - H3 cells: unique `h3_6` and `h3_5` from parcels, turned into polygons with `h3jsr::cell_to_polygon()`. They are derived here, not stored.
-  - Transform parcels, H3 cells and oblasts to `crs(soil)`.
+    Do this for bdod, cec, cfvo, clay, nitrogen, ocd, phh2o, sand and silt. Add the cropped `ocs_0-30cm_mean.tif`. Combine with `c()`, name the layers, and `writeRaster()`.
+  - H3 hexagon polygons from the parcels' unique `h3_6` and `h3_5` IDs, using the calls recorded in T01's note (`h3o`). They are derived here, not stored.
   - Parcel values:
     - `exact_extract(soil, parcels, "mean", append_cols = "parcel_id")` for `_mean`;
-    - `terra::extract(soil, vect(st_centroid(parcels)), ID = FALSE)` for `_centroid`.
-
-    Pivot to long with `value_raw`.
-  - Fill-zones block, marked with a banner comment:
-    - zone means via `exact_extract(soil, zones, "mean")` for the H3-6 cells, the H3-5 cells and the oblasts;
-    - a comment explains how to swap in rayon or hromada polygons (COD-AB ADM2/ADM3 in `codab_dir`): replace the zone layer, its ID column, and the matching parcel column.
-  - Join the zone means, then:
+    - `terra::extract(soil, vect(st_centroid(parcels)), ID = FALSE)` for `_centroid`;
+    - long, with `value_raw`.
+  - Fill-zones block, with a banner comment:
+    - zone means over the H3-6 cells, the H3-5 cells, and Poltava with its neighbours;
+    - a comment explains how to swap in rayon or hromada polygons (COD-AB ADM2/ADM3).
+  - Fill:
     - `value = coalesce(value_raw, h3_6_value, h3_5_value, oblast_value)`;
-    - `source = case_when(!is.na(value_raw) ~ "observed", !is.na(h3_6_value) ~ "h3_6", !is.na(h3_5_value) ~ "h3_5", !is.na(oblast_value) ~ "oblast")`.
-
-    `cli_abort()` if any `value` is still NA.
-  - Variable names: `soil_<prop>_0_30cm_mean` and `soil_<prop>_0_30cm_centroid`, written out in full.
-  - Header documents the units and the fill order. Print counts by `source`.
+    - `source = case_when(!is.na(value_raw) ~ "observed", !is.na(h3_6_value) ~ "h3_6", !is.na(h3_5_value) ~ "h3_5", !is.na(oblast_value) ~ "oblast")`;
+    - `if (anyNA(...)) cli_abort(...)`.
+  - Names: `soil_<prop>_0_30cm_mean` and `soil_<prop>_0_30cm_centroid`, in full. Header documents units and fill order. Print counts by `source` and `case`.
 - [ ] **Acceptance:**
   - 20 rows per parcel, no NA;
-  - non-`observed` rows come mostly from `town` parcels;
-  - spot check: for one parcel, the centroid value equals the weighted formula computed by hand from the three depth rasters.
+  - non-`observed` rows mostly from `nodata` parcels;
+  - spot check: one centroid value equals the formula computed by hand.
 
 ### T08: `05-relief.R` (user methodology, binding)
 
 Methodology from the user:
-- Statistics come from the whole parcel polygon, never from the centroid or from the pixels whose centre falls inside. Each pixel counts by its coverage fraction, using `exactextractr::exact_extract()`.
-- Aspect is clockwise from north, in degrees (0 = north, 90 = east, 180 = south). A flat pixel (slope < `flat_slope_deg`) contributes 0 to both aspect variables.
-- Slope and aspect are computed in a projected CRS in metres, or with a geodesic-aware method. Never on a DEM in degrees treated as metres, and never in Web Mercator.
-- A parcel smaller than one pixel still gets values, from the pixel or pixels it covers.
-- Output: one value per parcel per variable, all complete.
+- Statistics come from the whole parcel polygon via `exactextractr::exact_extract()`, each pixel weighted by its coverage fraction; never from the centroid or from pixel centres.
+- Aspect is clockwise from north in degrees. A flat pixel (slope < `flat_slope_deg`) contributes 0 to both aspect variables.
+- Slope and aspect use a projected CRS in metres or a geodesic-aware method, never degrees treated as metres and never Web Mercator.
+- A parcel smaller than one pixel still gets values.
+- Output: complete values for every parcel.
 
 - [ ] **Writer brief.**
-  - **In:** parcels, `data/interim/dem.vrt`. **Out:** `data/interim/long_relief.parquet`.
-  - Crop the DEM to the parcels' extent plus about 0.05° (one `crop()` call).
-  - `terrain(dem, c("slope", "aspect"), unit = "degrees")` on the lon/lat DEM. terra uses ellipsoidal cell distances for lon/lat input; the header says so.
-  - Per-pixel exposure:
-    - `south = -cos(aspect × π/180)`, `east = sin(aspect × π/180)`;
-    - both 0 where `slope < flat_slope_deg`.
+  - **In:** parcels, `dem.vrt`. **Out:** `data/interim/long_relief.parquet`.
+  - `dem <- crop(rast(dem_vrt_path), <parcels' extent + 0.02°>)`.
+  - `terrain(dem, c("slope", "aspect"), unit = "degrees")`. For lon/lat input, terra computes cell distances on the ellipsoid; the verifier confirms this from terra's documentation and the header cites it.
+  - Exposure:
+    - `south <- ifel(slope < flat_slope_deg, 0, -cos(aspect * pi / 180))`;
+    - `east <- ifel(slope < flat_slope_deg, 0, sin(aspect * pi / 180))`.
   - One `exact_extract()` on `c(elev, slope, south, east)` with `c("mean", "max", "min")`. Keep:
 
     | Variable | Definition |
     |---|---|
     | `relief_elev_mean` | coverage-weighted mean elevation, m |
     | `relief_slope_mean` | coverage-weighted mean slope, degrees |
-    | `relief_slope_max` | max slope over pixels touching the parcel, degrees |
+    | `relief_slope_max` | max slope over pixels touching the parcel |
     | `relief_elev_range` | max − min elevation over pixels touching the parcel, m |
     | `relief_aspect_south` | coverage-weighted mean of `south`, −1 to 1 |
     | `relief_aspect_east` | coverage-weighted mean of `east`, −1 to 1 |
 
-  - `cli_abort()` if any value is NA. `source = "observed"`.
+  - `if (anyNA(...)) cli_abort(...)`; `source = "observed"`.
 - [ ] **Acceptance:**
   - 6 rows per parcel, no NA;
-  - aspect values in [−1, 1], slope in [0, 90], range ≥ 0.
+  - aspect in [−1, 1], slope in [0, 90], range ≥ 0;
+  - runs in under 600 s with GLO-30.
 
 ### T09: `06-crop.R` (2019–2024)
 
 - [ ] **Writer brief.**
   - **In:** parcels, `crop_2019` … `crop_2024`, `crop_groups`. **Out:** `data/interim/long_crop.parquet`.
-  - Six explicit blocks with the same shape, the year written out in full in each:
-    1. `r <- rast(crop_2019)`; `NAflag(r) <- 0`;
+  - Six explicit blocks, the year written in full in each:
+    1. `r <- rast(crop_2019); NAflag(r) <- 0`;
     2. `p <- st_transform(parcels, crs(r))`;
     3. `exact_extract(r, p, "frac", append_cols = "parcel_id")`;
     4. `pivot_longer(starts_with("frac_"), names_to = "code", names_prefix = "frac_", names_transform = as.integer, values_to = "share", values_drop_na = TRUE)`;
-    5. `left_join(crop_groups, by = "code")`, then `mutate(group = coalesce(group, "other"))`;
+    5. `left_join(crop_groups, by = "code") |> mutate(group = coalesce(group, "other"))`;
     6. `summarise(value = sum(share), .by = c(parcel_id, group))`;
-    7. `complete(parcel_id = parcels$parcel_id, group = c("built", "ag", "forest", "grass", "bare", "water", "other"), fill = list(value = 0))`;
+    7. `complete(parcel_id = parcels$parcel_id, group = c("built","ag","forest","grass","bare","water","other"), fill = list(value = 0))`;
     8. `mutate(variable = str_c("crop_", group, "_2019"))`.
-  - Bind the six years, with `source = "observed"`.
-  - Comment: `"frac"` is the share of the parcel's **classified** (non-NoData) area. A parcel entirely on NoData gets 0 for every group; print how many such parcel-years there are.
+  - While developing, run one block per call (600 s limit).
+  - Comment: `"frac"` is the share of the parcel's classified (non-NoData) area; a parcel entirely on NoData gets 0 for all groups, and the count is printed.
 - [ ] **Acceptance:**
-  - 7 rows per parcel per year, no NA;
-  - shares in [0, 1];
-  - per parcel-year the shares sum to 1 ± 0.01, or 0 for fully-NoData parcels, which are counted and reported;
-  - no `frac_0` column appears;
-  - `town` parcels have a higher mean `crop_built_*` than `interior` ones.
+  - 7 rows per parcel-year, no NA;
+  - shares in [0, 1], summing to 1 ± 0.01, or 0 if fully NoData (reported);
+  - no `frac_0`;
+  - `nodata` parcels have a higher mean `crop_built_*` + `crop_water_*` than `interior` ones.
 
 ### T10: `07-crop-2025.R` (winter over summer)
 
@@ -440,99 +483,138 @@ Methodology from the user:
   - **In:** parcels, `crop_2025_summer`, `crop_2025_winter`, `crop_groups`. **Out:** `data/interim/long_crop_2025.parquet`.
   - Comment block explaining the rule:
     - the winter map marks winter cereal (2) and winter rapeseed (3);
-    - inside each parcel, a pixel takes the winter code where winter is 2 or 3, and the summer code otherwise;
-    - winter non-crop and NoData pixels never overwrite summer;
-    - the rule is applied per pixel inside parcels, not on the whole 1.2e10-cell raster.
+    - inside each parcel, a pixel takes the winter code where winter is 2 or 3, otherwise the summer code;
+    - winter non-crop and NoData never overwrite summer;
+    - applied per pixel inside parcels, never on the whole raster.
   - Steps:
-    1. `summer <- rast(crop_2025_summer)`, `winter <- rast(crop_2025_winter)`, `NAflag()` 0 on both;
-    2. the grids have identical dimensions but origins about 1–2 m apart: `if (any(dim(winter) != dim(summer))) cli_abort(...)`, then `ext(winter) <- ext(summer)`, with a comment that a sub-pixel shift of the metadata equals nearest-pixel matching;
-    3. `pixels <- exact_extract(c(summer, winter), p, include_cols = "parcel_id") |> bind_rows()`, which gives each pixel's summer and winter code with its `coverage_fraction`;
-    4. `mutate(code = if_else(winter %in% c(2, 3), winter, summer))`, then drop NA `code`;
-    5. join `crop_groups`, set missing groups to `"other"`, and compute `summarise(value = sum(coverage_fraction), .by = c(parcel_id, group))` divided by the parcel's total classified coverage;
-    6. `complete()` the 7 groups with 0; `variable = str_c("crop_", group, "_2025")`.
+    1. `summer <- rast(crop_2025_summer); names(summer) <- "summer"; NAflag(summer) <- 0`, and the same for `winter`;
+    2. guards:
+       - `if (any(dim(winter) != dim(summer))) cli_abort(...)`;
+       - `if (max(abs(c(xmin(winter) - xmin(summer), ymax(winter) - ymax(summer)))) > 5) cli_abort(...)`;
+    3. `ext(winter) <- ext(summer)`, with a comment that the sub-pixel shift of the metadata equals nearest-pixel matching;
+    4. `pixels <- exact_extract(c(summer, winter), p, include_cols = "parcel_id") |> bind_rows()`;
+    5. `mutate(code = if_else(winter %in% c(2, 3), winter, summer))`, then `filter(!is.na(code))`;
+    6. join `crop_groups` with `"other"` for missing groups; `summarise(value = sum(coverage_fraction), .by = c(parcel_id, group))`; divide by the parcel's total; `complete()` the 7 groups with 0; `variable = str_c("crop_", group, "_2025")`.
 - [ ] **Acceptance:**
   - same checks as T09;
-  - the verifier compares, once in the console, `crop_ag_2025` against a summer-only extraction. They must be identical wherever the winter map has no crop pixel in the parcel, and the number of parcels that change is reported.
+  - against a summer-only extraction (computed once by the verifier), results are identical wherever the parcel has no winter crop pixel; the number of changed parcels is reported.
 
 ### T11: `21-combine.R`
 
 - [ ] **Writer brief.**
-  - Read and bind `long_distance`, `long_soil`, `long_relief`, `long_crop` and `long_crop_2025`.
-  - Checks, each with `cli_abort()` on failure:
-    - exactly one row per `parcel_id` × `variable`;
-    - no NA `value`;
-    - `source` within the four levels;
-    - every parcel has the same 81 variables.
-  - Write `output/tables/spatial_covariates.parquet` and `output/tables/spatial_covariates.csv`.
-  - Add `output/tables/spatial_covariates.csv` to `.gitignore`.
-  - Print parcels, variables, total rows and rows by `source`.
-- [ ] **Acceptance:** both files exist with 81,000 rows each; `.gitignore` is updated.
+  - Bind the five `long_*.parquet` files.
+  - Guard checks (`cli_abort()`):
+    - one row per `parcel_id` × `variable`;
+    - no NA;
+    - `source` in the four levels;
+    - 81 variables per parcel.
+  - Write `spatial_covariates.parquet` and `.csv`, and add the CSV path to `.gitignore`.
+  - Print parcels, variables, rows and rows by `source`.
+- [ ] **Acceptance:** 81,000 rows in both files; `.gitignore` updated.
 
 ### T12: `22-descriptives.R`
 
 - [ ] **Writer brief.**
-  - **In:** `spatial_covariates.parquet`, parcels (for `case`).
-  - Soil, centroid vs polygon:
-    - a hard-coded `tribble(mean_var, centroid_var)` with 10 pairs;
-    - per pair: Pearson, Spearman, mean absolute difference and n, on `observed` rows only and on all rows;
+  - **In:** `spatial_covariates.parquet`, parcels.
+  - Soil centroid vs polygon:
+    - a hard-coded 10-pair `tribble(mean_var, centroid_var)`;
+    - Pearson, Spearman, mean absolute difference and n, on `observed` rows only and on all rows;
     - write `output/tables/soil_centroid_vs_polygon.csv`;
     - faceted scatter plot with a 45° line, saved to `output/figures/soil_centroid_vs_polygon.png`.
-  - Summaries, each printed and written to `output/tables/`:
-    - crop share by group and year, and the share of parcels with `crop_ag` > 0.5 (`crop_by_year.csv`);
+  - Summaries, printed and written as CSV:
+    - crop share by group and year, and the share with `crop_ag` > 0.5 (`crop_by_year.csv`);
     - distance quantiles (`distance_summary.csv`);
     - relief quantiles (`relief_summary.csv`);
-    - soil rows by `source` × `case` (`soil_source_by_case.csv`).
+    - soil `source` × `case` (`soil_source_by_case.csv`).
 - [ ] **Acceptance:** all files exist; correlations in [−1, 1]; the PNG looks right.
+- [ ] **Commit point B:** scripts `03`–`07`, `21`, `22`, `.gitignore`, `output/tables/*.parquet`, the small `output/tables/*.csv` (not `spatial_covariates.csv`), `output/figures/*.png`, this plan.
 
-### T13: `README.md`, the one-page guide
+### T13: website, English (Quarto)
 
-- [ ] **Writer brief.** Rewrite `README.md`, keeping the Objective section:
-  - **Quick start:** clone, `renv::restore()`, set `soil_dir` and `crop_dir` in `00-setup.R`, then source `00b-download.R`, `02-diagnostics.R`, `03`–`07`, `21` and `22` in order.
-    - Explain that `01-simulate-reference.R` already ran once, and that its committed outputs in `data/clean/reference/` are the fixed reference.
-  - **Data**, in three groups:
-    - "You provide": soil and crop, with folders and units;
-    - "Downloaded": COD-AB and Copernicus DEM, with source, licence and size, the `dem_product` setting, and the note that Copernicus is a surface model;
-    - "Simulated reference": parcels, elevators, roads.
-  - **Run order:** a table of each script (linked) with In / Out / purpose.
-  - **Walk-through:** one short section per script, embedding the 5–10 key lines copied verbatim from the script.
-  - **Output schema:** `parcel_id | variable | value | source`. All 81 variables by family, with units, and the `source` levels.
-  - **Methods:**
-    - spherical nearest distance and the ellipsoid check;
-    - exact extraction with coverage fractions;
-    - soil 0–30 cm weighting and fill order;
-    - relief definitions;
-    - the **wide crop code table**, copied from this plan;
-    - the 2025 winter-over-summer rule.
-  - **Licences and attribution:**
-    - SoilGrids: CC BY 4.0;
-    - Copernicus DEM: © DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018, provided under COPERNICUS by the European Union and ESA;
-    - COD-AB: licence as stated on HDX;
-    - crop maps: "licence to be confirmed by the data owner".
-  - About one printed page plus the code excerpts. No hand-typed numbers from `output/`.
+- [ ] **Writer brief.** Use the `quarto:quarto-authoring` skill.
+  - Structure:
+    - `site/_quarto.yml`: website, `output-dir: ../docs`, navbar with the pages and a **language menu** (English ↔ Українська) linking each page to its counterpart;
+    - `site/index.qmd`: redirects or links to `en/index.html`.
+  - English pages in `site/en/`:
+    1. `index.qmd`: objective, study area (Poltava), what the dataset is for, quick start (`renv::restore()`, set paths, run order).
+    2. `data.qmd`:
+       - you provide (soil, crop);
+       - downloaded (COD-AB, Copernicus DEM, with licences and attribution: SoilGrids CC BY 4.0; Copernicus DEM © DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018, provided under COPERNICUS by the EU and ESA; COD-AB CC BY-IGO; crop maps "licence to be confirmed");
+       - simulated reference.
+    3. `pipeline.qmd`: run-order table (script, In, Out, purpose), and a diagram (Mermaid) of the data flow.
+    4. One page per indicator family, each with the methodology in detail, the variable names with units, the decisions behind them, and the **full script embedded verbatim**, read from the root file with a non-evaluated chunk:
+
+       ````
+       ```{r}
+       #| file: ../../03-distance.R
+       #| eval: false
+       ```
+       ````
+
+       The pages:
+       - `distance.qmd`: nearest feature, centroid vs edge, sphere vs ellipsoid gap table (read from `output/tables/` at render time);
+       - `soil.qmd`: 0–30 cm weighting, mean vs centroid, the H3 → oblast fill and how to swap zones, the centroid-vs-polygon figure;
+       - `relief.qmd`: the user methodology, aspect encoding, flat threshold, DEM product switch, the surface-model and north-of-50°N limitations;
+       - `crop.qmd`: the wide crop code table, grouping, NoData, the 2025 winter-over-summer rule;
+       - `reference.qmd`: how the parcels, elevators and roads were simulated (embed `01-simulate-reference.R` and `02-diagnostics.R`), with the maps.
+    5. `output.qmd`: the long-table schema, all 81 variables (name, unit, family, meaning), the `source` levels, the summary tables.
+  - The site is **multi-page and static**. It is rendered **locally** with `quarto render site` (through Bash), into `docs/`, and `docs/` is committed. GitHub Pages only serves the committed files: no GitHub Actions, and no rendering on GitHub.
+  - Figures and tables are read from the committed `output/`; nothing is recomputed at render time.
+  - **The parcel maps** (`parcels-map.png`, `parcels-zoom.png`) and the soil figure must appear on the site. The user reviews the maps there.
+  - Replace `README.md` with a short version: objective, a link to the site `https://ebukin.github.io/ukrMassValuationSpatialExtract/`, quick start, run order.
 - [ ] **Acceptance:**
-  - every named file exists;
-  - the excerpts match the scripts verbatim;
-  - the variable count is 81.
+  - `quarto render site` succeeds with no warnings about missing files;
+  - every embedded script matches the root file;
+  - all 81 variables are listed;
+  - the language menu exists (links to `uk/` may 404 until T14).
 
-### T14: full run and handover
+### T14: website, Ukrainian
 
-- [ ] **Verifier only**, no writer:
-  1. In a fresh R session, source in order: `00-setup.R`, `02-diagnostics.R`, `03-distance.R`, `04-soil.R`, `05-relief.R`, `06-crop.R`, `07-crop-2025.R`, `21-combine.R`, `22-descriptives.R`.
-     - Skip `00b-download.R`, whose outputs exist, and `01-simulate-reference.R`, which must abort if sourced; confirm that it does.
-  2. Record the run time of each script, the final row and variable counts, and any warnings.
+- [ ] **Writer brief.**
+  - Translate every `site/en/*.qmd` into `site/uk/*.qmd` (same file names), and set `lang: uk` in each.
+  - Translate prose, headings, table headers and figure captions.
+  - **Keep in English:** variable names, code, file names, package and function names, URLs.
+  - Use one consistent glossary and put it at the end of `site/uk/output.qmd`, for example:
+    - parcel = ділянка;
+    - covariate = коваріата;
+    - soil = ґрунт;
+    - crop cover = посівний покрив;
+    - oblast = область;
+    - hromada = громада;
+    - slope = схил;
+    - aspect = експозиція.
+  - Embedded scripts use the same `#| file:` chunks.
+  - Render.
+- [ ] **Acceptance:**
+  - every English page has a Ukrainian counterpart;
+  - the language switch works both ways on every page;
+  - the render succeeds;
+  - a second sub-agent (reviewer) reads 3 Ukrainian pages against the English ones for accuracy and terminology and reports issues, which a writer then fixes.
+
+### T15: GitHub Pages publish
+
+- [ ] **Writer brief.**
+  1. Make sure `docs/` contains the rendered site and a `.nojekyll` file.
+  2. **Commit point C:** `site/`, `docs/`, `README.md`, this plan; push to `origin/main`.
+  3. Enable Pages from `main` `/docs`: `gh api -X POST repos/EBukin/ukrMassValuationSpatialExtract/pages -f "source[branch]=main" -f "source[path]=/docs"`. If Pages already exists, use `-X PUT`.
+  4. Wait for the build (`gh api repos/EBukin/ukrMassValuationSpatialExtract/pages/builds/latest`) and fetch `https://ebukin.github.io/ukrMassValuationSpatialExtract/`.
+- [ ] **Acceptance:** the English and Ukrainian index pages return HTTP 200, and the language switch links resolve.
+
+### T16: full run and handover
+
+- [ ] **Verifier only**, in a fresh R session:
+  1. Source, one script per call: `00-setup.R`, `02-diagnostics.R`, `03-distance.R`, `04-soil.R`, `05-relief.R`, `06-crop.R`, `07-crop-2025.R`, `21-combine.R`, `22-descriptives.R`.
+  2. Skip `00b-download.R`, whose outputs exist. Confirm that `01-simulate-reference.R` aborts if sourced.
+  3. Report the time per script, the final counts, any warnings, and whether the outputs differ from those committed at commit point B (they should be identical).
 - [ ] **Orchestrator:**
-  - fill in "Outcome";
-  - set Status to `done`;
-  - report to the user:
-    - files created;
-    - the files to commit: scripts, README, `renv.lock`, `.gitignore`, `data/clean/reference/*.parquet`, `output/tables/*.parquet` and the small CSVs, and `output/figures/*.png`;
-    - that nothing has been committed yet.
+  - fill in "Outcome" and set Status to `done`;
+  - final commit point D (this plan) and push;
+  - report to the user: what shipped, the site URL, how to verify, and the run times.
 
 ## Open questions
 
-- Licence of the crop-cover maps, for the README attribution.
-- Scaling to 10,000 parcels: a later, separate decision. It would mean regenerating the reference set and committing it again.
-- Optional wide output (one row per parcel): not done unless asked.
+- Licence of the crop-cover maps (the site says "to be confirmed").
+- Scaling to 10,000 parcels or a larger area: a later decision. It would mean regenerating the reference set and committing it again.
 
 ## Outcome
 
