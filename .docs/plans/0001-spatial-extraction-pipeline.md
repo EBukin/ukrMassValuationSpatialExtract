@@ -377,7 +377,7 @@ crop_groups <- tribble(
 
 ### T06: `03-distance.R`
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - **In:** the reference files in EPSG:4326. **Out:** `data/interim/long_distance.parquet`, `output/tables/distance_sphere_vs_ellipsoid.csv`.
   - Variables, in metres, via `st_distance(from, to[st_nearest_feature(from, to), ], by_element = TRUE)`:
     - `dist_elevator_centroid`, `dist_elevator_edge`;
@@ -385,7 +385,7 @@ crop_groups <- tribble(
     - `dist_road_local_centroid`, `dist_road_local_edge`.
   - Long format, with `value = as.numeric()` and `source = "observed"`.
   - Check block: recompute the same pairs with `sf_use_s2(FALSE)` (ellipsoidal via lwgeom), then turn s2 back on. Write per variable the mean and max absolute gap in m and the mean relative gap in %, and print it.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - 6 rows per parcel, no NA;
   - edge ≤ centroid;
   - mean relative gap < 0.5 %;
