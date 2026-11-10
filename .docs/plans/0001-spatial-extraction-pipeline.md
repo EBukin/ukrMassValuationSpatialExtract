@@ -479,7 +479,7 @@ Methodology from the user:
 
 ### T10: `07-crop-2025.R` (winter over summer)
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - **In:** parcels, `crop_2025_summer`, `crop_2025_winter`, `crop_groups`. **Out:** `data/interim/long_crop_2025.parquet`.
   - Comment block explaining the rule:
     - the winter map marks winter cereal (2) and winter rapeseed (3);
@@ -495,7 +495,7 @@ Methodology from the user:
     4. `pixels <- exact_extract(c(summer, winter), p, include_cols = "parcel_id") |> bind_rows()`;
     5. `mutate(code = if_else(winter %in% c(2, 3), winter, summer))`, then `filter(!is.na(code))`;
     6. join `crop_groups` with `"other"` for missing groups; `summarise(value = sum(coverage_fraction), .by = c(parcel_id, group))`; divide by the parcel's total; `complete()` the 7 groups with 0; `variable = str_c("crop_", group, "_2025")`.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - same checks as T09;
   - against a summer-only extraction (computed once by the verifier), results are identical wherever the parcel has no winter crop pixel; the number of changed parcels is reported.
 
