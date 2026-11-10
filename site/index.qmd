@@ -10,4 +10,4 @@ format:
 This page redirects to the English version.
 
 - [English](en/index.qmd)
-- [Українська](uk/index.html)
+- [Українська](uk/index.qmd)

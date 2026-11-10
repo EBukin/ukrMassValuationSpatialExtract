@@ -1,0 +1,128 @@
+---
+title: "Конвеєр обробки"
+lang: uk
+---
+
+Проєкт складається з коротких пронумерованих скриптів R у корені проєкту. Кожен запускається через `source()` з кореня проєкту і спершу підключає `00-setup.R`. Кожен скрипт вилучення записує одну довгу таблицю до `data/interim/`; `21-combine.R` об'єднує їх у підсумкову таблицю.
+
+## Порядок запуску
+
+| Скрипт | Вхід | Вихід | Призначення | Час |
+|---|---|---|---|---|
+| `00-setup.R` | — | пакети, параметри та шляхи в сесії; вихідні папки | Спільне налаштування, яке підключає кожен скрипт | — |
+| `00b-download.R` | інтернет | `data/raw/cod-ab/`, `data/raw/dem/GLO-30/`, `data/interim/oblasts.gpkg`, `data/interim/dem.vrt` | Одноразове завантаження публічних вхідних даних; наявні файли пропускаються | 8 с (з кешу) |
+| `01-simulate-reference.R` | `oblasts.gpkg`, глина ґрунту 0–5 см, посівний покрив 2024 | `data/clean/reference/parcels.parquet`, `elevators.parquet`, `roads.parquet` | Моделювання фіксованих еталонних вхідних даних. **Запущено один раз; не входить до звичайного запуску** | 7 с |
+| `02-diagnostics.R` | `oblasts.gpkg`, еталонні файли, глина ґрунту 0–5 см | `output/figures/parcels-map.png`, `parcels-zoom.png` | Карти еталонних вхідних даних; виведення кількості та площ за типом ділянки й областю | 17 с |
+| `03-distance.R` | еталонні файли | `data/interim/long_distance.parquet`, `output/tables/distance_sphere_vs_ellipsoid.csv` | Відстань до найближчого елеватора, магістральної та місцевої дороги | 40 с |
+| `04-soil.R` | ділянки, `oblasts.gpkg`, 28 растрів SoilGrids | `data/interim/soil_topsoil_0_30cm.tif`, `long_soil.parquet` | Властивості верхнього шару ґрунту 0–30 см, середнє по полігону та значення в центроїді, заповнення NoData | 30 с |
+| `05-relief.R` | ділянки, `dem.vrt` | `data/interim/long_relief.parquet` | Висота, крутизна схилу та експозиція по полігону ділянки | 40 с |
+| `06-crop.R` | ділянки, карти посівного покриву 2019–2024 | `data/interim/long_crop.parquet` | Частка ділянки в кожній із 7 груп посівного покриву, 2019–2024 | 32 с |
+| `07-crop-2025.R` | ділянки, літня та зимова карти посівного покриву 2025 | `data/interim/long_crop_2025.parquet` | Частки груп посівного покриву у 2025 році, зимова карта має пріоритет над літньою | 17 с |
+| `21-combine.R` | п'ять файлів `long_*.parquet` | `output/tables/spatial_covariates.parquet`, `spatial_covariates.csv` | Об'єднання та перевірка: 81 змінна на ділянку | 10 с |
+| `22-descriptives.R` | `spatial_covariates.parquet`, ділянки | зведені таблиці `output/tables/*.csv`, `output/figures/soil_centroid_vs_polygon.png` | Описова статистика | 10 с |
+
+Час орієнтовний, за одним запуском на ноутбуці з Windows, з GLO-30 і растрами на локальному диску. Повний запуск без завантажень триває близько 3–4 хвилин.
+
+## Потік даних
+
+```{mermaid}
+flowchart LR
+  subgraph provided["Надаєте ви"]
+    soil[("SoilGrids<br/>28 растрів")]
+    crop[("Карти посівного покриву<br/>2019–2025")]
+  end
+  subgraph downloaded["00b-download.R"]
+    codab[("COD-AB<br/>oblasts.gpkg")]
+    dem[("Copernicus DEM<br/>dem.vrt")]
+  end
+  ref["01-simulate-reference.R<br/>(запущено один раз)"]
+  refdata[("ділянки, елеватори,<br/>дороги (у репозиторії)")]
+  diag["02-diagnostics.R"]
+  dist["03-distance.R"]
+  soilsc["04-soil.R"]
+  relief["05-relief.R"]
+  crop1924["06-crop.R"]
+  crop25["07-crop-2025.R"]
+  comb["21-combine.R"]
+  desc["22-descriptives.R"]
+  out[("spatial_covariates.parquet<br/>81 000 рядків")]
+  figs[("таблиці та рисунки<br/>output/")]
+
+  codab --> ref
+  soil --> ref
+  crop --> ref
+  ref --> refdata
+  refdata --> diag
+  codab --> diag
+  refdata --> dist
+  refdata --> soilsc
+  soil --> soilsc
+  codab --> soilsc
+  refdata --> relief
+  dem --> relief
+  refdata --> crop1924
+  crop --> crop1924
+  refdata --> crop25
+  crop --> crop25
+  dist --> comb
+  soilsc --> comb
+  relief --> comb
+  crop1924 --> comb
+  crop25 --> comb
+  comb --> out
+  out --> desc
+  diag --> figs
+  desc --> figs
+```
+
+## Правила побудови коду
+
+- **Простий код для початківців.** tidyverse, `sf`, `terra` та `exactextractr`; короткі скрипти й мало коментарів. Жодних допоміжних функцій, коду пакетів чи регулярних виразів. Шляхи до файлів, позначки років та імена змінних записано повністю, а кожен рік посівного покриву має власний блок.
+- **Жодного перепроєктування чи передискретизації растрів.** Натомість кожне вилучення трансформує ділянки до власної системи координат растра. Єдині растрові операції — віртуальна мозаїка ЦМВ, `crop()`, попіксельна арифметика над растрами зі спільною сіткою та `terrain()`.
+- **Проєкції.** `crs_work <- "EPSG:3035"` (рівновелика проєкція, метри) використовується для побудови форм ділянок, розрахунку `area_ha` та побудови карт. Відстані вимірюються на сфері, в EPSG:4326.
+- **Одна довга таблиця.** Стовпці `parcel_id | variable | value | source`. Кожен метод вимірювання є окремою змінною (`_mean`, `_centroid`, `_edge`, `_max`, `_range`).
+- **Контрольні перевірки.** Скрипти зупиняються через `cli_abort()`, коли перевірка не проходить: кількість рядків, пропущені значення, діапазони значень.
+
+## Скрипт налаштування
+
+Усі параметри та шляхи зосереджено в `00-setup.R`:
+
+- `n_parcels <- 1000`
+- `study_oblast_en <- "Poltavska"` (англійська назва Полтавської області в COD-AB)
+- `crs_work <- "EPSG:3035"`
+- `dem_product <- "GLO-30"` (або `"GLO-90"`)
+- `flat_slope_deg <- 0.5`
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../00-setup.R
+```
+
+## Скрипт завантаження
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../00b-download.R
+```
+
+## Скрипт об'єднання
+
+`21-combine.R` об'єднує п'ять довгих таблиць і зупиняється, якщо будь-яка пара ділянка × змінна трапляється двічі, якщо будь-яке значення пропущене, якщо `source` має значення поза чотирма рівнями або якщо ділянка не має рівно 81 змінної.
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../21-combine.R
+```
+
+## Скрипт описової статистики
+
+`22-descriptives.R` записує зведені таблиці, наведені на сторінках показників і на сторінці [Результати](output.qmd).
+
+```{r}
+#| echo: true
+#| eval: false
+#| file: ../../22-descriptives.R
+```

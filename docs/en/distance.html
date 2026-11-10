@@ -645,13 +645,27 @@ Table&nbsp;2: Distance quantiles over the 1,000 parcels, in metres. From <code>o
 </main> <!-- /main -->
 <script>
 // Language menu: "English" and "Українська" open the same page in the other
-// language folder (en/ <-> uk/). On Ukrainian pages, navbar page links go to uk/ too.
+// language folder (en/ <-> uk/). On Ukrainian pages, navbar page links go to uk/,
+// and the navbar labels, site title and footer are shown in Ukrainian.
 document.addEventListener("DOMContentLoaded", function () {
   var path = window.location.pathname;
   var inEn = path.indexOf("/en/") >= 0;
   var inUk = path.indexOf("/uk/") >= 0;
   var page = (inEn || inUk) ? (path.substring(path.lastIndexOf("/") + 1) || "index.html") : "index.html";
   var prefix = (inEn || inUk) ? "../" : "";
+  var labelsUk = {
+    "Home": "Головна",
+    "Data": "Дані",
+    "Pipeline": "Конвеєр обробки",
+    "Indicators": "Показники",
+    "Reference inputs": "Еталонні вхідні дані",
+    "Distance": "Відстані",
+    "Soil": "Ґрунт",
+    "Relief": "Рельєф",
+    "Crop cover": "Посівний покрив",
+    "Output": "Результати",
+    "Language": "Мова"
+  };
   document.querySelectorAll("#quarto-header a[href]").forEach(function (a) {
     var text = a.textContent.trim();
     var href = a.getAttribute("href");
@@ -663,6 +677,18 @@ document.addEventListener("DOMContentLoaded", function () {
       a.setAttribute("href", href.replace("en/", "uk/"));
     }
   });
+  if (inUk) {
+    document.querySelectorAll("#quarto-header .menu-text, #quarto-header .dropdown-text").forEach(function (span) {
+      var text = span.textContent.trim();
+      if (labelsUk[text]) span.textContent = labelsUk[text];
+    });
+    var brand = document.querySelector("#quarto-header a.navbar-brand");
+    if (brand) brand.setAttribute("href", "index.html");
+    var title = document.querySelector("#quarto-header .navbar-title");
+    if (title) title.textContent = "Просторові коваріати, Україна";
+    var footer = document.querySelector(".nav-footer-left");
+    if (footer) footer.textContent = "Змодельовані еталонні ділянки; реальні публічні растри та растри користувача. Ліцензії див. на сторінці «Дані».";
+  }
 });
 </script>
 <script id="quarto-html-after-body" type="application/javascript">

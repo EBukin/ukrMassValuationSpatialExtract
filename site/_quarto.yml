@@ -38,7 +38,7 @@ website:
           - text: English
             href: en/index.qmd
           - text: Українська
-            href: uk/index.html
+            href: uk/index.qmd
       - icon: github
         href: https://github.com/EBukin/ukrMassValuationSpatialExtract
         aria-label: GitHub repository

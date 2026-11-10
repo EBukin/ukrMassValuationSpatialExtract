@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="uk" xml:lang="uk"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Ґрунт – Spatial covariates, Ukraine</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-e9072c35d400738dd8f5400c9614cb45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Spatial covariates, Ukraine</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../en/index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../en/data.html"> 
+<span class="menu-text">Data</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../en/pipeline.html"> 
+<span class="menu-text">Pipeline</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-indicators" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Indicators</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-indicators">    
+        <li>
+    <a class="dropdown-item" href="../en/reference.html">
+ <span class="dropdown-text">Reference inputs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/distance.html">
+ <span class="dropdown-text">Distance</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/soil.html">
+ <span class="dropdown-text">Soil</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/relief.html">
+ <span class="dropdown-text">Relief</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/crop.html">
+ <span class="dropdown-text">Crop cover</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../en/output.html"> 
+<span class="menu-text">Output</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-language" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text">Language</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-language">    
+        <li>
+    <a class="dropdown-item" href="../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../uk/index.html">
+ <span class="dropdown-text">Українська</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/EBukin/ukrMassValuationSpatialExtract"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#змінні" id="toc-змінні" class="nav-link active" data-scroll-target="#змінні">Змінні</a></li>
+  <li><a href="#метод" id="toc-метод" class="nav-link" data-scroll-target="#метод">Метод</a>
+  <ul class="collapse">
+  <li><a href="#верхній-шар-ґрунту-030-см" id="toc-верхній-шар-ґрунту-030-см" class="nav-link" data-scroll-target="#верхній-шар-ґрунту-030-см">Верхній шар ґрунту 0–30 см</a></li>
+  <li><a href="#середнє-по-полігону-і-центроїд" id="toc-середнє-по-полігону-і-центроїд" class="nav-link" data-scroll-target="#середнє-по-полігону-і-центроїд">Середнє по полігону і центроїд</a></li>
+  <li><a href="#заповнення-nodata" id="toc-заповнення-nodata" class="nav-link" data-scroll-target="#заповнення-nodata">Заповнення NoData</a></li>
+  <li><a href="#заміна-зон-заповнення" id="toc-заміна-зон-заповнення" class="nav-link" data-scroll-target="#заміна-зон-заповнення">Заміна зон заповнення</a></li>
+  </ul></li>
+  <li><a href="#центроїд-і-середнє-по-полігону" id="toc-центроїд-і-середнє-по-полігону" class="nav-link" data-scroll-target="#центроїд-і-середнє-по-полігону">Центроїд і середнє по полігону</a></li>
+  <li><a href="#скрипт-04-soil.r" id="toc-скрипт-04-soil.r" class="nav-link" data-scroll-target="#скрипт-04-soil.r">Скрипт: <code>04-soil.R</code></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Ґрунт</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Двадцять змінних описують верхній шар ґрунту (0–30 см): десять властивостей SoilGrids, кожну виміряно двома способами — як <strong>середнє по полігону ділянки</strong> та як <strong>значення в центроїді ділянки</strong>. Ділянки без ґрунтових даних отримують заповнене значення, а стовпець <code>source</code> вказує, як його заповнено. Скрипт: <code>04-soil.R</code>.</p>
+<section id="змінні" class="level2">
+<h2 class="anchored" data-anchor-id="змінні">Змінні</h2>
+<p>Одиниці — <strong>картографічні одиниці</strong> SoilGrids, без перерахунку (коефіцієнти перерахунку див. на сторінці <a href="../uk/data.html">Дані</a>).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Властивість</th>
+<th>Середнє по полігону</th>
+<th>Центроїд</th>
+<th>Одиниця</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>bdod</td>
+<td><code>soil_bdod_0_30cm_mean</code></td>
+<td><code>soil_bdod_0_30cm_centroid</code></td>
+<td>сг/см³</td>
+<td>Щільність складення дрібнозему</td>
+</tr>
+<tr class="even">
+<td>cec</td>
+<td><code>soil_cec_0_30cm_mean</code></td>
+<td><code>soil_cec_0_30cm_centroid</code></td>
+<td>ммоль(+)/кг</td>
+<td>Ємність катіонного обміну за pH 7</td>
+</tr>
+<tr class="odd">
+<td>cfvo</td>
+<td><code>soil_cfvo_0_30cm_mean</code></td>
+<td><code>soil_cfvo_0_30cm_centroid</code></td>
+<td>см³/дм³</td>
+<td>Об’ємна частка крупних уламків</td>
+</tr>
+<tr class="even">
+<td>clay</td>
+<td><code>soil_clay_0_30cm_mean</code></td>
+<td><code>soil_clay_0_30cm_centroid</code></td>
+<td>г/кг</td>
+<td>Вміст глини</td>
+</tr>
+<tr class="odd">
+<td>nitrogen</td>
+<td><code>soil_nitrogen_0_30cm_mean</code></td>
+<td><code>soil_nitrogen_0_30cm_centroid</code></td>
+<td>сг/кг</td>
+<td>Загальний азот</td>
+</tr>
+<tr class="even">
+<td>ocd</td>
+<td><code>soil_ocd_0_30cm_mean</code></td>
+<td><code>soil_ocd_0_30cm_centroid</code></td>
+<td>гг/м³</td>
+<td>Щільність органічного вуглецю</td>
+</tr>
+<tr class="odd">
+<td>ocs</td>
+<td><code>soil_ocs_0_30cm_mean</code></td>
+<td><code>soil_ocs_0_30cm_centroid</code></td>
+<td>т/га</td>
+<td>Запас органічного вуглецю, 0–30 см</td>
+</tr>
+<tr class="even">
+<td>phh2o</td>
+<td><code>soil_phh2o_0_30cm_mean</code></td>
+<td><code>soil_phh2o_0_30cm_centroid</code></td>
+<td>pH × 10</td>
+<td>pH водної витяжки</td>
+</tr>
+<tr class="odd">
+<td>sand</td>
+<td><code>soil_sand_0_30cm_mean</code></td>
+<td><code>soil_sand_0_30cm_centroid</code></td>
+<td>г/кг</td>
+<td>Вміст піску</td>
+</tr>
+<tr class="even">
+<td>silt</td>
+<td><code>soil_silt_0_30cm_mean</code></td>
+<td><code>soil_silt_0_30cm_centroid</code></td>
+<td>г/кг</td>
+<td>Вміст пилу</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="метод" class="level2">
+<h2 class="anchored" data-anchor-id="метод">Метод</h2>
+<section id="верхній-шар-ґрунту-030-см" class="level3">
+<h3 class="anchored" data-anchor-id="верхній-шар-ґрунту-030-см">Верхній шар ґрунту 0–30 см</h3>
+<p>SoilGrids подає кожну властивість для шарів глибини 0–5, 5–15 та 15–30 см. Одне значення для верхнього шару — це їх <strong>середнє, зважене за товщиною шару</strong>, обчислене для кожного пікселя:</p>
+<p><span class="math display">\[
+\text{topsoil}_{0\text{–}30} = \frac{5 \cdot d_{0\text{–}5} + 10 \cdot d_{5\text{–}15} + 15 \cdot d_{15\text{–}30}}{30}
+\]</span></p>
+<p>Запас органічного вуглецю <code>ocs</code> уже наведено для шару 0–30 см, і він використовується без змін.</p>
+<p>Кожен растр глибини спершу обрізається за охопленням Полтавської та сусідніх областей у системі координат ґрунтових даних (Interrupted Goode Homolosine). Арифметичні операції виконуються на цій обрізаній сітці. Растри ніколи не передискретизуються і не перепроєктовуються; 10 шарів верхнього шару ґрунту зберігаються як <code>data/interim/soil_topsoil_0_30cm.tif</code>. Натомість ділянки трансформуються до системи координат ґрунтових даних.</p>
+</section>
+<section id="середнє-по-полігону-і-центроїд" class="level3">
+<h3 class="anchored" data-anchor-id="середнє-по-полігону-і-центроїд">Середнє по полігону і центроїд</h3>
+<ul>
+<li><strong><code>_mean</code>:</strong> <code>exactextractr::exact_extract(soil, parcels, "mean")</code>. Враховується кожен піксель 250 м, якого торкається ділянка, зважений за часткою пікселя всередині ділянки. Пікселі NoData пропускаються, тож ділянка, частково вкрита ґрунтовими даними, отримує середнє по вкритій частині і вважається <code>observed</code>.</li>
+<li><strong><code>_centroid</code>:</strong> <code>terra::extract()</code> у центроїді ділянки: значення одного пікселя під центральною точкою.</li>
+</ul>
+<p>Ділянка 3 га значно менша за один піксель 250 м (6,25 га), тому два значення часто збігаються. Вони відрізняються, коли ділянка лежить на межі пікселів або поблизу NoData.</p>
+</section>
+<section id="заповнення-nodata" class="level3">
+<h3 class="anchored" data-anchor-id="заповнення-nodata">Заповнення NoData</h3>
+<p>Ділянка у містах, на річках або водосховищі не має ґрунтового значення. Для заповнення використовується середнє ґрунтового растра по більшій зоні навколо ділянки, у такому порядку:</p>
+<ol type="1">
+<li><strong><code>h3_6</code>:</strong> середнє по комірці H3 роздільності 6, в якій лежить ділянка (близько 34 км²);</li>
+<li><strong><code>h3_5</code>:</strong> якщо ця комірка не має ґрунтових даних, середнє по її комірці H3 роздільності 5 (близько 240 км²);</li>
+<li><strong><code>oblast</code>:</strong> якщо й вона порожня, середнє по власній області ділянки (Полтавській або сусідній).</li>
+</ol>
+<p>Середні по зонах теж обчислюються через <code>exact_extract(..., "mean")</code>, тому пікселі NoData пропускаються. Ідентифікатори комірок H3 беруться з файлу ділянок; полігони шестикутників відновлюються з ідентифікаторів за допомогою <code>h3o::h3_from_strings()</code> та <code>st_as_sfc()</code>.</p>
+<p>У коді:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>value <span class="ot">=</span> <span class="fu">coalesce</span>(value_raw, h3_6_value, h3_5_value, oblast_value)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>source <span class="ot">=</span> <span class="fu">case_when</span>(<span class="sc">!</span><span class="fu">is.na</span>(value_raw) <span class="sc">~</span> <span class="st">"observed"</span>, <span class="sc">!</span><span class="fu">is.na</span>(h3_6_value) <span class="sc">~</span> <span class="st">"h3_6"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                   <span class="sc">!</span><span class="fu">is.na</span>(h3_5_value) <span class="sc">~</span> <span class="st">"h3_5"</span>, <span class="sc">!</span><span class="fu">is.na</span>(oblast_value) <span class="sc">~</span> <span class="st">"oblast"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Заповнення застосовується до змінних <code>_mean</code> та <code>_centroid</code> окремо: ділянка може мати спостережене середнє по полігону та заповнене значення в центроїді. У цьому запуску 16 100 ґрунтових рядків є спостереженими, 3 400 заповнено з H3 роздільності 6, 500 — з H3 роздільності 5, і жодного — із середнього по області. Більшість заповнених рядків належать ділянкам <code>nodata</code>, як і передбачалося:</p>
+<div class="cell">
+<div id="tbl-soil-source" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-soil-source-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Ґрунтові рядки (ділянка × ґрунтова змінна, 20 на ділянку) за типом ділянки та <code>source</code>. З <code>output/tables/soil_source_by_case.csv</code>.
+</figcaption>
+<div aria-describedby="tbl-soil-source-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">case</th>
+<th style="text-align: right;">observed</th>
+<th style="text-align: right;">h3_6</th>
+<th style="text-align: right;">h3_5</th>
+<th style="text-align: right;">oblast</th>
+<th style="text-align: right;">total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">border</td>
+<td style="text-align: right;">2,450</td>
+<td style="text-align: right;">390</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3,000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">interior</td>
+<td style="text-align: right;">13,070</td>
+<td style="text-align: right;">770</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">14,000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nodata</td>
+<td style="text-align: right;">580</td>
+<td style="text-align: right;">2,240</td>
+<td style="text-align: right;">180</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="заміна-зон-заповнення" class="level3">
+<h3 class="anchored" data-anchor-id="заміна-зон-заповнення">Заміна зон заповнення</h3>
+<p>Зони заповнення розміщено в одному блоці <code>04-soil.R</code>, позначеному <code>FILL ZONES</code>. Щоб заповнювати за адміністративними одиницями замість комірок H3:</p>
+<ol type="1">
+<li>прочитайте COD-AB ADM2 (район) або ADM3 (громада) з <code>data/raw/cod-ab</code> (zip-архів зі shapefile містить усі рівні);</li>
+<li>додайте код зони до ділянок за допомогою <code>st_join()</code>;</li>
+<li>замініть два блоки зон H3 тим самим викликом <code>exact_extract(soil, zones, "mean", append_cols = &lt;zone code&gt;)</code> для цих полігонів і виконайте з’єднання за кодом зони.</li>
+</ol>
+</section>
+</section>
+<section id="центроїд-і-середнє-по-полігону" class="level2">
+<h2 class="anchored" data-anchor-id="центроїд-і-середнє-по-полігону">Центроїд і середнє по полігону</h2>
+<p>Наскільки важливий метод вимірювання? Рисунок порівнює два значення для кожної ділянки та властивості. Точки на пунктирній лінії мають однакові значення.</p>
+<div id="fig-soil" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Десять діаграм розсіювання, по одній на ґрунтову властивість, зі значенням у центроїді проти середнього по полігону для 1 000 ділянок. На кожній панелі точки щільно лежать уздовж лінії 45 градусів; спостережені ділянки (сині) найближчі до неї, а заповнені ділянки (помаранчеві) розкидані ширше, найпомітніше для cfvo, bdod та nitrogen.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-soil-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../figures/soil_centroid_vs_polygon.png" class="img-fluid figure-img" alt="Десять діаграм розсіювання, по одній на ґрунтову властивість, зі значенням у центроїді проти середнього по полігону для 1 000 ділянок. На кожній панелі точки щільно лежать уздовж лінії 45 градусів; спостережені ділянки (сині) найближчі до неї, а заповнені ділянки (помаранчеві) розкидані ширше, найпомітніше для cfvo, bdod та nitrogen.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-soil-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Ґрунт 0–30 см: значення в центроїді ділянки проти середнього по полігону ділянки, по одній панелі на властивість. Синім: обидва значення спостережені; помаранчевим: принаймні одне заповнене.
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div id="tbl-soil-compare" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-soil-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Узгодженість значення в центроїді та середнього по полігону. <code>observed</code>: ділянки, де обидва значення спостережені; <code>all</code>: усі 1 000 ділянок. З <code>output/tables/soil_centroid_vs_polygon.csv</code>.
+</figcaption>
+<div aria-describedby="tbl-soil-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 12%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 29%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Властивість (одиниця)</th>
+<th style="text-align: left;">Рядки</th>
+<th style="text-align: right;">Пірсон</th>
+<th style="text-align: right;">Спірмен</th>
+<th style="text-align: right;">Середня абс. різниця</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">bdod (cg/cm³)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.985</td>
+<td style="text-align: right;">0.984</td>
+<td style="text-align: right;">0.381</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bdod (cg/cm³)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.961</td>
+<td style="text-align: right;">0.961</td>
+<td style="text-align: right;">0.454</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cec (mmol(c)/kg)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.995</td>
+<td style="text-align: right;">0.994</td>
+<td style="text-align: right;">2.110</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cec (mmol(c)/kg)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.990</td>
+<td style="text-align: right;">0.986</td>
+<td style="text-align: right;">2.466</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cfvo (cm³/dm³)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.977</td>
+<td style="text-align: right;">0.974</td>
+<td style="text-align: right;">1.435</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cfvo (cm³/dm³)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.931</td>
+<td style="text-align: right;">0.945</td>
+<td style="text-align: right;">1.800</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">clay (g/kg)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.991</td>
+<td style="text-align: right;">0.987</td>
+<td style="text-align: right;">3.096</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">clay (g/kg)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.981</td>
+<td style="text-align: right;">0.970</td>
+<td style="text-align: right;">3.475</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nitrogen (cg/kg)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.984</td>
+<td style="text-align: right;">0.982</td>
+<td style="text-align: right;">9.888</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nitrogen (cg/kg)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.965</td>
+<td style="text-align: right;">0.964</td>
+<td style="text-align: right;">11.294</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ocd (hg/m³)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.990</td>
+<td style="text-align: right;">0.989</td>
+<td style="text-align: right;">1.990</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ocd (hg/m³)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.974</td>
+<td style="text-align: right;">0.971</td>
+<td style="text-align: right;">2.356</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ocs (t/ha)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.990</td>
+<td style="text-align: right;">0.988</td>
+<td style="text-align: right;">0.676</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ocs (t/ha)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.976</td>
+<td style="text-align: right;">0.972</td>
+<td style="text-align: right;">0.777</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">phh2o (pH × 10)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.979</td>
+<td style="text-align: right;">0.979</td>
+<td style="text-align: right;">0.327</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">phh2o (pH × 10)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.967</td>
+<td style="text-align: right;">0.960</td>
+<td style="text-align: right;">0.341</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sand (g/kg)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.995</td>
+<td style="text-align: right;">0.995</td>
+<td style="text-align: right;">2.434</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sand (g/kg)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.987</td>
+<td style="text-align: right;">0.984</td>
+<td style="text-align: right;">3.291</td>
+<td style="text-align: right;">1000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">silt (g/kg)</td>
+<td style="text-align: left;">observed</td>
+<td style="text-align: right;">0.991</td>
+<td style="text-align: right;">0.990</td>
+<td style="text-align: right;">3.688</td>
+<td style="text-align: right;">764</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">silt (g/kg)</td>
+<td style="text-align: left;">all</td>
+<td style="text-align: right;">0.982</td>
+<td style="text-align: right;">0.976</td>
+<td style="text-align: right;">4.566</td>
+<td style="text-align: right;">1000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Для спостережених ділянок кореляції перевищують 0,97 для кожної властивості. Середня абсолютна різниця мала порівняно з діапазоном значень, але не нульова: реалізації, що використовують центроїд, і ті, що використовують середнє по полігону, не збігатимуться точно.</p>
+</section>
+<section id="скрипт-04-soil.r" class="level2">
+<h2 class="anchored" data-anchor-id="скрипт-04-soil.r">Скрипт: <code>04-soil.R</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 04-soil.R</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In:  data/clean/reference/parcels.parquet, data/interim/oblasts.gpkg, 28 SoilGrids rasters in soil_dir</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Out: data/interim/soil_topsoil_0_30cm.tif, data/interim/long_soil.parquet</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Purpose: topsoil (0-30 cm) soil properties per parcel (polygon mean and centroid), with NoData filled.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Units are SoilGrids mapped units (not converted):</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   bdod cg/cm3, cec mmol(c)/kg, cfvo cm3/dm3, clay g/kg, nitrogen cg/kg,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   ocd hg/m3, phh2o pH x 10, sand g/kg, silt g/kg, ocs t/ha (already 0-30 cm).</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Topsoil = (5 * d0_5 + 10 * d5_15 + 15 * d15_30) / 30, per pixel.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># NoData fill order: H3 res-6 cell mean -&gt; H3 res-5 cell mean -&gt; oblast mean.</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># The level used goes in `source`. A parcel partly covered by soil data counts as "observed".</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"00-setup.R"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Parcels and study area in the soil CRS --------------------------------------</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>parcels <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(parcels_path, <span class="at">as_data_frame =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> <span class="fu">st_as_sf</span>()</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>oblasts <span class="ot">&lt;-</span> <span class="fu">st_read</span>(oblasts_path, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>poltava <span class="ot">&lt;-</span> oblasts <span class="sc">|&gt;</span> <span class="fu">filter</span>(oblast_en <span class="sc">==</span> study_oblast_en)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>study_oblasts <span class="ot">&lt;-</span> oblasts <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">lengths</span>(<span class="fu">st_intersects</span>(oblasts, poltava)) <span class="sc">&gt;</span> <span class="dv">0</span>)   <span class="co"># Poltava and its neighbours</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>soil_crs <span class="ot">&lt;-</span> <span class="fu">crs</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"clay_0-5cm_mean.tif"</span>)))   <span class="co"># Interrupted Goode Homolosine</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>parcels_soil <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(parcels, soil_crs)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>study_oblasts_soil <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(study_oblasts, soil_crs)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>study_box <span class="ot">&lt;-</span> <span class="fu">vect</span>(study_oblasts_soil)   <span class="co"># crop() uses its extent</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Study area: {study_oblast_en} and {nrow(study_oblasts) - 1} neighbouring oblasts."</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Topsoil 0-30 cm rasters -----------------------------------------------------</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Topsoil 0-30 cm: thickness-weighted average of the 0-5, 5-15 and 15-30 cm layers</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>soil_bdod_0_30cm <span class="ot">&lt;-</span> (<span class="dv">5</span>  <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"bdod_0-5cm_mean.tif"</span>)),   study_box) <span class="sc">+</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">10</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"bdod_5-15cm_mean.tif"</span>)),  study_box) <span class="sc">+</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">15</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"bdod_15-30cm_mean.tif"</span>)), study_box)) <span class="sc">/</span> <span class="dv">30</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>soil_cec_0_30cm <span class="ot">&lt;-</span> (<span class="dv">5</span>  <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"cec_0-5cm_mean.tif"</span>)),   study_box) <span class="sc">+</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">10</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"cec_5-15cm_mean.tif"</span>)),  study_box) <span class="sc">+</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">15</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"cec_15-30cm_mean.tif"</span>)), study_box)) <span class="sc">/</span> <span class="dv">30</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>soil_cfvo_0_30cm <span class="ot">&lt;-</span> (<span class="dv">5</span>  <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"cfvo_0-5cm_mean.tif"</span>)),   study_box) <span class="sc">+</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">10</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"cfvo_5-15cm_mean.tif"</span>)),  study_box) <span class="sc">+</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">15</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"cfvo_15-30cm_mean.tif"</span>)), study_box)) <span class="sc">/</span> <span class="dv">30</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>soil_clay_0_30cm <span class="ot">&lt;-</span> (<span class="dv">5</span>  <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"clay_0-5cm_mean.tif"</span>)),   study_box) <span class="sc">+</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">10</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"clay_5-15cm_mean.tif"</span>)),  study_box) <span class="sc">+</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">15</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"clay_15-30cm_mean.tif"</span>)), study_box)) <span class="sc">/</span> <span class="dv">30</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>soil_nitrogen_0_30cm <span class="ot">&lt;-</span> (<span class="dv">5</span>  <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"nitrogen_0-5cm_mean.tif"</span>)),   study_box) <span class="sc">+</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>                         <span class="dv">10</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"nitrogen_5-15cm_mean.tif"</span>)),  study_box) <span class="sc">+</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>                         <span class="dv">15</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"nitrogen_15-30cm_mean.tif"</span>)), study_box)) <span class="sc">/</span> <span class="dv">30</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>soil_ocd_0_30cm <span class="ot">&lt;-</span> (<span class="dv">5</span>  <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"ocd_0-5cm_mean.tif"</span>)),   study_box) <span class="sc">+</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">10</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"ocd_5-15cm_mean.tif"</span>)),  study_box) <span class="sc">+</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">15</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"ocd_15-30cm_mean.tif"</span>)), study_box)) <span class="sc">/</span> <span class="dv">30</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>soil_phh2o_0_30cm <span class="ot">&lt;-</span> (<span class="dv">5</span>  <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"phh2o_0-5cm_mean.tif"</span>)),   study_box) <span class="sc">+</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>                      <span class="dv">10</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"phh2o_5-15cm_mean.tif"</span>)),  study_box) <span class="sc">+</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>                      <span class="dv">15</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"phh2o_15-30cm_mean.tif"</span>)), study_box)) <span class="sc">/</span> <span class="dv">30</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>soil_sand_0_30cm <span class="ot">&lt;-</span> (<span class="dv">5</span>  <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"sand_0-5cm_mean.tif"</span>)),   study_box) <span class="sc">+</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">10</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"sand_5-15cm_mean.tif"</span>)),  study_box) <span class="sc">+</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">15</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"sand_15-30cm_mean.tif"</span>)), study_box)) <span class="sc">/</span> <span class="dv">30</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>soil_silt_0_30cm <span class="ot">&lt;-</span> (<span class="dv">5</span>  <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"silt_0-5cm_mean.tif"</span>)),   study_box) <span class="sc">+</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">10</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"silt_5-15cm_mean.tif"</span>)),  study_box) <span class="sc">+</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>                     <span class="dv">15</span> <span class="sc">*</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"silt_15-30cm_mean.tif"</span>)), study_box)) <span class="sc">/</span> <span class="dv">30</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Organic carbon stock is already given for 0-30 cm</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>soil_ocs_0_30cm <span class="ot">&lt;-</span> <span class="fu">crop</span>(<span class="fu">rast</span>(<span class="fu">file.path</span>(soil_dir, <span class="st">"ocs_0-30cm_mean.tif"</span>)), study_box)</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>soil <span class="ot">&lt;-</span> <span class="fu">c</span>(soil_bdod_0_30cm, soil_cec_0_30cm, soil_cfvo_0_30cm, soil_clay_0_30cm, soil_nitrogen_0_30cm,</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>          soil_ocd_0_30cm, soil_phh2o_0_30cm, soil_sand_0_30cm, soil_silt_0_30cm, soil_ocs_0_30cm)</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(soil) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"soil_bdod_0_30cm"</span>, <span class="st">"soil_cec_0_30cm"</span>, <span class="st">"soil_cfvo_0_30cm"</span>, <span class="st">"soil_clay_0_30cm"</span>,</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"soil_nitrogen_0_30cm"</span>, <span class="st">"soil_ocd_0_30cm"</span>, <span class="st">"soil_phh2o_0_30cm"</span>, <span class="st">"soil_sand_0_30cm"</span>,</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"soil_silt_0_30cm"</span>, <span class="st">"soil_ocs_0_30cm"</span>)</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="fu">writeRaster</span>(soil, soil_topsoil_path, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>soil <span class="ot">&lt;-</span> <span class="fu">rast</span>(soil_topsoil_path)</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="co"># Parcel values ---------------------------------------------------------------</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="co"># Polygon mean, weighted by the share of each pixel inside the parcel (NoData pixels are skipped)</span></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>soil_mean <span class="ot">&lt;-</span> <span class="fu">exact_extract</span>(soil, parcels_soil, <span class="st">"mean"</span>, <span class="at">append_cols =</span> <span class="st">"parcel_id"</span>, <span class="at">progress =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>parcel_id, <span class="at">names_to =</span> <span class="st">"property"</span>, <span class="at">names_prefix =</span> <span class="st">"mean."</span>, <span class="at">values_to =</span> <span class="st">"value_raw"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">paste0</span>(property, <span class="st">"_mean"</span>))</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="co"># Value of the pixel under the parcel centroid</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>soil_centroid <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">extract</span>(soil, <span class="fu">vect</span>(<span class="fu">st_centroid</span>(parcels_soil)), <span class="at">ID =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">parcel_id =</span> parcels_soil<span class="sc">$</span>parcel_id) <span class="sc">|&gt;</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>parcel_id, <span class="at">names_to =</span> <span class="st">"property"</span>, <span class="at">values_to =</span> <span class="st">"value_raw"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">variable =</span> <span class="fu">paste0</span>(property, <span class="st">"_centroid"</span>))</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>soil_long <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(soil_mean, soil_centroid) <span class="sc">|&gt;</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">value_raw =</span> <span class="fu">if_else</span>(<span class="fu">is.nan</span>(value_raw), <span class="cn">NA</span>, value_raw)) <span class="sc">|&gt;</span>   <span class="co"># a parcel with no soil data gives NaN</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">st_drop_geometry</span>(parcels) <span class="sc">|&gt;</span> <span class="fu">select</span>(parcel_id, case, oblast, h3_6, h3_5), <span class="at">by =</span> <span class="st">"parcel_id"</span>)</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="co"># FILL ZONES</span></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean soil value in each zone, used where a parcel has no soil data.</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a><span class="co"># To use rayon or hromada polygons instead of H3 cells, read COD-AB ADM2 (rayon)</span></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a><span class="co"># or ADM3 (hromada) from data/raw/cod-ab, add the zone code to the parcels with</span></span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a><span class="co"># st_join(), and replace the H3 zones below with those polygons and codes.</span></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="co"># =============================================================================</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="co"># H3 hexagons of the parcels' cells, built from the cell IDs</span></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>hex_6 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">h3_6 =</span> <span class="fu">unique</span>(parcels<span class="sc">$</span>h3_6)) <span class="sc">|&gt;</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geometry =</span> h3o<span class="sc">::</span><span class="fu">h3_from_strings</span>(h3_6) <span class="sc">|&gt;</span> <span class="fu">st_as_sfc</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(soil_crs)</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>hex_5 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">h3_5 =</span> <span class="fu">unique</span>(parcels<span class="sc">$</span>h3_5)) <span class="sc">|&gt;</span></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">geometry =</span> h3o<span class="sc">::</span><span class="fu">h3_from_strings</span>(h3_5) <span class="sc">|&gt;</span> <span class="fu">st_as_sfc</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(soil_crs)</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>zone_h3_6 <span class="ot">&lt;-</span> <span class="fu">exact_extract</span>(soil, hex_6, <span class="st">"mean"</span>, <span class="at">append_cols =</span> <span class="st">"h3_6"</span>, <span class="at">progress =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>h3_6, <span class="at">names_to =</span> <span class="st">"property"</span>, <span class="at">names_prefix =</span> <span class="st">"mean."</span>, <span class="at">values_to =</span> <span class="st">"h3_6_value"</span>)</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>zone_h3_5 <span class="ot">&lt;-</span> <span class="fu">exact_extract</span>(soil, hex_5, <span class="st">"mean"</span>, <span class="at">append_cols =</span> <span class="st">"h3_5"</span>, <span class="at">progress =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>h3_5, <span class="at">names_to =</span> <span class="st">"property"</span>, <span class="at">names_prefix =</span> <span class="st">"mean."</span>, <span class="at">values_to =</span> <span class="st">"h3_5_value"</span>)</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Oblast mean, for Poltava and its neighbours (joined on the parcel's oblast)</span></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>zone_oblast <span class="ot">&lt;-</span> <span class="fu">exact_extract</span>(soil, study_oblasts_soil, <span class="st">"mean"</span>, <span class="at">append_cols =</span> <span class="st">"oblast_en"</span>, <span class="at">progress =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">oblast =</span> oblast_en) <span class="sc">|&gt;</span></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>oblast, <span class="at">names_to =</span> <span class="st">"property"</span>, <span class="at">names_prefix =</span> <span class="st">"mean."</span>, <span class="at">values_to =</span> <span class="st">"oblast_value"</span>)</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill ------------------------------------------------------------------------</span></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>soil_long <span class="ot">&lt;-</span> soil_long <span class="sc">|&gt;</span></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(zone_h3_6, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"h3_6"</span>, <span class="st">"property"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(zone_h3_5, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"h3_5"</span>, <span class="st">"property"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(zone_oblast, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"oblast"</span>, <span class="st">"property"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>    <span class="at">h3_6_value =</span> <span class="fu">if_else</span>(<span class="fu">is.nan</span>(h3_6_value), <span class="cn">NA</span>, h3_6_value),</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>    <span class="at">h3_5_value =</span> <span class="fu">if_else</span>(<span class="fu">is.nan</span>(h3_5_value), <span class="cn">NA</span>, h3_5_value),</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>    <span class="at">value =</span> <span class="fu">coalesce</span>(value_raw, h3_6_value, h3_5_value, oblast_value),</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>    <span class="at">source =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(value_raw) <span class="sc">~</span> <span class="st">"observed"</span>,</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(h3_6_value) <span class="sc">~</span> <span class="st">"h3_6"</span>,</span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(h3_5_value) <span class="sc">~</span> <span class="st">"h3_5"</span>,</span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(oblast_value) <span class="sc">~</span> <span class="st">"oblast"</span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">anyNA</span>(soil_long<span class="sc">$</span>value)) <span class="fu">cli_abort</span>(<span class="st">"Some soil values are still missing after the fill."</span>)</span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(soil_long) <span class="sc">!=</span> <span class="dv">20</span> <span class="sc">*</span> <span class="fu">nrow</span>(parcels)) <span class="fu">cli_abort</span>(<span class="st">"Expected 20 soil rows per parcel, got {nrow(soil_long)} rows."</span>)</span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a><span class="co"># Counts by source and case</span></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>soil_long <span class="sc">|&gt;</span> <span class="fu">count</span>(source, case) <span class="sc">|&gt;</span> <span class="fu">print</span>()</span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="co"># Save ------------------------------------------------------------------------</span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>long_soil <span class="ot">&lt;-</span> soil_long <span class="sc">|&gt;</span> <span class="fu">select</span>(parcel_id, variable, value, source)</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()   <span class="co"># release memory-mapped files before overwriting (Windows)</span></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_parquet</span>(long_soil, long_soil_path)</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Soil done: {n_distinct(long_soil$variable)} variables, {nrow(long_soil)} rows in {.path {long_soil_path}}."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+// Language menu: "English" and "Українська" open the same page in the other
+// language folder (en/ <-> uk/). On Ukrainian pages, navbar page links go to uk/,
+// and the navbar labels, site title and footer are shown in Ukrainian.
+document.addEventListener("DOMContentLoaded", function () {
+  var path = window.location.pathname;
+  var inEn = path.indexOf("/en/") >= 0;
+  var inUk = path.indexOf("/uk/") >= 0;
+  var page = (inEn || inUk) ? (path.substring(path.lastIndexOf("/") + 1) || "index.html") : "index.html";
+  var prefix = (inEn || inUk) ? "../" : "";
+  var labelsUk = {
+    "Home": "Головна",
+    "Data": "Дані",
+    "Pipeline": "Конвеєр обробки",
+    "Indicators": "Показники",
+    "Reference inputs": "Еталонні вхідні дані",
+    "Distance": "Відстані",
+    "Soil": "Ґрунт",
+    "Relief": "Рельєф",
+    "Crop cover": "Посівний покрив",
+    "Output": "Результати",
+    "Language": "Мова"
+  };
+  document.querySelectorAll("#quarto-header a[href]").forEach(function (a) {
+    var text = a.textContent.trim();
+    var href = a.getAttribute("href");
+    if (text === "English") {
+      a.setAttribute("href", prefix + "en/" + page);
+    } else if (text === "Українська") {
+      a.setAttribute("href", prefix + "uk/" + page);
+    } else if (inUk && href.indexOf("://") < 0 && href.indexOf("en/") >= 0) {
+      a.setAttribute("href", href.replace("en/", "uk/"));
+    }
+  });
+  if (inUk) {
+    document.querySelectorAll("#quarto-header .menu-text, #quarto-header .dropdown-text").forEach(function (span) {
+      var text = span.textContent.trim();
+      if (labelsUk[text]) span.textContent = labelsUk[text];
+    });
+    var brand = document.querySelector("#quarto-header a.navbar-brand");
+    if (brand) brand.setAttribute("href", "index.html");
+    var title = document.querySelector("#quarto-header .navbar-title");
+    if (title) title.textContent = "Просторові коваріати, Україна";
+    var footer = document.querySelector(".nav-footer-left");
+    if (footer) footer.textContent = "Змодельовані еталонні ділянки; реальні публічні растри та растри користувача. Ліцензії див. на сторінці «Дані».";
+  }
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ebukin\.github\.io\/ukrMassValuationSpatialExtract\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Simulated reference parcels; real public and user-provided rasters. See the Data page for licences.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

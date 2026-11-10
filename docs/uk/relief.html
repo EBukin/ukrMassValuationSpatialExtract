@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="uk" xml:lang="uk"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Рельєф – Spatial covariates, Ukraine</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-e9072c35d400738dd8f5400c9614cb45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Spatial covariates, Ukraine</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../en/index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../en/data.html"> 
+<span class="menu-text">Data</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../en/pipeline.html"> 
+<span class="menu-text">Pipeline</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-indicators" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Indicators</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-indicators">    
+        <li>
+    <a class="dropdown-item" href="../en/reference.html">
+ <span class="dropdown-text">Reference inputs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/distance.html">
+ <span class="dropdown-text">Distance</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/soil.html">
+ <span class="dropdown-text">Soil</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/relief.html">
+ <span class="dropdown-text">Relief</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/crop.html">
+ <span class="dropdown-text">Crop cover</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../en/output.html"> 
+<span class="menu-text">Output</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-language" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text">Language</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-language">    
+        <li>
+    <a class="dropdown-item" href="../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../uk/index.html">
+ <span class="dropdown-text">Українська</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/EBukin/ukrMassValuationSpatialExtract"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#змінні" id="toc-змінні" class="nav-link active" data-scroll-target="#змінні">Змінні</a></li>
+  <li><a href="#методологія" id="toc-методологія" class="nav-link" data-scroll-target="#методологія">Методологія</a>
+  <ul class="collapse">
+  <li><a href="#кроки" id="toc-кроки" class="nav-link" data-scroll-target="#кроки">Кроки</a></li>
+  </ul></li>
+  <li><a href="#продукт-цмв" id="toc-продукт-цмв" class="nav-link" data-scroll-target="#продукт-цмв">Продукт ЦМВ</a></li>
+  <li><a href="#обмеження" id="toc-обмеження" class="nav-link" data-scroll-target="#обмеження">Обмеження</a>
+  <ul class="collapse">
+  <li><a href="#модель-поверхні-а-не-модель-рельєфу" id="toc-модель-поверхні-а-не-модель-рельєфу" class="nav-link" data-scroll-target="#модель-поверхні-а-не-модель-рельєфу">Модель поверхні, а не модель рельєфу</a></li>
+  <li><a href="#грубіші-тайли-на-північ-від-50-пн.-ш." id="toc-грубіші-тайли-на-північ-від-50-пн.-ш." class="nav-link" data-scroll-target="#грубіші-тайли-на-північ-від-50-пн.-ш.">Грубіші тайли на північ від 50° пн. ш.</a></li>
+  </ul></li>
+  <li><a href="#зведення" id="toc-зведення" class="nav-link" data-scroll-target="#зведення">Зведення</a></li>
+  <li><a href="#скрипт-05-relief.r" id="toc-скрипт-05-relief.r" class="nav-link" data-scroll-target="#скрипт-05-relief.r">Скрипт: <code>05-relief.R</code></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Рельєф</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Шість змінних описують рельєф кожної ділянки: висоту, крутизну схилу та експозицію, обчислені за цифровою моделлю висот (ЦМВ) Copernicus по <strong>всьому полігону ділянки</strong>. Скрипт: <code>05-relief.R</code>.</p>
+<section id="змінні" class="level2">
+<h2 class="anchored" data-anchor-id="змінні">Змінні</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Змінна</th>
+<th>Одиниця</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>relief_elev_mean</code></td>
+<td>м</td>
+<td>Середня висота по ділянці, зважена за часткою покриття</td>
+</tr>
+<tr class="even">
+<td><code>relief_slope_mean</code></td>
+<td>градуси</td>
+<td>Середня крутизна схилу по ділянці, зважена за часткою покриття</td>
+</tr>
+<tr class="odd">
+<td><code>relief_slope_max</code></td>
+<td>градуси</td>
+<td>Максимальна крутизна схилу по пікселях, яких торкається ділянка</td>
+</tr>
+<tr class="even">
+<td><code>relief_elev_range</code></td>
+<td>м</td>
+<td>Різниця між максимальною та мінімальною висотою по пікселях, яких торкається ділянка</td>
+</tr>
+<tr class="odd">
+<td><code>relief_aspect_south</code></td>
+<td>індекс, від −1 до 1</td>
+<td>Середня «південність», зважена за часткою покриття: 1 = схил на південь, −1 = на північ, 0 = рівна ділянка або схил на схід/захід</td>
+</tr>
+<tr class="even">
+<td><code>relief_aspect_east</code></td>
+<td>індекс, від −1 до 1</td>
+<td>Середня «східність», зважена за часткою покриття: 1 = схил на схід, −1 = на захід, 0 = рівна ділянка або схил на північ/південь</td>
+</tr>
+</tbody>
+</table>
+<p>Усі рядки мають <code>source = "observed"</code>; жодна ділянка не має пропущених значень.</p>
+</section>
+<section id="методологія" class="level2">
+<h2 class="anchored" data-anchor-id="методологія">Методологія</h2>
+<p>Методологію встановив керівник проєкту, і вона є обов’язковою:</p>
+<ul>
+<li><strong>Лише статистика по полігону.</strong> Кожна статистика обчислюється по всьому полігону ділянки через <code>exactextractr::exact_extract()</code>, кожен піксель зважується за часткою, що лежить усередині ділянки; ніколи — за центроїдом чи центрами пікселів.</li>
+<li><strong>Експозиція</strong> вимірюється за годинниковою стрілкою від півночі, у градусах.</li>
+<li><strong>Пласкі пікселі.</strong> Піксель із крутизною схилу менше <code>flat_slope_deg</code> (0,5° у <code>00-setup.R</code>) дає 0 для обох змінних експозиції, оскільки його експозиція не має сенсу.</li>
+<li><strong>Метричні відстані.</strong> Крутизна схилу та експозиція обчислюються з відстанями в метрах або методом, що враховує геодезичні відстані; ніколи — з градусами, що трактуються як метри, і ніколи — у Web Mercator.</li>
+<li><strong>Малі ділянки.</strong> Ділянка, менша за один піксель, все одно отримує значення.</li>
+<li><strong>Повний результат.</strong> Кожна ділянка отримує значення кожної змінної.</li>
+</ul>
+<section id="кроки" class="level3">
+<h3 class="anchored" data-anchor-id="кроки">Кроки</h3>
+<ol type="1">
+<li><p><strong>Обрізання.</strong> <code>crop(rast("data/interim/dem.vrt"), &lt;parcels' extent + 0.02°&gt;)</code>. Завдяки запасу <code>terrain()</code> має сусідні пікселі на краю кожної ділянки. ЦМВ залишається в EPSG:4326 і ніколи не передискретизується і не перепроєктовується.</p></li>
+<li><p><strong>Крутизна схилу та експозиція.</strong> <code>terrain(dem, c("slope", "aspect"), unit = "degrees")</code>. Для даних у довготі/широті terra обчислює відстані між комірками, потрібні для крутизни та експозиції, на еліпсоїді WGS 84 (з <code>?terra::terrain</code>: “Distances (needed for slope and aspect) for longitude/latitude data are computed on the WGS84 ellipsoid with Karney’s algorithm”). Тож жоден градус не трактується як метр.</p></li>
+<li><p><strong>Кодування експозиції.</strong> Експозиція — це кругова величина: 359° і 1° обидва означають північ, тому усереднювати градуси було б неправильно. Експозицію кожного пікселя перетворюють на дві складові, а для пласких пікселів задають 0:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>south <span class="ot">&lt;-</span> <span class="fu">ifel</span>(slope <span class="sc">&lt;</span> flat_slope_deg, <span class="dv">0</span>, <span class="sc">-</span><span class="fu">cos</span>(aspect <span class="sc">*</span> pi <span class="sc">/</span> <span class="dv">180</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>east  <span class="ot">&lt;-</span> <span class="fu">ifel</span>(slope <span class="sc">&lt;</span> flat_slope_deg, <span class="dv">0</span>,  <span class="fu">sin</span>(aspect <span class="sc">*</span> pi <span class="sc">/</span> <span class="dv">180</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Експозиція 180° (південь) дає <code>south = 1</code>, <code>east = 0</code>; експозиція 90° (схід) дає <code>south = 0</code>, <code>east = 1</code>. Значення для ділянки — середнє кожної складової, зважене за часткою покриття.</p></li>
+<li><p><strong>Вилучення.</strong> Один виклик <code>exact_extract(c(elev, slope, south, east), parcels, c("mean", "max", "min"))</code>. <code>"mean"</code> зважує кожен піксель за часткою його покриття. <code>"max"</code> та <code>"min"</code> беруть кожен піксель, якого торкається ділянка, хоч би як мало, тож ділянка, менша за один піксель, усе одно отримує діапазон і максимальну крутизну.</p></li>
+</ol>
+</section>
+</section>
+<section id="продукт-цмв" class="level2">
+<h2 class="anchored" data-anchor-id="продукт-цмв">Продукт ЦМВ</h2>
+<p>За замовчуванням використовується <strong>Copernicus GLO-30</strong> (1 кутова секунда, близько 30 м; <code>dem_product &lt;- "GLO-30"</code>). Якщо задати <code>dem_product &lt;- "GLO-90"</code> у <code>00-setup.R</code> і запустити <code>00b-download.R</code>, усі кроки перейдуть на продукт із роздільністю 90 м. GLO-30 покриває Полтавську область разом із буфером 10 км 11 тайлами розміром один градус, а <code>05-relief.R</code> виконується приблизно за 40 секунд.</p>
+</section>
+<section id="обмеження" class="level2">
+<h2 class="anchored" data-anchor-id="обмеження">Обмеження</h2>
+<section id="модель-поверхні-а-не-модель-рельєфу" class="level3">
+<h3 class="anchored" data-anchor-id="модель-поверхні-а-не-модель-рельєфу">Модель поверхні, а не модель рельєфу</h3>
+<p>ЦМВ Copernicus — це <strong>цифрова модель поверхні</strong>: вона показує висоту верхньої поверхні, включно з будівлями та кронами дерев, а не власне земної поверхні. Водні поверхні вирівняні. У цьому наборі даних <strong>89 ділянок</strong> на Кременчуцькому водосховищі та інших водоймах мають середню крутизну схилу 0 і діапазон висот 0, а їхні змінні експозиції дорівнюють 0 (усі пікселі пласкі). Над лісами та містами крутизна схилу включає крони дерев і краї будівель.</p>
+</section>
+<section id="грубіші-тайли-на-північ-від-50-пн.-ш." class="level3">
+<h3 class="anchored" data-anchor-id="грубіші-тайли-на-північ-від-50-пн.-ш.">Грубіші тайли на північ від 50° пн. ш.</h3>
+<p>Тайли Copernicus мають крок за довготою, що зростає з широтою: 1 кутова секунда на південь від 50° пн. ш., але <strong>1,5 кутової секунди між 50° і 60° пн. ш.</strong> Полтавська область охоплює обидві зони (її північна смуга лежить вище 50° пн. ш.).</p>
+<p>Віртуальна мозаїка будується в <code>00b-download.R</code> командою <code>vrt(files_ok, options = c("-resolution", "highest"))</code>, тому мозаїка лежить на найдрібнішій сітці — 1 кутова секунда. GDAL заповнює цю сітку з грубіших північних тайлів, повторюючи їхні пікселі (метод найближчого сусіда, на льоту, під час читання даних). Жодної іншої передискретизації не відбувається, і нові значення висоти не вигадуються.</p>
+<p>Недолік: у північній смузі кожен третій стовпець повторює сусідній. Це може додати невеликі «сходинки» в напрямку схід–захід до крутизни схилу та експозиції там. Порівняння з іншими реалізаціями на півночі області мають це враховувати.</p>
+</section>
+</section>
+<section id="зведення" class="level2">
+<h2 class="anchored" data-anchor-id="зведення">Зведення</h2>
+<div class="cell">
+<div id="tbl-relief-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-relief-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Квантилі показників рельєфу по 1 000 ділянок. З <code>output/tables/relief_summary.csv</code>.
+</figcaption>
+<div aria-describedby="tbl-relief-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 15%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: left;">unit</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">p05</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p95</th>
+<th style="text-align: right;">max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">relief_aspect_east</td>
+<td style="text-align: left;">index -1 to 1</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">-0.98</td>
+<td style="text-align: right;">-0.62</td>
+<td style="text-align: right;">-0.20</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-0.02</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.53</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">relief_aspect_south</td>
+<td style="text-align: left;">index -1 to 1</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">-0.96</td>
+<td style="text-align: right;">-0.55</td>
+<td style="text-align: right;">-0.15</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.63</td>
+<td style="text-align: right;">0.98</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">relief_elev_mean</td>
+<td style="text-align: left;">m</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">33.62</td>
+<td style="text-align: right;">70.63</td>
+<td style="text-align: right;">85.01</td>
+<td style="text-align: right;">107.48</td>
+<td style="text-align: right;">111.02</td>
+<td style="text-align: right;">132.08</td>
+<td style="text-align: right;">165.29</td>
+<td style="text-align: right;">198.30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">relief_elev_range</td>
+<td style="text-align: left;">m</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2.68</td>
+<td style="text-align: right;">5.77</td>
+<td style="text-align: right;">8.44</td>
+<td style="text-align: right;">11.65</td>
+<td style="text-align: right;">25.56</td>
+<td style="text-align: right;">71.71</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">relief_slope_max</td>
+<td style="text-align: left;">degrees</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.77</td>
+<td style="text-align: right;">4.34</td>
+<td style="text-align: right;">6.35</td>
+<td style="text-align: right;">9.18</td>
+<td style="text-align: right;">18.43</td>
+<td style="text-align: right;">37.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">relief_slope_mean</td>
+<td style="text-align: left;">degrees</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">1.38</td>
+<td style="text-align: right;">2.15</td>
+<td style="text-align: right;">2.82</td>
+<td style="text-align: right;">6.69</td>
+<td style="text-align: right;">23.98</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="скрипт-05-relief.r" class="level2">
+<h2 class="anchored" data-anchor-id="скрипт-05-relief.r">Скрипт: <code>05-relief.R</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 05-relief.R</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In:  data/clean/reference/parcels.parquet, data/interim/dem.vrt</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Out: data/interim/long_relief.parquet</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Purpose: relief per parcel (elevation, slope, aspect exposure) from the whole parcel polygon.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># The DEM is cropped only, never resampled or reprojected (EPSG:4326, elevation in metres).</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Slope and aspect come from terra::terrain() on the lon/lat grid. terra's help page (?terra::terrain)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># says: "Distances (needed for slope and aspect) for longitude/latitude data are computed on the</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># WGS84 ellipsoid with Karney's algorithm." So no degrees are treated as metres.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Aspect is clockwise from north, in degrees. A flat pixel (slope &lt; flat_slope_deg) gets 0 for</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># both exposure variables: south = -cos(aspect), east = sin(aspect).</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistics use exact_extract(): "mean" weights each pixel by the share of it inside the parcel;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># "max" and "min" use every pixel the parcel touches, so a parcel smaller than one pixel still gets values.</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"00-setup.R"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Parcels and DEM -------------------------------------------------------------</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>parcels <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(parcels_path, <span class="at">as_data_frame =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> <span class="fu">st_as_sf</span>()</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Parcels' extent plus 0.02 degrees, so terrain() has neighbours at the edge of every parcel</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>parcels_box <span class="ot">&lt;-</span> <span class="fu">ext</span>(<span class="fu">vect</span>(parcels)) <span class="sc">+</span> <span class="fl">0.02</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>elev <span class="ot">&lt;-</span> <span class="fu">crop</span>(<span class="fu">rast</span>(dem_vrt_path), parcels_box)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(elev) <span class="ot">&lt;-</span> <span class="st">"elev"</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Slope, aspect and exposure --------------------------------------------------</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>slope_aspect <span class="ot">&lt;-</span> <span class="fu">terrain</span>(elev, <span class="fu">c</span>(<span class="st">"slope"</span>, <span class="st">"aspect"</span>), <span class="at">unit =</span> <span class="st">"degrees"</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>slope <span class="ot">&lt;-</span> slope_aspect[[<span class="st">"slope"</span>]]</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>aspect <span class="ot">&lt;-</span> slope_aspect[[<span class="st">"aspect"</span>]]</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>south <span class="ot">&lt;-</span> <span class="fu">ifel</span>(slope <span class="sc">&lt;</span> flat_slope_deg, <span class="dv">0</span>, <span class="sc">-</span><span class="fu">cos</span>(aspect <span class="sc">*</span> pi <span class="sc">/</span> <span class="dv">180</span>))</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>east <span class="ot">&lt;-</span> <span class="fu">ifel</span>(slope <span class="sc">&lt;</span> flat_slope_deg, <span class="dv">0</span>, <span class="fu">sin</span>(aspect <span class="sc">*</span> pi <span class="sc">/</span> <span class="dv">180</span>))</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>relief <span class="ot">&lt;-</span> <span class="fu">c</span>(elev, slope, south, east)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(relief) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"elev"</span>, <span class="st">"slope"</span>, <span class="st">"south"</span>, <span class="st">"east"</span>)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Parcel values ---------------------------------------------------------------</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>relief_stats <span class="ot">&lt;-</span> <span class="fu">exact_extract</span>(relief, parcels, <span class="fu">c</span>(<span class="st">"mean"</span>, <span class="st">"max"</span>, <span class="st">"min"</span>), <span class="at">append_cols =</span> <span class="st">"parcel_id"</span>, <span class="at">progress =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>relief_wide <span class="ot">&lt;-</span> relief_stats <span class="sc">|&gt;</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    parcel_id,</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">relief_elev_mean =</span> mean.elev,</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">relief_slope_mean =</span> mean.slope,</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">relief_slope_max =</span> max.slope,</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">relief_elev_range =</span> max.elev <span class="sc">-</span> min.elev,</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">relief_aspect_south =</span> mean.south,</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">relief_aspect_east =</span> mean.east</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>long_relief <span class="ot">&lt;-</span> relief_wide <span class="sc">|&gt;</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>parcel_id, <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">source =</span> <span class="st">"observed"</span>)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">anyNA</span>(long_relief<span class="sc">$</span>value)) <span class="fu">cli_abort</span>(<span class="st">"Some relief values are missing."</span>)</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(long_relief) <span class="sc">!=</span> <span class="dv">6</span> <span class="sc">*</span> <span class="fu">nrow</span>(parcels)) <span class="fu">cli_abort</span>(<span class="st">"Expected 6 relief rows per parcel, got {nrow(long_relief)} rows."</span>)</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Range of each variable</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>long_relief <span class="sc">|&gt;</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(variable) <span class="sc">|&gt;</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">min =</span> <span class="fu">min</span>(value), <span class="at">max =</span> <span class="fu">max</span>(value)) <span class="sc">|&gt;</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Save ------------------------------------------------------------------------</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()   <span class="co"># release memory-mapped files before overwriting (Windows)</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_parquet</span>(long_relief, long_relief_path)</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Relief done: {n_distinct(long_relief$variable)} variables, {nrow(long_relief)} rows in {.path {long_relief_path}}."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+// Language menu: "English" and "Українська" open the same page in the other
+// language folder (en/ <-> uk/). On Ukrainian pages, navbar page links go to uk/,
+// and the navbar labels, site title and footer are shown in Ukrainian.
+document.addEventListener("DOMContentLoaded", function () {
+  var path = window.location.pathname;
+  var inEn = path.indexOf("/en/") >= 0;
+  var inUk = path.indexOf("/uk/") >= 0;
+  var page = (inEn || inUk) ? (path.substring(path.lastIndexOf("/") + 1) || "index.html") : "index.html";
+  var prefix = (inEn || inUk) ? "../" : "";
+  var labelsUk = {
+    "Home": "Головна",
+    "Data": "Дані",
+    "Pipeline": "Конвеєр обробки",
+    "Indicators": "Показники",
+    "Reference inputs": "Еталонні вхідні дані",
+    "Distance": "Відстані",
+    "Soil": "Ґрунт",
+    "Relief": "Рельєф",
+    "Crop cover": "Посівний покрив",
+    "Output": "Результати",
+    "Language": "Мова"
+  };
+  document.querySelectorAll("#quarto-header a[href]").forEach(function (a) {
+    var text = a.textContent.trim();
+    var href = a.getAttribute("href");
+    if (text === "English") {
+      a.setAttribute("href", prefix + "en/" + page);
+    } else if (text === "Українська") {
+      a.setAttribute("href", prefix + "uk/" + page);
+    } else if (inUk && href.indexOf("://") < 0 && href.indexOf("en/") >= 0) {
+      a.setAttribute("href", href.replace("en/", "uk/"));
+    }
+  });
+  if (inUk) {
+    document.querySelectorAll("#quarto-header .menu-text, #quarto-header .dropdown-text").forEach(function (span) {
+      var text = span.textContent.trim();
+      if (labelsUk[text]) span.textContent = labelsUk[text];
+    });
+    var brand = document.querySelector("#quarto-header a.navbar-brand");
+    if (brand) brand.setAttribute("href", "index.html");
+    var title = document.querySelector("#quarto-header .navbar-title");
+    if (title) title.textContent = "Просторові коваріати, Україна";
+    var footer = document.querySelector(".nav-footer-left");
+    if (footer) footer.textContent = "Змодельовані еталонні ділянки; реальні публічні растри та растри користувача. Ліцензії див. на сторінці «Дані».";
+  }
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ebukin\.github\.io\/ukrMassValuationSpatialExtract\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Simulated reference parcels; real public and user-provided rasters. See the Data page for licences.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

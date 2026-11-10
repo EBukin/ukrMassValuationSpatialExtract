@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="uk" xml:lang="uk"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Конвеєр обробки – Spatial covariates, Ukraine</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-e9072c35d400738dd8f5400c9614cb45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Spatial covariates, Ukraine</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../en/index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../en/data.html"> 
+<span class="menu-text">Data</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../en/pipeline.html"> 
+<span class="menu-text">Pipeline</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-indicators" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Indicators</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-indicators">    
+        <li>
+    <a class="dropdown-item" href="../en/reference.html">
+ <span class="dropdown-text">Reference inputs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/distance.html">
+ <span class="dropdown-text">Distance</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/soil.html">
+ <span class="dropdown-text">Soil</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/relief.html">
+ <span class="dropdown-text">Relief</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../en/crop.html">
+ <span class="dropdown-text">Crop cover</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../en/output.html"> 
+<span class="menu-text">Output</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-language" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-translate" role="img">
+</i> 
+ <span class="menu-text">Language</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-language">    
+        <li>
+    <a class="dropdown-item" href="../en/index.html">
+ <span class="dropdown-text">English</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../uk/index.html">
+ <span class="dropdown-text">Українська</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/EBukin/ukrMassValuationSpatialExtract"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#порядок-запуску" id="toc-порядок-запуску" class="nav-link active" data-scroll-target="#порядок-запуску">Порядок запуску</a></li>
+  <li><a href="#потік-даних" id="toc-потік-даних" class="nav-link" data-scroll-target="#потік-даних">Потік даних</a></li>
+  <li><a href="#правила-побудови-коду" id="toc-правила-побудови-коду" class="nav-link" data-scroll-target="#правила-побудови-коду">Правила побудови коду</a></li>
+  <li><a href="#скрипт-налаштування" id="toc-скрипт-налаштування" class="nav-link" data-scroll-target="#скрипт-налаштування">Скрипт налаштування</a></li>
+  <li><a href="#скрипт-завантаження" id="toc-скрипт-завантаження" class="nav-link" data-scroll-target="#скрипт-завантаження">Скрипт завантаження</a></li>
+  <li><a href="#скрипт-обєднання" id="toc-скрипт-обєднання" class="nav-link" data-scroll-target="#скрипт-обєднання">Скрипт об’єднання</a></li>
+  <li><a href="#скрипт-описової-статистики" id="toc-скрипт-описової-статистики" class="nav-link" data-scroll-target="#скрипт-описової-статистики">Скрипт описової статистики</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Конвеєр обробки</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Проєкт складається з коротких пронумерованих скриптів R у корені проєкту. Кожен запускається через <code>source()</code> з кореня проєкту і спершу підключає <code>00-setup.R</code>. Кожен скрипт вилучення записує одну довгу таблицю до <code>data/interim/</code>; <code>21-combine.R</code> об’єднує їх у підсумкову таблицю.</p>
+<section id="порядок-запуску" class="level2">
+<h2 class="anchored" data-anchor-id="порядок-запуску">Порядок запуску</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Скрипт</th>
+<th>Вхід</th>
+<th>Вихід</th>
+<th>Призначення</th>
+<th>Час</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>00-setup.R</code></td>
+<td>—</td>
+<td>пакети, параметри та шляхи в сесії; вихідні папки</td>
+<td>Спільне налаштування, яке підключає кожен скрипт</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td><code>00b-download.R</code></td>
+<td>інтернет</td>
+<td><code>data/raw/cod-ab/</code>, <code>data/raw/dem/GLO-30/</code>, <code>data/interim/oblasts.gpkg</code>, <code>data/interim/dem.vrt</code></td>
+<td>Одноразове завантаження публічних вхідних даних; наявні файли пропускаються</td>
+<td>8 с (з кешу)</td>
+</tr>
+<tr class="odd">
+<td><code>01-simulate-reference.R</code></td>
+<td><code>oblasts.gpkg</code>, глина ґрунту 0–5 см, посівний покрив 2024</td>
+<td><code>data/clean/reference/parcels.parquet</code>, <code>elevators.parquet</code>, <code>roads.parquet</code></td>
+<td>Моделювання фіксованих еталонних вхідних даних. <strong>Запущено один раз; не входить до звичайного запуску</strong></td>
+<td>7 с</td>
+</tr>
+<tr class="even">
+<td><code>02-diagnostics.R</code></td>
+<td><code>oblasts.gpkg</code>, еталонні файли, глина ґрунту 0–5 см</td>
+<td><code>output/figures/parcels-map.png</code>, <code>parcels-zoom.png</code></td>
+<td>Карти еталонних вхідних даних; виведення кількості та площ за типом ділянки й областю</td>
+<td>17 с</td>
+</tr>
+<tr class="odd">
+<td><code>03-distance.R</code></td>
+<td>еталонні файли</td>
+<td><code>data/interim/long_distance.parquet</code>, <code>output/tables/distance_sphere_vs_ellipsoid.csv</code></td>
+<td>Відстань до найближчого елеватора, магістральної та місцевої дороги</td>
+<td>40 с</td>
+</tr>
+<tr class="even">
+<td><code>04-soil.R</code></td>
+<td>ділянки, <code>oblasts.gpkg</code>, 28 растрів SoilGrids</td>
+<td><code>data/interim/soil_topsoil_0_30cm.tif</code>, <code>long_soil.parquet</code></td>
+<td>Властивості верхнього шару ґрунту 0–30 см, середнє по полігону та значення в центроїді, заповнення NoData</td>
+<td>30 с</td>
+</tr>
+<tr class="odd">
+<td><code>05-relief.R</code></td>
+<td>ділянки, <code>dem.vrt</code></td>
+<td><code>data/interim/long_relief.parquet</code></td>
+<td>Висота, крутизна схилу та експозиція по полігону ділянки</td>
+<td>40 с</td>
+</tr>
+<tr class="even">
+<td><code>06-crop.R</code></td>
+<td>ділянки, карти посівного покриву 2019–2024</td>
+<td><code>data/interim/long_crop.parquet</code></td>
+<td>Частка ділянки в кожній із 7 груп посівного покриву, 2019–2024</td>
+<td>32 с</td>
+</tr>
+<tr class="odd">
+<td><code>07-crop-2025.R</code></td>
+<td>ділянки, літня та зимова карти посівного покриву 2025</td>
+<td><code>data/interim/long_crop_2025.parquet</code></td>
+<td>Частки груп посівного покриву у 2025 році, зимова карта має пріоритет над літньою</td>
+<td>17 с</td>
+</tr>
+<tr class="even">
+<td><code>21-combine.R</code></td>
+<td>п’ять файлів <code>long_*.parquet</code></td>
+<td><code>output/tables/spatial_covariates.parquet</code>, <code>spatial_covariates.csv</code></td>
+<td>Об’єднання та перевірка: 81 змінна на ділянку</td>
+<td>10 с</td>
+</tr>
+<tr class="odd">
+<td><code>22-descriptives.R</code></td>
+<td><code>spatial_covariates.parquet</code>, ділянки</td>
+<td>зведені таблиці <code>output/tables/*.csv</code>, <code>output/figures/soil_centroid_vs_polygon.png</code></td>
+<td>Описова статистика</td>
+<td>10 с</td>
+</tr>
+</tbody>
+</table>
+<p>Час орієнтовний, за одним запуском на ноутбуці з Windows, з GLO-30 і растрами на локальному диску. Повний запуск без завантажень триває близько 3–4 хвилин.</p>
+</section>
+<section id="потік-даних" class="level2">
+<h2 class="anchored" data-anchor-id="потік-даних">Потік даних</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  subgraph provided["Надаєте ви"]
+    soil[("SoilGrids&lt;br/&gt;28 растрів")]
+    crop[("Карти посівного покриву&lt;br/&gt;2019–2025")]
+  end
+  subgraph downloaded["00b-download.R"]
+    codab[("COD-AB&lt;br/&gt;oblasts.gpkg")]
+    dem[("Copernicus DEM&lt;br/&gt;dem.vrt")]
+  end
+  ref["01-simulate-reference.R&lt;br/&gt;(запущено один раз)"]
+  refdata[("ділянки, елеватори,&lt;br/&gt;дороги (у репозиторії)")]
+  diag["02-diagnostics.R"]
+  dist["03-distance.R"]
+  soilsc["04-soil.R"]
+  relief["05-relief.R"]
+  crop1924["06-crop.R"]
+  crop25["07-crop-2025.R"]
+  comb["21-combine.R"]
+  desc["22-descriptives.R"]
+  out[("spatial_covariates.parquet&lt;br/&gt;81 000 рядків")]
+  figs[("таблиці та рисунки&lt;br/&gt;output/")]
+
+  codab --&gt; ref
+  soil --&gt; ref
+  crop --&gt; ref
+  ref --&gt; refdata
+  refdata --&gt; diag
+  codab --&gt; diag
+  refdata --&gt; dist
+  refdata --&gt; soilsc
+  soil --&gt; soilsc
+  codab --&gt; soilsc
+  refdata --&gt; relief
+  dem --&gt; relief
+  refdata --&gt; crop1924
+  crop --&gt; crop1924
+  refdata --&gt; crop25
+  crop --&gt; crop25
+  dist --&gt; comb
+  soilsc --&gt; comb
+  relief --&gt; comb
+  crop1924 --&gt; comb
+  crop25 --&gt; comb
+  comb --&gt; out
+  out --&gt; desc
+  diag --&gt; figs
+  desc --&gt; figs
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="правила-побудови-коду" class="level2">
+<h2 class="anchored" data-anchor-id="правила-побудови-коду">Правила побудови коду</h2>
+<ul>
+<li><strong>Простий код для початківців.</strong> tidyverse, <code>sf</code>, <code>terra</code> та <code>exactextractr</code>; короткі скрипти й мало коментарів. Жодних допоміжних функцій, коду пакетів чи регулярних виразів. Шляхи до файлів, позначки років та імена змінних записано повністю, а кожен рік посівного покриву має власний блок.</li>
+<li><strong>Жодного перепроєктування чи передискретизації растрів.</strong> Натомість кожне вилучення трансформує ділянки до власної системи координат растра. Єдині растрові операції — віртуальна мозаїка ЦМВ, <code>crop()</code>, попіксельна арифметика над растрами зі спільною сіткою та <code>terrain()</code>.</li>
+<li><strong>Проєкції.</strong> <code>crs_work &lt;- "EPSG:3035"</code> (рівновелика проєкція, метри) використовується для побудови форм ділянок, розрахунку <code>area_ha</code> та побудови карт. Відстані вимірюються на сфері, в EPSG:4326.</li>
+<li><strong>Одна довга таблиця.</strong> Стовпці <code>parcel_id | variable | value | source</code>. Кожен метод вимірювання є окремою змінною (<code>_mean</code>, <code>_centroid</code>, <code>_edge</code>, <code>_max</code>, <code>_range</code>).</li>
+<li><strong>Контрольні перевірки.</strong> Скрипти зупиняються через <code>cli_abort()</code>, коли перевірка не проходить: кількість рядків, пропущені значення, діапазони значень.</li>
+</ul>
+</section>
+<section id="скрипт-налаштування" class="level2">
+<h2 class="anchored" data-anchor-id="скрипт-налаштування">Скрипт налаштування</h2>
+<p>Усі параметри та шляхи зосереджено в <code>00-setup.R</code>:</p>
+<ul>
+<li><code>n_parcels &lt;- 1000</code></li>
+<li><code>study_oblast_en &lt;- "Poltavska"</code> (англійська назва Полтавської області в COD-AB)</li>
+<li><code>crs_work &lt;- "EPSG:3035"</code></li>
+<li><code>dem_product &lt;- "GLO-30"</code> (або <code>"GLO-90"</code>)</li>
+<li><code>flat_slope_deg &lt;- 0.5</code></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 00-setup.R</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In:  nothing (checks that the soil folder and the 8 crop rasters exist)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Out: packages, parameters and path objects in the session; creates the reference, interim and output folders</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Purpose: shared setup, sourced first by every numbered script.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(exactextractr)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(geoarrow)   <span class="co"># GDAL has no Parquet driver here: GeoParquet is read and written with geoarrow + arrow</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(h3o)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(curl)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cli)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lwgeom)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">sf_use_s2</span>(<span class="cn">TRUE</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Paths are relative to the project root, so scripts must run from there</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">"00-setup.R"</span>)) <span class="fu">cli_abort</span>(<span class="st">"Run the scripts from the project root folder."</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters ------------------------------------------------------------------</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>n_parcels <span class="ot">&lt;-</span> <span class="dv">1000</span>                <span class="co"># number of simulated reference parcels</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>study_oblast_en <span class="ot">&lt;-</span> <span class="st">"Poltavska"</span>   <span class="co"># Poltava oblast (UA53); COD-AB uses the adjectival English name "Poltavska"</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>crs_work <span class="ot">&lt;-</span> <span class="st">"EPSG:3035"</span>          <span class="co"># equal-area CRS in metres, for parcel shapes, areas and maps</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>dem_product <span class="ot">&lt;-</span> <span class="st">"GLO-30"</span>          <span class="co"># Copernicus DEM product: "GLO-30" (default) or "GLO-90"</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>flat_slope_deg <span class="ot">&lt;-</span> <span class="fl">0.5</span>            <span class="co"># pixels with a slope below this (degrees) count as flat</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Input folders (outside the repo, read-only) ---------------------------------</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>soil_dir <span class="ot">&lt;-</span> <span class="st">"C:/Users/wb532966/OneDrive - WBG/DEC/data-EB/ukrSoilgridsData/data-raw/ukr"</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>crop_dir <span class="ot">&lt;-</span> <span class="st">"C:/Users/wb532966/OneDrive - WBG/DEC/data-EB/ukrCropCover/original-crop-cover-maps"</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>crop_2019 <span class="ot">&lt;-</span> <span class="fu">file.path</span>(crop_dir, <span class="st">"GEE_15102019.tif"</span>)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>crop_2020 <span class="ot">&lt;-</span> <span class="fu">file.path</span>(crop_dir, <span class="st">"ukr_2020.tif"</span>)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>crop_2021 <span class="ot">&lt;-</span> <span class="fu">file.path</span>(crop_dir, <span class="st">"Ukr_October2021.tif"</span>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>crop_2022 <span class="ot">&lt;-</span> <span class="fu">file.path</span>(crop_dir, <span class="st">"Ukraine_August2022_corr.tif"</span>)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>crop_2023 <span class="ot">&lt;-</span> <span class="fu">file.path</span>(crop_dir, <span class="st">"Ukraine_2023_01_September.tif"</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>crop_2024 <span class="ot">&lt;-</span> <span class="fu">file.path</span>(crop_dir, <span class="st">"Ukraine_september_2024.tif"</span>)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>crop_2025_summer <span class="ot">&lt;-</span> <span class="fu">file.path</span>(crop_dir, <span class="st">"SummerMap_Ukraine_2025_WB.tif"</span>)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>crop_2025_winter <span class="ot">&lt;-</span> <span class="fu">file.path</span>(crop_dir, <span class="st">"Winter2025_Rape_Cereal.tif"</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(soil_dir)) <span class="fu">cli_abort</span>(<span class="st">"Soil folder not found: {.path {soil_dir}}"</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(crop_2019)) <span class="fu">cli_abort</span>(<span class="st">"Crop map not found: {.path {crop_2019}}"</span>)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(crop_2020)) <span class="fu">cli_abort</span>(<span class="st">"Crop map not found: {.path {crop_2020}}"</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(crop_2021)) <span class="fu">cli_abort</span>(<span class="st">"Crop map not found: {.path {crop_2021}}"</span>)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(crop_2022)) <span class="fu">cli_abort</span>(<span class="st">"Crop map not found: {.path {crop_2022}}"</span>)</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(crop_2023)) <span class="fu">cli_abort</span>(<span class="st">"Crop map not found: {.path {crop_2023}}"</span>)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(crop_2024)) <span class="fu">cli_abort</span>(<span class="st">"Crop map not found: {.path {crop_2024}}"</span>)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(crop_2025_summer)) <span class="fu">cli_abort</span>(<span class="st">"Crop map not found: {.path {crop_2025_summer}}"</span>)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(crop_2025_winter)) <span class="fu">cli_abort</span>(<span class="st">"Crop map not found: {.path {crop_2025_winter}}"</span>)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Crop codes to groups, one table for every year (0 is NoData; unlisted codes become "other")</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>crop_groups <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>code, <span class="sc">~</span>group,</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>,  <span class="st">"built"</span>,</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>,  <span class="st">"ag"</span>,  <span class="dv">3</span>,  <span class="st">"ag"</span>,  <span class="dv">4</span>,  <span class="st">"ag"</span>,  <span class="dv">5</span>,  <span class="st">"ag"</span>,  <span class="dv">6</span>,  <span class="st">"ag"</span>,  <span class="dv">7</span>,  <span class="st">"ag"</span>,  <span class="dv">8</span>,  <span class="st">"ag"</span>,  <span class="dv">9</span>,  <span class="st">"ag"</span>,</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>  <span class="dv">15</span>, <span class="st">"ag"</span>,  <span class="dv">16</span>, <span class="st">"ag"</span>,  <span class="dv">17</span>, <span class="st">"ag"</span>,  <span class="dv">19</span>, <span class="st">"ag"</span>,  <span class="dv">21</span>, <span class="st">"ag"</span>,  <span class="dv">24</span>, <span class="st">"ag"</span>,  <span class="dv">26</span>, <span class="st">"ag"</span>,  <span class="dv">27</span>, <span class="st">"ag"</span>,</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>  <span class="dv">10</span>, <span class="st">"forest"</span>, <span class="dv">23</span>, <span class="st">"forest"</span>, <span class="dv">25</span>, <span class="st">"forest"</span>,</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  <span class="dv">11</span>, <span class="st">"grass"</span>,  <span class="dv">18</span>, <span class="st">"grass"</span>,</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>  <span class="dv">12</span>, <span class="st">"bare"</span>,   <span class="dv">20</span>, <span class="st">"bare"</span>,   <span class="dv">22</span>, <span class="st">"bare"</span>,</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>  <span class="dv">13</span>, <span class="st">"water"</span>,  <span class="dv">14</span>, <span class="st">"water"</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="co"># Downloaded inputs -----------------------------------------------------------</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>codab_dir <span class="ot">&lt;-</span> <span class="st">"data/raw/cod-ab"</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>dem_dir <span class="ot">&lt;-</span> <span class="st">"data/raw/dem"</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="co"># Reference inputs (simulated once, committed) --------------------------------</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>reference_dir <span class="ot">&lt;-</span> <span class="st">"data/clean/reference"</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>parcels_path <span class="ot">&lt;-</span> <span class="st">"data/clean/reference/parcels.parquet"</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>elevators_path <span class="ot">&lt;-</span> <span class="st">"data/clean/reference/elevators.parquet"</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>roads_path <span class="ot">&lt;-</span> <span class="st">"data/clean/reference/roads.parquet"</span></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="co"># Interim files ---------------------------------------------------------------</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>interim_dir <span class="ot">&lt;-</span> <span class="st">"data/interim"</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>oblasts_path <span class="ot">&lt;-</span> <span class="st">"data/interim/oblasts.gpkg"</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>dem_vrt_path <span class="ot">&lt;-</span> <span class="st">"data/interim/dem.vrt"</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>soil_topsoil_path <span class="ot">&lt;-</span> <span class="st">"data/interim/soil_topsoil_0_30cm.tif"</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>long_distance_path <span class="ot">&lt;-</span> <span class="st">"data/interim/long_distance.parquet"</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>long_soil_path <span class="ot">&lt;-</span> <span class="st">"data/interim/long_soil.parquet"</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>long_relief_path <span class="ot">&lt;-</span> <span class="st">"data/interim/long_relief.parquet"</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>long_crop_path <span class="ot">&lt;-</span> <span class="st">"data/interim/long_crop.parquet"</span></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>long_crop_2025_path <span class="ot">&lt;-</span> <span class="st">"data/interim/long_crop_2025.parquet"</span></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="co"># Outputs ---------------------------------------------------------------------</span></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>tables_dir <span class="ot">&lt;-</span> <span class="st">"output/tables"</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>figures_dir <span class="ot">&lt;-</span> <span class="st">"output/figures"</span></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>covariates_parquet_path <span class="ot">&lt;-</span> <span class="st">"output/tables/spatial_covariates.parquet"</span></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>covariates_csv_path <span class="ot">&lt;-</span> <span class="st">"output/tables/spatial_covariates.csv"</span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>distance_check_path <span class="ot">&lt;-</span> <span class="st">"output/tables/distance_sphere_vs_ellipsoid.csv"</span></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>soil_centroid_vs_polygon_path <span class="ot">&lt;-</span> <span class="st">"output/tables/soil_centroid_vs_polygon.csv"</span></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>crop_by_year_path <span class="ot">&lt;-</span> <span class="st">"output/tables/crop_by_year.csv"</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>distance_summary_path <span class="ot">&lt;-</span> <span class="st">"output/tables/distance_summary.csv"</span></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>relief_summary_path <span class="ot">&lt;-</span> <span class="st">"output/tables/relief_summary.csv"</span></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>soil_source_by_case_path <span class="ot">&lt;-</span> <span class="st">"output/tables/soil_source_by_case.csv"</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>parcels_map_path <span class="ot">&lt;-</span> <span class="st">"output/figures/parcels-map.png"</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>parcels_zoom_path <span class="ot">&lt;-</span> <span class="st">"output/figures/parcels-zoom.png"</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>soil_centroid_vs_polygon_png_path <span class="ot">&lt;-</span> <span class="st">"output/figures/soil_centroid_vs_polygon.png"</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(reference_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(interim_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(tables_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(figures_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Setup done: study oblast {study_oblast_en}, DEM {dem_product}, {n_parcels} parcels."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="скрипт-завантаження" class="level2">
+<h2 class="anchored" data-anchor-id="скрипт-завантаження">Скрипт завантаження</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 00b-download.R</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In:  internet only</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#      - OCHA COD-AB Ukraine admin boundaries, shapefile zip (81.5 MB), licence CC BY-IGO</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#        https://data.humdata.org/dataset/cod-ab-ukr</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#        -&gt; data/raw/cod-ab/ukr_admin_boundaries.shp.zip (ADM1 files unzipped next to it)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#      - Copernicus DEM GLO-30 (or GLO-90), tiles over Poltava oblast plus 10 km (about 12 tiles, 20-40 MB each for GLO-30)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#        licence: Copernicus DEM licence (free use, attribution "produced using Copernicus WorldDEM-30 (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018")</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#        https://copernicus-dem-30m.s3.amazonaws.com (GLO-30), https://copernicus-dem-90m.s3.amazonaws.com (GLO-90)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#        -&gt; data/raw/dem/GLO-30/&lt;tile id&gt;.tif</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Out: data/interim/oblasts.gpkg (all oblasts), data/interim/dem.vrt (virtual mosaic of the DEM tiles)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Purpose: download the public inputs once; existing files are skipped.</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"00-setup.R"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(codab_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="fu">file.path</span>(dem_dir, dem_product), <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> curl<span class="sc">::</span><span class="fu">new_handle</span>(<span class="at">ssl_options =</span> <span class="dv">2</span>)  <span class="co"># this network cannot check certificate revocation</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># COD-AB oblast boundaries (ADM1) ---------------------------------------------</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>codab_url <span class="ot">&lt;-</span> <span class="st">"https://data.humdata.org/dataset/d23f529f-31e4-4021-a65b-13987e5cfb42/resource/2b38131d-5dd6-4b0f-b4c6-4aecc67f179d/download/ukr_admin_boundaries.shp.zip"</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>codab_zip <span class="ot">&lt;-</span> <span class="fu">file.path</span>(codab_dir, <span class="st">"ukr_admin_boundaries.shp.zip"</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>codab_shp <span class="ot">&lt;-</span> <span class="fu">file.path</span>(codab_dir, <span class="st">"ukr_admin1.shp"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(codab_zip)) curl<span class="sc">::</span><span class="fu">curl_download</span>(codab_url, codab_zip, <span class="at">handle =</span> h)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(codab_shp)) {</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unzip</span>(</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    codab_zip,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">files =</span> <span class="fu">c</span>(<span class="st">"ukr_admin1.shp"</span>, <span class="st">"ukr_admin1.shx"</span>, <span class="st">"ukr_admin1.dbf"</span>, <span class="st">"ukr_admin1.prj"</span>, <span class="st">"ukr_admin1.cpg"</span>),</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">exdir =</span> codab_dir</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>oblasts_raw <span class="ot">&lt;-</span> <span class="fu">st_read</span>(codab_shp, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"COD-AB ADM1 fields: {.field {names(oblasts_raw)}}"</span>)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>oblasts <span class="ot">&lt;-</span> oblasts_raw <span class="sc">|&gt;</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">oblast_pcode =</span> adm1_pcode, <span class="at">oblast_ua =</span> adm1_name1, <span class="at">oblast_en =</span> adm1_name) <span class="sc">|&gt;</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="dv">4326</span>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Renamed {.field adm1_pcode}, {.field adm1_name1}, {.field adm1_name} to {.field oblast_pcode}, {.field oblast_ua}, {.field oblast_en}."</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"{nrow(oblasts)} oblasts read (27 expected)."</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>study_oblast <span class="ot">&lt;-</span> oblasts <span class="sc">|&gt;</span> <span class="fu">filter</span>(oblast_en <span class="sc">==</span> study_oblast_en)</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(study_oblast) <span class="sc">!=</span> <span class="dv">1</span>) <span class="fu">cli_abort</span>(<span class="st">"Study oblast {study_oblast_en} not found in COD-AB."</span>)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(oblasts, oblasts_path, <span class="at">delete_dsn =</span> <span class="cn">TRUE</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Wrote {.path {oblasts_path}}."</span>)</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Copernicus DEM tiles --------------------------------------------------------</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>dem_products <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>product, <span class="sc">~</span>bucket,                                         <span class="sc">~</span>code,</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  <span class="st">"GLO-30"</span>, <span class="st">"https://copernicus-dem-30m.s3.amazonaws.com"</span>,  <span class="st">"10"</span>,</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  <span class="st">"GLO-90"</span>, <span class="st">"https://copernicus-dem-90m.s3.amazonaws.com"</span>,  <span class="st">"30"</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> <span class="fu">filter</span>(product <span class="sc">==</span> dem_product)</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 x 1 degree tile boxes over Ukraine, kept where they touch Poltava plus 10 km</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>study_buffer <span class="ot">&lt;-</span> <span class="fu">st_buffer</span>(study_oblast, <span class="dv">10000</span>)</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>tiles <span class="ot">&lt;-</span> <span class="fu">st_make_grid</span>(<span class="at">cellsize =</span> <span class="dv">1</span>, <span class="at">offset =</span> <span class="fu">c</span>(<span class="dv">22</span>, <span class="dv">44</span>), <span class="at">n =</span> <span class="fu">c</span>(<span class="dv">19</span>, <span class="dv">9</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>tiles <span class="ot">&lt;-</span> tiles[<span class="fu">lengths</span>(<span class="fu">st_intersects</span>(tiles, study_buffer)) <span class="sc">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Lower-left corner of each tile, from its centre</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>tile_centres <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(<span class="fu">st_centroid</span>(tiles))</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>lon <span class="ot">&lt;-</span> <span class="fu">round</span>(tile_centres[, <span class="st">"X"</span>] <span class="sc">-</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>lat <span class="ot">&lt;-</span> <span class="fu">round</span>(tile_centres[, <span class="st">"Y"</span>] <span class="sc">-</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>dem_tiles <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">str_c</span>(<span class="st">"Copernicus_DSM_COG_"</span>, dem_products<span class="sc">$</span>code, <span class="st">"_N"</span>, lat, <span class="st">"_00_E"</span>, <span class="fu">sprintf</span>(<span class="st">"%03d"</span>, lon), <span class="st">"_00_DEM"</span>),</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> <span class="fu">str_c</span>(dem_products<span class="sc">$</span>bucket, <span class="st">"/"</span>, id, <span class="st">"/"</span>, id, <span class="st">".tif"</span>),</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>  <span class="at">dest =</span> <span class="fu">file.path</span>(dem_dir, dem_product, <span class="fu">str_c</span>(id, <span class="st">".tif"</span>))</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"{nrow(dem_tiles)} {dem_product} tiles intersect {study_oblast_en} plus 10 km."</span>)</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Download only the tiles not on disk yet (multi_download takes handle options, not a handle)</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>to_get <span class="ot">&lt;-</span> dem_tiles <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">file.exists</span>(dest))</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"{nrow(to_get)} tiles to download."</span>)</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> curl<span class="sc">::</span><span class="fu">multi_download</span>(to_get<span class="sc">$</span>url, to_get<span class="sc">$</span>dest, <span class="at">progress =</span> <span class="cn">FALSE</span>, <span class="at">ssl_options =</span> <span class="dv">2</span>)</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="co"># A failed request (e.g. 404 for a sea tile) leaves an error page on disk: remove it</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>failed <span class="ot">&lt;-</span> res <span class="sc">|&gt;</span> <span class="fu">filter</span>(status_code <span class="sc">!=</span> <span class="dv">200</span>)</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(failed<span class="sc">$</span>destfile[<span class="fu">file.exists</span>(failed<span class="sc">$</span>destfile)])</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(failed) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">cli_warn</span>(<span class="st">"{nrow(failed)} tile{?s} not downloaded: {.url {failed$url}}"</span>)</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>files_ok <span class="ot">&lt;-</span> dem_tiles<span class="sc">$</span>dest[<span class="fu">file.exists</span>(dem_tiles<span class="sc">$</span>dest)]</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"{length(files_ok)} of {nrow(dem_tiles)} tiles on disk."</span>)</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="co"># The mosaic uses the finest tile grid (1 arc-second). Tiles north of 50 N have coarser</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="co"># longitude spacing; GDAL repeats their pixels on that grid on the fly (nearest neighbour)</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>dem <span class="ot">&lt;-</span> <span class="fu">vrt</span>(files_ok, <span class="at">filename =</span> dem_vrt_path, <span class="at">options =</span> <span class="fu">c</span>(<span class="st">"-resolution"</span>, <span class="st">"highest"</span>), <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Wrote {.path {dem_vrt_path}}."</span>)</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional: real OSM roads instead of the simulated ones ----------------------</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="co"># osm_lines &lt;- osmextract::oe_get("Ukraine", layer = "lines", download_directory = "data/raw/osm")</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="co"># osm_main  &lt;- osm_lines |&gt; filter(highway %in% c("motorway", "trunk", "primary"))</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="co"># osm_local &lt;- osm_lines |&gt; filter(highway %in% c("secondary", "tertiary"))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="скрипт-обєднання" class="level2">
+<h2 class="anchored" data-anchor-id="скрипт-обєднання">Скрипт об’єднання</h2>
+<p><code>21-combine.R</code> об’єднує п’ять довгих таблиць і зупиняється, якщо будь-яка пара ділянка × змінна трапляється двічі, якщо будь-яке значення пропущене, якщо <code>source</code> має значення поза чотирма рівнями або якщо ділянка не має рівно 81 змінної.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 21-combine.R</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In:  data/interim/long_distance.parquet, long_soil.parquet, long_relief.parquet, long_crop.parquet, long_crop_2025.parquet</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Out: output/tables/spatial_covariates.parquet, output/tables/spatial_covariates.csv</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Purpose: bind the five long tables into one table of 81 covariates per parcel and check it.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"00-setup.R"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>long_distance <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(long_distance_path)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>long_soil <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(long_soil_path)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>long_relief <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(long_relief_path)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>long_crop <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(long_crop_path)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>long_crop_2025 <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(long_crop_2025_path)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>covariates <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(long_distance, long_soil, long_relief, long_crop, long_crop_2025) <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(parcel_id, variable, value, source) <span class="sc">|&gt;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(parcel_id, variable)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Checks ----------------------------------------------------------------------</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>n_duplicates <span class="ot">&lt;-</span> covariates <span class="sc">|&gt;</span> <span class="fu">count</span>(parcel_id, variable) <span class="sc">|&gt;</span> <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">nrow</span>()</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (n_duplicates <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">cli_abort</span>(<span class="st">"{n_duplicates} parcel x variable combinations appear more than once."</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">anyNA</span>(covariates)) <span class="fu">cli_abort</span>(<span class="st">"The combined table has missing values."</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(covariates<span class="sc">$</span>source <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"observed"</span>, <span class="st">"h3_6"</span>, <span class="st">"h3_5"</span>, <span class="st">"oblast"</span>))) <span class="fu">cli_abort</span>(<span class="st">"{.field source} has values outside observed, h3_6, h3_5, oblast."</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>variables_per_parcel <span class="ot">&lt;-</span> covariates <span class="sc">|&gt;</span> <span class="fu">count</span>(parcel_id)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">any</span>(variables_per_parcel<span class="sc">$</span>n <span class="sc">!=</span> <span class="dv">81</span>)) <span class="fu">cli_abort</span>(<span class="st">"Not every parcel has 81 variables."</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">n_distinct</span>(covariates<span class="sc">$</span>variable) <span class="sc">!=</span> <span class="dv">81</span>) <span class="fu">cli_abort</span>(<span class="st">"The table does not have 81 distinct variables."</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary ---------------------------------------------------------------------</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Parcels: {n_distinct(covariates$parcel_id)}"</span>)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Variables: {n_distinct(covariates$variable)}"</span>)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Rows: {nrow(covariates)}"</span>)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">count</span>(covariates, source))</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Write -----------------------------------------------------------------------</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">write_parquet</span>(covariates, covariates_parquet_path)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(covariates, covariates_csv_path)</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Wrote {nrow(covariates)} rows to {.path {covariates_parquet_path}} and {.path {covariates_csv_path}}."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="скрипт-описової-статистики" class="level2">
+<h2 class="anchored" data-anchor-id="скрипт-описової-статистики">Скрипт описової статистики</h2>
+<p><code>22-descriptives.R</code> записує зведені таблиці, наведені на сторінках показників і на сторінці <a href="../uk/output.html">Результати</a>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 22-descriptives.R</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In:  output/tables/spatial_covariates.parquet, data/clean/reference/parcels.parquet</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Out: output/tables/soil_centroid_vs_polygon.csv, crop_by_year.csv, distance_summary.csv, relief_summary.csv,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      soil_source_by_case.csv; output/figures/soil_centroid_vs_polygon.png</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Purpose: descriptive statistics of the covariates, printed and saved.</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"00-setup.R"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>covariates <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(covariates_parquet_path)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>parcels <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(parcels_path, <span class="at">col_select =</span> <span class="fu">c</span>(parcel_id, case))   <span class="co"># attributes only, no geometry</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Soil: centroid value vs polygon mean -----------------------------------------</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Units are SoilGrids mapped units (see 04-soil.R)</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>soil_pairs <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>property,  <span class="sc">~</span>mean_var,                       <span class="sc">~</span>centroid_var,                       <span class="sc">~</span>label,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bdod"</span>,     <span class="st">"soil_bdod_0_30cm_mean"</span>,         <span class="st">"soil_bdod_0_30cm_centroid"</span>,         <span class="st">"bdod (cg/cm³)"</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"cec"</span>,      <span class="st">"soil_cec_0_30cm_mean"</span>,          <span class="st">"soil_cec_0_30cm_centroid"</span>,          <span class="st">"cec (mmol(c)/kg)"</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">"cfvo"</span>,     <span class="st">"soil_cfvo_0_30cm_mean"</span>,         <span class="st">"soil_cfvo_0_30cm_centroid"</span>,         <span class="st">"cfvo (cm³/dm³)"</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"clay"</span>,     <span class="st">"soil_clay_0_30cm_mean"</span>,         <span class="st">"soil_clay_0_30cm_centroid"</span>,         <span class="st">"clay (g/kg)"</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"nitrogen"</span>, <span class="st">"soil_nitrogen_0_30cm_mean"</span>,     <span class="st">"soil_nitrogen_0_30cm_centroid"</span>,     <span class="st">"nitrogen (cg/kg)"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ocd"</span>,      <span class="st">"soil_ocd_0_30cm_mean"</span>,          <span class="st">"soil_ocd_0_30cm_centroid"</span>,          <span class="st">"ocd (hg/m³)"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ocs"</span>,      <span class="st">"soil_ocs_0_30cm_mean"</span>,          <span class="st">"soil_ocs_0_30cm_centroid"</span>,          <span class="st">"ocs (t/ha)"</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">"phh2o"</span>,    <span class="st">"soil_phh2o_0_30cm_mean"</span>,        <span class="st">"soil_phh2o_0_30cm_centroid"</span>,        <span class="st">"phh2o (pH × 10)"</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">"sand"</span>,     <span class="st">"soil_sand_0_30cm_mean"</span>,         <span class="st">"soil_sand_0_30cm_centroid"</span>,         <span class="st">"sand (g/kg)"</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">"silt"</span>,     <span class="st">"soil_silt_0_30cm_mean"</span>,         <span class="st">"soil_silt_0_30cm_centroid"</span>,         <span class="st">"silt (g/kg)"</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>soil_mean <span class="ot">&lt;-</span> covariates <span class="sc">|&gt;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(soil_pairs, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"variable"</span> <span class="ot">=</span> <span class="st">"mean_var"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(parcel_id, property, label, <span class="at">mean_value =</span> value, <span class="at">mean_source =</span> source)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>soil_centroid <span class="ot">&lt;-</span> covariates <span class="sc">|&gt;</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(soil_pairs, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"variable"</span> <span class="ot">=</span> <span class="st">"centroid_var"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(parcel_id, property, <span class="at">centroid_value =</span> value, <span class="at">centroid_source =</span> source)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>soil_compare <span class="ot">&lt;-</span> soil_mean <span class="sc">|&gt;</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(soil_centroid, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"parcel_id"</span>, <span class="st">"property"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">observed =</span> mean_source <span class="sc">==</span> <span class="st">"observed"</span> <span class="sc">&amp;</span> centroid_source <span class="sc">==</span> <span class="st">"observed"</span>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(soil_compare) <span class="sc">!=</span> <span class="dv">10</span> <span class="sc">*</span> <span class="fu">n_distinct</span>(covariates<span class="sc">$</span>parcel_id)) <span class="fu">cli_abort</span>(<span class="st">"Soil pairs do not cover 10 properties for every parcel."</span>)</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>soil_stats_observed <span class="ot">&lt;-</span> soil_compare <span class="sc">|&gt;</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(observed) <span class="sc">|&gt;</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(property, label) <span class="sc">|&gt;</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">rows =</span> <span class="st">"observed"</span>,</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">pearson =</span> <span class="fu">cor</span>(mean_value, centroid_value),</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">spearman =</span> <span class="fu">cor</span>(mean_value, centroid_value, <span class="at">method =</span> <span class="st">"spearman"</span>),</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_abs_diff =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(centroid_value <span class="sc">-</span> mean_value)),</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>soil_stats_all <span class="ot">&lt;-</span> soil_compare <span class="sc">|&gt;</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(property, label) <span class="sc">|&gt;</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">rows =</span> <span class="st">"all"</span>,</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">pearson =</span> <span class="fu">cor</span>(mean_value, centroid_value),</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">spearman =</span> <span class="fu">cor</span>(mean_value, centroid_value, <span class="at">method =</span> <span class="st">"spearman"</span>),</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_abs_diff =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(centroid_value <span class="sc">-</span> mean_value)),</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>soil_stats <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(soil_stats_observed, soil_stats_all) <span class="sc">|&gt;</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(property, <span class="fu">desc</span>(rows))</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">anyNA</span>(soil_stats<span class="sc">$</span>pearson) <span class="sc">||</span> <span class="fu">anyNA</span>(soil_stats<span class="sc">$</span>spearman)) <span class="fu">cli_abort</span>(<span class="st">"Some soil correlations are missing."</span>)</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">abs</span>(soil_stats<span class="sc">$</span>pearson) <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">||</span> <span class="fu">any</span>(<span class="fu">abs</span>(soil_stats<span class="sc">$</span>spearman) <span class="sc">&gt;</span> <span class="dv">1</span>)) <span class="fu">cli_abort</span>(<span class="st">"Soil correlations outside [-1, 1]."</span>)</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(soil_stats, <span class="at">n =</span> <span class="cn">Inf</span>)</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(soil_stats, soil_centroid_vs_polygon_path)</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatter plot, one facet per property. geom_blank() with x and y swapped gives</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="co"># each facet the same range on both axes, so the 45° line is a true diagonal.</span></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>soil_plot_data <span class="ot">&lt;-</span> soil_compare <span class="sc">|&gt;</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fill =</span> <span class="fu">if_else</span>(observed, <span class="st">"Observed"</span>, <span class="st">"Filled (H3 or oblast mean)"</span>))</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>soil_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(soil_plot_data, <span class="fu">aes</span>(<span class="at">x =</span> mean_value, <span class="at">y =</span> centroid_value)) <span class="sc">+</span></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_blank</span>(<span class="fu">aes</span>(<span class="at">x =</span> centroid_value, <span class="at">y =</span> mean_value)) <span class="sc">+</span></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"#52514e"</span>, <span class="at">linewidth =</span> <span class="fl">0.4</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> fill), <span class="at">size =</span> <span class="fl">0.9</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(label), <span class="at">ncol =</span> <span class="dv">5</span>, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(</span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Observed"</span> <span class="ot">=</span> <span class="st">"#2a78d6"</span>, <span class="st">"Filled (H3 or oblast mean)"</span> <span class="ot">=</span> <span class="st">"#eb6834"</span>),</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"Observed"</span>, <span class="st">"Filled (H3 or oblast mean)"</span>)</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">override.aes =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">alpha =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Soil 0–30 cm: value at the parcel centroid vs mean over the parcel polygon"</span>,</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"One point per parcel; dashed line: centroid = polygon mean. SoilGrids mapped units."</span>,</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Polygon mean"</span>,</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Centroid value"</span>,</span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="cn">NULL</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.justification =</span> <span class="st">"left"</span>,</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="dv">0</span>),</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">colour =</span> <span class="cn">NA</span>)</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(soil_centroid_vs_polygon_png_path, soil_plot, <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">6</span>, <span class="at">dpi =</span> <span class="dv">200</span>, <span class="at">bg =</span> <span class="st">"white"</span>)</span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a><span class="co"># Crop share by group and year ---------------------------------------------------</span></span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a><span class="co"># Variable names look like crop_ag_2019: split them at "_" into group and year</span></span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>crop_by_year <span class="ot">&lt;-</span> covariates <span class="sc">|&gt;</span></span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">startsWith</span>(variable, <span class="st">"crop_"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_wider_delim</span>(variable, <span class="at">delim =</span> <span class="st">"_"</span>, <span class="at">names =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">"group"</span>, <span class="st">"year"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, group) <span class="sc">|&gt;</span></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_share =</span> <span class="fu">mean</span>(value),</span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_share =</span> <span class="fu">median</span>(value),</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>    <span class="at">share_parcels_above_half =</span> <span class="fu">mean</span>(value <span class="sc">&gt;</span> <span class="fl">0.5</span>),   <span class="co"># for ag: share of parcels with crop_ag &gt; 0.5</span></span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year, group)</span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(crop_by_year, <span class="at">n =</span> <span class="cn">Inf</span>)</span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Share of parcels with {.field crop_ag} &gt; 0.5, by year:"</span>)</span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">filter</span>(crop_by_year, group <span class="sc">==</span> <span class="st">"ag"</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(year, share_parcels_above_half))</span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(crop_by_year, crop_by_year_path)</span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a><span class="co"># Distance quantiles (metres) ----------------------------------------------------</span></span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>distance_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dist_elevator_centroid"</span>, <span class="st">"dist_elevator_edge"</span>,</span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dist_road_main_centroid"</span>, <span class="st">"dist_road_main_edge"</span>,</span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dist_road_local_centroid"</span>, <span class="st">"dist_road_local_edge"</span></span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>distance_summary <span class="ot">&lt;-</span> covariates <span class="sc">|&gt;</span></span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(variable <span class="sc">%in%</span> distance_vars) <span class="sc">|&gt;</span></span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(variable) <span class="sc">|&gt;</span></span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>    <span class="at">unit =</span> <span class="st">"m"</span>,</span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>    <span class="at">min =</span> <span class="fu">min</span>(value),</span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">p05 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.05</span>),</span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">p25 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.25</span>),</span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">median =</span> <span class="fu">median</span>(value),</span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(value),</span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">p75 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.75</span>),</span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a>    <span class="at">p95 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.95</span>),</span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>    <span class="at">max =</span> <span class="fu">max</span>(value)</span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(distance_summary, <span class="at">width =</span> <span class="cn">Inf</span>)</span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(distance_summary, distance_summary_path)</span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a><span class="co"># Relief quantiles -----------------------------------------------------------------</span></span>
+<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a>relief_units <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>variable,             <span class="sc">~</span>unit,</span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relief_elev_mean"</span>,    <span class="st">"m"</span>,</span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relief_elev_range"</span>,   <span class="st">"m"</span>,</span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relief_slope_mean"</span>,   <span class="st">"degrees"</span>,</span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relief_slope_max"</span>,    <span class="st">"degrees"</span>,</span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relief_aspect_south"</span>, <span class="st">"index -1 to 1"</span>,</span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relief_aspect_east"</span>,  <span class="st">"index -1 to 1"</span></span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a>relief_summary <span class="ot">&lt;-</span> covariates <span class="sc">|&gt;</span></span>
+<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(relief_units, <span class="at">by =</span> <span class="st">"variable"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(variable, unit) <span class="sc">|&gt;</span></span>
+<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a>    <span class="at">min =</span> <span class="fu">min</span>(value),</span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a>    <span class="at">p05 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.05</span>),</span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a>    <span class="at">p25 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.25</span>),</span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>    <span class="at">median =</span> <span class="fu">median</span>(value),</span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(value),</span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>    <span class="at">p75 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.75</span>),</span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>    <span class="at">p95 =</span> <span class="fu">quantile</span>(value, <span class="fl">0.95</span>),</span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>    <span class="at">max =</span> <span class="fu">max</span>(value),</span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(relief_summary, <span class="at">width =</span> <span class="cn">Inf</span>)</span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(relief_summary, relief_summary_path)</span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a><span class="co"># Soil source by parcel case ---------------------------------------------------------</span></span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a><span class="co"># Counts soil rows (parcel x soil variable), 20 per parcel</span></span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a>soil_source_by_case <span class="ot">&lt;-</span> covariates <span class="sc">|&gt;</span></span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(variable <span class="sc">%in%</span> <span class="fu">c</span>(soil_pairs<span class="sc">$</span>mean_var, soil_pairs<span class="sc">$</span>centroid_var)) <span class="sc">|&gt;</span></span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(parcels, <span class="at">by =</span> <span class="st">"parcel_id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">source =</span> <span class="fu">factor</span>(source, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"observed"</span>, <span class="st">"h3_6"</span>, <span class="st">"h3_5"</span>, <span class="st">"oblast"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(case, source, <span class="at">.drop =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> source, <span class="at">values_from =</span> n) <span class="sc">|&gt;</span></span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total =</span> observed <span class="sc">+</span> h3_6 <span class="sc">+</span> h3_5 <span class="sc">+</span> oblast)</span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(soil_source_by_case)</span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(soil_source_by_case, soil_source_by_case_path)</span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a><span class="fu">cli_inform</span>(<span class="st">"Descriptives written to {.path {tables_dir}} and {.path {soil_centroid_vs_polygon_png_path}}."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+// Language menu: "English" and "Українська" open the same page in the other
+// language folder (en/ <-> uk/). On Ukrainian pages, navbar page links go to uk/,
+// and the navbar labels, site title and footer are shown in Ukrainian.
+document.addEventListener("DOMContentLoaded", function () {
+  var path = window.location.pathname;
+  var inEn = path.indexOf("/en/") >= 0;
+  var inUk = path.indexOf("/uk/") >= 0;
+  var page = (inEn || inUk) ? (path.substring(path.lastIndexOf("/") + 1) || "index.html") : "index.html";
+  var prefix = (inEn || inUk) ? "../" : "";
+  var labelsUk = {
+    "Home": "Головна",
+    "Data": "Дані",
+    "Pipeline": "Конвеєр обробки",
+    "Indicators": "Показники",
+    "Reference inputs": "Еталонні вхідні дані",
+    "Distance": "Відстані",
+    "Soil": "Ґрунт",
+    "Relief": "Рельєф",
+    "Crop cover": "Посівний покрив",
+    "Output": "Результати",
+    "Language": "Мова"
+  };
+  document.querySelectorAll("#quarto-header a[href]").forEach(function (a) {
+    var text = a.textContent.trim();
+    var href = a.getAttribute("href");
+    if (text === "English") {
+      a.setAttribute("href", prefix + "en/" + page);
+    } else if (text === "Українська") {
+      a.setAttribute("href", prefix + "uk/" + page);
+    } else if (inUk && href.indexOf("://") < 0 && href.indexOf("en/") >= 0) {
+      a.setAttribute("href", href.replace("en/", "uk/"));
+    }
+  });
+  if (inUk) {
+    document.querySelectorAll("#quarto-header .menu-text, #quarto-header .dropdown-text").forEach(function (span) {
+      var text = span.textContent.trim();
+      if (labelsUk[text]) span.textContent = labelsUk[text];
+    });
+    var brand = document.querySelector("#quarto-header a.navbar-brand");
+    if (brand) brand.setAttribute("href", "index.html");
+    var title = document.querySelector("#quarto-header .navbar-title");
+    if (title) title.textContent = "Просторові коваріати, Україна";
+    var footer = document.querySelector(".nav-footer-left");
+    if (footer) footer.textContent = "Змодельовані еталонні ділянки; реальні публічні растри та растри користувача. Ліцензії див. на сторінці «Дані».";
+  }
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ebukin\.github\.io\/ukrMassValuationSpatialExtract\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Simulated reference parcels; real public and user-provided rasters. See the Data page for licences.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

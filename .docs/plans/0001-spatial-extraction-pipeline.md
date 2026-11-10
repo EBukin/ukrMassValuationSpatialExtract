@@ -570,7 +570,7 @@ Methodology from the user:
 
 ### T14: website, Ukrainian
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - Translate every `site/en/*.qmd` into `site/uk/*.qmd` (same file names), and set `lang: uk` in each.
   - Translate prose, headings, table headers and figure captions.
   - **Keep in English:** variable names, code, file names, package and function names, URLs.
@@ -585,7 +585,7 @@ Methodology from the user:
     - aspect = експозиція.
   - Embedded scripts use the same `#| file:` chunks.
   - Render.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - every English page has a Ukrainian counterpart;
   - the language switch works both ways on every page;
   - the render succeeds;
