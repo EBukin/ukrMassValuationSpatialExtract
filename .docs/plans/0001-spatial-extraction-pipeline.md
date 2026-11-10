@@ -432,7 +432,7 @@ Methodology from the user:
 - A parcel smaller than one pixel still gets values.
 - Output: complete values for every parcel.
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - **In:** parcels, `dem.vrt`. **Out:** `data/interim/long_relief.parquet`.
   - `dem <- crop(rast(dem_vrt_path), <parcels' extent + 0.02°>)`.
   - `terrain(dem, c("slope", "aspect"), unit = "degrees")`. For lon/lat input, terra computes cell distances on the ellipsoid; the verifier confirms this from terra's documentation and the header cites it.
@@ -451,7 +451,7 @@ Methodology from the user:
     | `relief_aspect_east` | coverage-weighted mean of `east`, −1 to 1 |
 
   - `if (anyNA(...)) cli_abort(...)`; `source = "observed"`.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - 6 rows per parcel, no NA;
   - aspect in [−1, 1], slope in [0, 90], range ≥ 0;
   - runs in under 600 s with GLO-30.
