@@ -458,7 +458,7 @@ Methodology from the user:
 
 ### T09: `06-crop.R` (2019–2024)
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - **In:** parcels, `crop_2019` … `crop_2024`, `crop_groups`. **Out:** `data/interim/long_crop.parquet`.
   - Six explicit blocks, the year written in full in each:
     1. `r <- rast(crop_2019); NAflag(r) <- 0`;
@@ -471,7 +471,7 @@ Methodology from the user:
     8. `mutate(variable = str_c("crop_", group, "_2019"))`.
   - While developing, run one block per call (600 s limit).
   - Comment: `"frac"` is the share of the parcel's classified (non-NoData) area; a parcel entirely on NoData gets 0 for all groups, and the count is printed.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - 7 rows per parcel-year, no NA;
   - shares in [0, 1], summing to 1 ± 0.01, or 0 if fully NoData (reported);
   - no `frac_0`;
