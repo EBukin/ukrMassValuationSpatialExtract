@@ -2,7 +2,7 @@
 
 - **Date:** 2026-11-10 (v3: Poltava study area, execution review, parallel R sessions, website)
 - **Author:** Eduard Bukin (drafted with Claude)
-- **Status:** draft
+- **Status:** active
 
 ## Goal
 
@@ -226,7 +226,7 @@ crop_groups <- tribble(
 
 ### T01: environment and checks
 
-- [ ] **Writer brief**, in its own R session:
+- [x] **Writer brief**, in its own R session:
   1. `renv::settings$snapshot.type("all")`.
   2. Install into the project library, one or a few packages per call (600 s limit): `tidyverse`, `sf`, `terra`, `exactextractr`, `arrow`, `geoarrow`, `h3o`, `curl`, `cli`, `lwgeom`, `osmextract`, `knitr`, `rmarkdown`. Then `renv::snapshot()`.
      - **No `h3jsr`**: it depends on V8 (JavaScript), which is fragile on Windows.
@@ -249,11 +249,11 @@ crop_groups <- tribble(
      - for the 8 crop files: CRS and extent;
      - for the 2025 summer and winter maps: origins, and their difference in metres.
   6. Write `.docs/notes/0001-input-raster-check.md` (template `.docs/_templates/note.md`) with all findings, including the chosen GeoParquet pair and the SSL method.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - `renv::status()` is clean and `renv.lock` lists the packages;
   - the GeoParquet round trip and the SSL test pass;
   - the note is complete.
-- [ ] **Stop points:**
+- [x] **Stop points:**
   - a package can't be installed;
   - no GeoParquet pair works;
   - the SSL test fails both ways;
@@ -261,7 +261,7 @@ crop_groups <- tribble(
 
 ### T02: `00-setup.R`
 
-- [ ] **Writer brief.** `00-setup.R` is sourced first by every script. It contains:
+- [x] **Writer brief.** `00-setup.R` is sourced first by every script. It contains:
   - `library()` for the T01 packages, excluding `osmextract`, `knitr` and `rmarkdown`; `sf_use_s2(TRUE)`.
   - Parameters, each with a one-line comment:
     - `n_parcels <- 1000`;
@@ -289,14 +289,14 @@ crop_groups <- tribble(
     - interim: `data/interim/oblasts.gpkg`, `dem.vrt`, `soil_topsoil_0_30cm.tif`, each `long_*.parquet`;
     - all output files.
   - `dir.create(..., recursive = TRUE, showWarnings = FALSE)` for the output folders.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - sources clean in a fresh session;
   - the 8 crop files and `soil_dir` exist; downloads and reference files are not checked here;
   - follows the design rules.
 
 ### T03: `00b-download.R` (runs alone)
 
-- [ ] **Writer brief.** The header lists each download's source URL, licence, size and destination. Each block skips existing files. One handle is used for all downloads, using T01's SSL method, with a comment explaining why: `h <- curl::new_handle(ssl_options = 2)  # this network cannot check certificate revocation`.
+- [x] **Writer brief.** The header lists each download's source URL, licence, size and destination. Each block skips existing files. One handle is used for all downloads, using T01's SSL method, with a comment explaining why: `h <- curl::new_handle(ssl_options = 2)  # this network cannot check certificate revocation`.
   - **COD-AB block:**
     - download the ADM1-containing zip (shapefile or geojson variant, whichever T01 confirms) into `codab_dir` and unzip;
     - rename fields to `oblast_pcode`, `oblast_ua`, `oblast_en`, and report the original names;
@@ -321,7 +321,7 @@ crop_groups <- tribble(
     - `file.remove()` the destinations whose `status_code != 200`, because a 404 leaves an error page on disk;
     - `vrt(files_ok, filename = dem_vrt_path)`, with **no** resolution or resampling options. A comment explains that the tiles north of 50°N have coarser longitude spacing, which GDAL repeats on the fly.
   - **Optional OSM roads**, commented out: `osmextract::oe_get("Ukraine", layer = "lines")`. Main = `motorway`, `trunk`, `primary`; local = `secondary`, `tertiary`; output to `data/raw/osm/`.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - `oblasts.gpkg` has the three fields and includes Poltava;
   - `rast(dem.vrt)` covers Poltava plus 10 km;
   - no stub files remain;
@@ -329,7 +329,7 @@ crop_groups <- tribble(
 
 ### T04: `01-simulate-reference.R` (run once, then committed)
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - **In:** `oblasts.gpkg`, `clay_0-5cm_mean.tif`, `crop_2024` (only to tell towns from water when checking). **Out:** the three reference files, written with T01's GeoParquet pair, in EPSG:4326.
   - Guard: `if (file.exists(parcels_path)) cli_abort("Reference inputs already exist. They are fixed: do not regenerate.")`. The header explains that this ran once to create the committed reference, and is not part of the normal run.
   - **While T04 is open**, writers may delete `data/clean/reference/*` before re-sourcing.
@@ -356,14 +356,14 @@ crop_groups <- tribble(
     - local: 50 lines of 5–20 km from random points in a random direction;
     - all clipped to Poltava and densified to ≤ 1 km (`st_segmentize(dfMaxLength = 1000)`), with `road_id` and `type`.
   - Print counts by case, an area summary, and road counts.
-- [ ] **Acceptance**, checked from the outputs; the verifier does not re-run the script and only confirms that the guard aborts:
+- [x] **Acceptance**, checked from the outputs; the verifier does not re-run the script and only confirms that the guard aborts:
   - 1,000 parcels with unique IDs and valid geometries;
   - at least 75 % in 2–4 ha, all in 1–10 ha;
   - every `border` parcel intersects Poltava and at least one neighbour;
   - at least 70 % of `nodata` parcels have more than 50 % of their area on soil NoData;
   - among `nodata` parcels, at least 30 have crop code 1 (built) as the majority pixel in 2024, and at least 30 have water (13 or 14) in the parcel or within 500 m. If either count is short, the writer adds targeted samples and reports it;
   - elevators and roads lie inside Poltava.
-- [ ] The map review is waived (see "Autonomy"). The verifier's checks decide.
+- [x] The map review is waived (see "Autonomy"). The verifier's checks decide.
 - [ ] **Commit point A** (after T05 passes): `data/clean/reference/*.parquet`, `00-setup.R`, `00b-download.R`, `01-simulate-reference.R`, `02-diagnostics.R`, `renv.lock`, `renv/settings.json`, `.docs/notes/0001-input-raster-check.md`, this plan.
 
 ### T05: `02-diagnostics.R`
