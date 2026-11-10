@@ -22,3 +22,6 @@ data/raw/*
 data/interim/*
 !data/raw/.gitkeep
 !data/interim/.gitkeep
+
+# Outputs too large to commit (the Parquet copy is committed)
+output/tables/spatial_covariates.csv

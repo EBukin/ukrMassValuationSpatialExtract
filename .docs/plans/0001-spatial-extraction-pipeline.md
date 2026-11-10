@@ -501,7 +501,7 @@ Methodology from the user:
 
 ### T11: `21-combine.R`
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - Bind the five `long_*.parquet` files.
   - Guard checks (`cli_abort()`):
     - one row per `parcel_id` × `variable`;
@@ -510,7 +510,7 @@ Methodology from the user:
     - 81 variables per parcel.
   - Write `spatial_covariates.parquet` and `.csv`, and add the CSV path to `.gitignore`.
   - Print parcels, variables, rows and rows by `source`.
-- [ ] **Acceptance:** 81,000 rows in both files; `.gitignore` updated.
+- [x] **Acceptance:** 81,000 rows in both files; `.gitignore` updated.
 
 ### T12: `22-descriptives.R`
 
