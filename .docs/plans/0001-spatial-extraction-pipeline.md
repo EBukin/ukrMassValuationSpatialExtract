@@ -514,7 +514,7 @@ Methodology from the user:
 
 ### T12: `22-descriptives.R`
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - **In:** `spatial_covariates.parquet`, parcels.
   - Soil centroid vs polygon:
     - a hard-coded 10-pair `tribble(mean_var, centroid_var)`;
@@ -526,8 +526,8 @@ Methodology from the user:
     - distance quantiles (`distance_summary.csv`);
     - relief quantiles (`relief_summary.csv`);
     - soil `source` × `case` (`soil_source_by_case.csv`).
-- [ ] **Acceptance:** all files exist; correlations in [−1, 1]; the PNG looks right.
-- [ ] **Commit point B:** scripts `03`–`07`, `21`, `22`, `.gitignore`, `output/tables/*.parquet`, the small `output/tables/*.csv` (not `spatial_covariates.csv`), `output/figures/*.png`, this plan.
+- [x] **Acceptance:** all files exist; correlations in [−1, 1]; the PNG looks right.
+- [x] **Commit point B:** scripts `03`–`07`, `21`, `22`, `.gitignore`, `output/tables/*.parquet`, the small `output/tables/*.csv` (not `spatial_covariates.csv`), `output/figures/*.png`, this plan.
 
 ### T13: website, English (Quarto)
 
