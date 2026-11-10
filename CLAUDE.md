@@ -24,7 +24,8 @@ Each document is `NNNN-short-name.md`, next number = highest existing + 1. Templ
 <!-- eb:data -->
 ## Data and outputs
 
-- `data/raw/`: source data as received. Read-only: never edit, rename or overwrite anything here.
+- `data/raw/`: source data as received. Never edit, rename or overwrite an existing file. Download scripts may add new source files in new subfolders (e.g. `data/raw/cod-ab/`, `data/raw/dem/`).
+- Reference inputs (simulated parcels, elevators, roads) are generated once by a dedicated script, saved as Parquet/GeoParquet and committed as a fixed reference. That script is not re-run in the normal pipeline.
 - `data/interim/`: intermediate files. Disposable, always regenerable from code.
 - `data/clean/`: analysis-ready data, produced by code from `data/raw/`.
 - Results: tables in `output/tables/`, figures in `output/figures/`. Everything under `output/` is produced by code and never edited by hand.
@@ -36,9 +37,12 @@ Each document is `NNNN-short-name.md`, next number = highest existing + 1. Templ
 - Do all R work through the `run-r` skill: Positron's MCP server (`mcp__positron__*`). It covers connecting the server when the tools are missing; do not fall back to `Rscript` or `mcp-repl`.
 - Prefer the `r-lib:*` skills, enabled for this project, over your own habits when writing R.
 - User-facing messages use cli: `cli_abort()`, `cli_warn()`, `cli_inform()`, never bare `stop()`, `warning()`, `message()`.
-- `R/` holds the package's functions only, one topic per file, roxygen-documented. Load them with `devtools::load_all()`.
-- `vignettes/` holds the scripts and documents (`.R`, `.qmd`, `.Rmd`) that call those functions and write to `output/`.
-- Build paths from the project root, not the script's folder.
+- The project is a set of short, numbered R scripts in the project root. Each is run with `source()` and sources `00-setup.R` first.
+- No helper functions, no `R/` package code, no vignettes. Only exceptions are those the plan in `.docs/plans/` allows.
+- No regular expressions, no clever loops. Paths, year labels and variable names are written out in full.
+- Each script header states In:, Out: and its purpose in one line.
+- Code is tidyverse + `sf` + `terra` + `exactextractr`, written for novices, with few short comments.
+- Build paths from the project root, never with `setwd()`.
 <!-- /eb:r -->
 
 <!-- eb:shiny -->
