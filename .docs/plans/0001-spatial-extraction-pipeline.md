@@ -2,7 +2,7 @@
 
 - **Date:** 2026-11-10 (v3: Poltava study area, execution review, parallel R sessions, website)
 - **Author:** Eduard Bukin (drafted with Claude)
-- **Status:** active
+- **Status:** done
 
 ## Goal
 
@@ -602,11 +602,11 @@ Methodology from the user:
 
 ### T16: full run and handover
 
-- [ ] **Verifier only**, in a fresh R session:
+- [x] **Verifier only**, in a fresh R session:
   1. Source, one script per call: `00-setup.R`, `02-diagnostics.R`, `03-distance.R`, `04-soil.R`, `05-relief.R`, `06-crop.R`, `07-crop-2025.R`, `21-combine.R`, `22-descriptives.R`.
   2. Skip `00b-download.R`, whose outputs exist. Confirm that `01-simulate-reference.R` aborts if sourced.
   3. Report the time per script, the final counts, any warnings, and whether the outputs differ from those committed at commit point B (they should be identical).
-- [ ] **Orchestrator:**
+- [x] **Orchestrator:**
   - fill in "Outcome" and set Status to `done`;
   - final commit point D (this plan) and push;
   - report to the user: what shipped, the site URL, how to verify, and the run times.
@@ -615,7 +615,23 @@ Methodology from the user:
 
 - Licence of the crop-cover maps (the site says "to be confirmed").
 - Scaling to 10,000 parcels or a larger area: a later decision. It would mean regenerating the reference set and committing it again.
+- About 89 simulated parcels sit on reservoir or water surfaces, where the Copernicus DEM (a surface model) is flat, giving slope 0 and elevation range 0. Keep them as test cases or resample them? (Changing them means regenerating the reference.)
+- `parcels-map.png` legend order is not stable between runs (ggplot); fix with `guides(order = ...)` in `02-diagnostics.R` if byte-identical figures are wanted.
+- The Ukrainian navbar labels and same-page language links are set by JavaScript (Quarto has one global navbar); without JS the UK pages show English navbar labels and the switch goes to the index page.
+- Only 31 `nodata` parcels are built-majority in 2024, just above the minimum of 30.
 
 ## Outcome
 
-Filled in when the status becomes done or superseded.
+Done on 2026-11-10. All tasks T01–T16 passed independent verification.
+
+- **Shipped:** 11 root scripts (`00-setup.R` … `22-descriptives.R`); the fixed reference set (1,000 parcels, 30 elevators, 54 roads in Poltava oblast, GeoParquet); `output/tables/spatial_covariates.parquet` (81,000 rows = 1,000 parcels × 81 variables; source: observed 77,100, h3_6 3,400, h3_5 500, oblast 0); summary tables and figures; a bilingual Quarto site at https://ebukin.github.io/ukrMassValuationSpatialExtract/ (9 pages each in `en/` and `uk/`).
+- **Full run (T16, fresh session):** about 2.4 min: setup 12 s, 02 9 s, 03 30 s, 04 22 s, 05 29 s, 06 27 s, 07 10 s, 21 2 s, 22 1 s. Data outputs byte-identical to commit point B; two PNGs differed only non-deterministically (legend order) and the committed versions were kept.
+- **Deviations from the plan:**
+  - `study_oblast_en <- "Poltavska"`: COD-AB's English name for Poltava oblast (UA53).
+  - GeoParquet via geoarrow + arrow (`read_parquet(as_data_frame = FALSE) |> st_as_sf()`); no GDAL Parquet driver.
+  - DEM VRT built with `options = c("-resolution", "highest")`, so the mosaic is on the native 1″ grid and only the tiles north of 50°N have their pixels repeated (the default averaged the resolutions, which would have resampled every tile). 11 GLO-30 tiles, not about 12.
+  - `curl::multi_download()` takes `ssl_options = 2` directly (it has no `handle` argument).
+  - Main roads are the 4 longest of 40 clipped boundary-to-boundary candidates; roads segmentized at 950 m so segments stay ≤ 1 km on the sphere. T04 needed 2 rounds (the first had a 289 m main-road stub).
+  - Soil oblast-level fill uses the parcel's own oblast mean (never needed in this run).
+  - Website: a pre-render step copies `output/figures/*.png` into a gitignored `site/figures/`; Ukrainian navbar via JS; units in Cyrillic on UK pages; translation reviewed and 13 issues fixed.
+  - Commits were made per verified task in addition to commit points A–D (user request during the run).
