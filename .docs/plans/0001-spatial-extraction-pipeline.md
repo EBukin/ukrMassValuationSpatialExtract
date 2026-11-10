@@ -364,16 +364,16 @@ crop_groups <- tribble(
   - among `nodata` parcels, at least 30 have crop code 1 (built) as the majority pixel in 2024, and at least 30 have water (13 or 14) in the parcel or within 500 m. If either count is short, the writer adds targeted samples and reports it;
   - elevators and roads lie inside Poltava.
 - [x] The map review is waived (see "Autonomy"). The verifier's checks decide.
-- [ ] **Commit point A** (after T05 passes): `data/clean/reference/*.parquet`, `00-setup.R`, `00b-download.R`, `01-simulate-reference.R`, `02-diagnostics.R`, `renv.lock`, `renv/settings.json`, `.docs/notes/0001-input-raster-check.md`, this plan.
+- [x] **Commit point A** (after T05 passes): `data/clean/reference/*.parquet`, `00-setup.R`, `00b-download.R`, `01-simulate-reference.R`, `02-diagnostics.R`, `renv.lock`, `renv/settings.json`, `.docs/notes/0001-input-raster-check.md`, this plan.
 
 ### T05: `02-diagnostics.R`
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - **In:** oblasts, the reference files, `clay_0-5cm_mean.tif`. **Out:** `output/figures/parcels-map.png`, `output/figures/parcels-zoom.png`.
   - Poltava map in EPSG:3035: Poltava and its neighbours' outlines, parcels coloured by `case`, elevators, roads by type, and the soil NoData area shaded.
   - Zoom: three panels, one parcel each for `interior`, `border` and `nodata`.
   - Print counts and areas by `case` and `oblast`.
-- [ ] **Acceptance:** both PNGs exist and look right (the verifier views them with Read); the table prints.
+- [x] **Acceptance:** both PNGs exist and look right (the verifier views them with Read); the table prints.
 
 ### T06: `03-distance.R`
 
