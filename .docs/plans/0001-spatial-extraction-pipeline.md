@@ -393,7 +393,7 @@ crop_groups <- tribble(
 
 ### T07: `04-soil.R`
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   - **In:** parcels, oblasts, 28 SoilGrids rasters. **Out:** `data/interim/soil_topsoil_0_30cm.tif`, `data/interim/long_soil.parquet`.
   - Crop each depth raster to Poltava plus its neighbours (in the soil CRS) before the arithmetic. One explicit expression per property:
 
@@ -418,7 +418,7 @@ crop_groups <- tribble(
     - `source = case_when(!is.na(value_raw) ~ "observed", !is.na(h3_6_value) ~ "h3_6", !is.na(h3_5_value) ~ "h3_5", !is.na(oblast_value) ~ "oblast")`;
     - `if (anyNA(...)) cli_abort(...)`.
   - Names: `soil_<prop>_0_30cm_mean` and `soil_<prop>_0_30cm_centroid`, in full. Header documents units and fill order. Print counts by `source` and `case`.
-- [ ] **Acceptance:**
+- [x] **Acceptance:**
   - 20 rows per parcel, no NA;
   - non-`observed` rows mostly from `nodata` parcels;
   - spot check: one centroid value equals the formula computed by hand.
