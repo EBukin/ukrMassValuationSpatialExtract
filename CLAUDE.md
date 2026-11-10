@@ -29,12 +29,21 @@ Each document is `NNNN-short-name.md`, next number = highest existing + 1. Templ
 - `data/interim/`: intermediate files. Disposable, always regenerable from code.
 - `data/clean/`: analysis-ready data, produced by code from `data/raw/`.
 - Results: tables in `output/tables/`, figures in `output/figures/`. Everything under `output/` is produced by code and never edited by hand.
+- Website: Quarto sources in `site/` (English in `site/en/`, Ukrainian in `site/uk/`), rendered locally into `docs/`. `docs/` and the `output/` files the site uses are committed. GitHub Pages serves `docs/` as a static site, with no rendering or Actions on GitHub.
+- Only the simulated reference geometries and derived results are published. Soil, crop and DEM data are never committed.
 <!-- /eb:data -->
 
 <!-- eb:r -->
 ## R
 
 - Do all R work through the `run-r` skill: Positron's MCP server (`mcp__positron__*`). It covers connecting the server when the tools are missing; do not fall back to `Rscript` or `mcp-repl`.
+- Sub-agents never run code in the user's console. Each starts its own R session and passes its `session_id` to every call:
+  1. `workbench.action.language.runtime.getActiveSessions` gives the R `runtimeId`.
+  2. `workbench.action.language.runtime.startNewConsoleSession` starts the session.
+  3. When finished, it closes the session with `quit(save = "no")` and `timeout_s` 5. The call always times out; `list_sessions` then shows `exited` and the memory is freed.
+  4. It hands the foreground back with `workbench.action.language.runtime.selectSession` and the user's `session_id`.
+
+  Sessions run in parallel across agents. Never share one session between agents, and never restart or clear the user's session.
 - Prefer the `r-lib:*` skills, enabled for this project, over your own habits when writing R.
 - User-facing messages use cli: `cli_abort()`, `cli_warn()`, `cli_inform()`, never bare `stop()`, `warning()`, `message()`.
 - The project is a set of short, numbered R scripts in the project root. Each is run with `source()` and sources `00-setup.R` first.
