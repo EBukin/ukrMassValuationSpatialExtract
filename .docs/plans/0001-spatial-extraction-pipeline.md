@@ -593,12 +593,12 @@ Methodology from the user:
 
 ### T15: GitHub Pages publish
 
-- [ ] **Writer brief.**
+- [x] **Writer brief.**
   1. Make sure `docs/` contains the rendered site and a `.nojekyll` file.
   2. **Commit point C:** `site/`, `docs/`, `README.md`, this plan; push to `origin/main`.
   3. Enable Pages from `main` `/docs`: `gh api -X POST repos/EBukin/ukrMassValuationSpatialExtract/pages -f "source[branch]=main" -f "source[path]=/docs"`. If Pages already exists, use `-X PUT`.
   4. Wait for the build (`gh api repos/EBukin/ukrMassValuationSpatialExtract/pages/builds/latest`) and fetch `https://ebukin.github.io/ukrMassValuationSpatialExtract/`.
-- [ ] **Acceptance:** the English and Ukrainian index pages return HTTP 200, and the language switch links resolve.
+- [x] **Acceptance:** the English and Ukrainian index pages return HTTP 200, and the language switch links resolve.
 
 ### T16: full run and handover
 
