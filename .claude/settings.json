@@ -1,0 +1,56 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-coauthor.sh\"",
+            "if": "Bash(git *)"
+          },
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-coauthor.sh\"",
+            "if": "Bash(gh *)"
+          },
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-coauthor.sh\"",
+            "if": "PowerShell(git *)"
+          },
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-coauthor.sh\"",
+            "if": "PowerShell(gh *)"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "execute@eb-ai-skills": true,
+    "r-lib@posit-dev-skills": true,
+    "posit-dev@posit-dev-skills": true,
+    "shiny@posit-dev-skills": true,
+    "shiny-dev@eb-ai-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "eb-ai-skills": {
+      "source": {
+        "source": "github",
+        "repo": "EBukin/eb-ai-skills"
+      }
+    },
+    "posit-dev-skills": {
+      "source": {
+        "source": "github",
+        "repo": "posit-dev/skills"
+      }
+    }
+  }
+}

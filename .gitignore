@@ -1,0 +1,24 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+renv/library/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code: per-user settings stay out of the repo
+.claude/settings.local.json
+
+# Data (in-project layout): raw is a copy of an external source, interim is regenerable
+data/raw/*
+data/interim/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
