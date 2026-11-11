@@ -72,6 +72,7 @@ if (!file.exists(crop_2025_winter)) {
 }
 
 # Crop codes to groups, one table for every year (0 is NoData; unlisted codes become "other")
+## ---- crop-groups
 crop_groups <- tribble(
   ~code , ~group   ,
       1 , "built"  ,
@@ -82,6 +83,7 @@ crop_groups <- tribble(
      12 , "bare"   , 20 , "bare"   , 22 , "bare"   ,
      13 , "water"  , 14 , "water"
 )
+## ---- end-crop-groups
 
 # Downloaded inputs -----------------------------------------------------------
 

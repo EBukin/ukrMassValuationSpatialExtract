@@ -59,17 +59,14 @@ lang: uk
 
 У `00-setup.R` це один виклик `tribble()`:
 
-```r
-crop_groups <- tribble(
-  ~code, ~group,
-  1,  "built",
-  2,  "ag",  3,  "ag",  4,  "ag",  5,  "ag",  6,  "ag",  7,  "ag",  8,  "ag",  9,  "ag",
-  15, "ag",  16, "ag",  17, "ag",  19, "ag",  21, "ag",  24, "ag",  26, "ag",  27, "ag",
-  10, "forest", 23, "forest", 25, "forest",
-  11, "grass",  18, "grass",
-  12, "bare",   20, "bare",   22, "bare",
-  13, "water",  14, "water"
-)
+```{r}
+#| include: false
+knitr::read_chunk("../../00-setup.R")
+```
+
+```{r crop-groups}
+#| echo: true
+#| eval: false
 ```
 
 ## Метод, 2019–2024
