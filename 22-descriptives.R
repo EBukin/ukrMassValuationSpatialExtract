@@ -7,23 +7,23 @@
 source("00-setup.R")
 
 covariates <- arrow::read_parquet(covariates_parquet_path)
-parcels <- arrow::read_parquet(parcels_path, col_select = c(parcel_id, case))   # attributes only, no geometry
+parcels <- arrow::read_parquet(parcels_path, col_select = c(parcel_id, case)) # attributes only, no geometry
 
 # Soil: centroid value vs polygon mean -----------------------------------------
 
 # Units are SoilGrids mapped units (see 04-soil.R)
 soil_pairs <- tribble(
-  ~property,  ~mean_var,                       ~centroid_var,                       ~label,
-  "bdod",     "soil_bdod_0_30cm_mean",         "soil_bdod_0_30cm_centroid",         "bdod (cg/cm³)",
-  "cec",      "soil_cec_0_30cm_mean",          "soil_cec_0_30cm_centroid",          "cec (mmol(c)/kg)",
-  "cfvo",     "soil_cfvo_0_30cm_mean",         "soil_cfvo_0_30cm_centroid",         "cfvo (cm³/dm³)",
-  "clay",     "soil_clay_0_30cm_mean",         "soil_clay_0_30cm_centroid",         "clay (g/kg)",
-  "nitrogen", "soil_nitrogen_0_30cm_mean",     "soil_nitrogen_0_30cm_centroid",     "nitrogen (cg/kg)",
-  "ocd",      "soil_ocd_0_30cm_mean",          "soil_ocd_0_30cm_centroid",          "ocd (hg/m³)",
-  "ocs",      "soil_ocs_0_30cm_mean",          "soil_ocs_0_30cm_centroid",          "ocs (t/ha)",
-  "phh2o",    "soil_phh2o_0_30cm_mean",        "soil_phh2o_0_30cm_centroid",        "phh2o (pH × 10)",
-  "sand",     "soil_sand_0_30cm_mean",         "soil_sand_0_30cm_centroid",         "sand (g/kg)",
-  "silt",     "soil_silt_0_30cm_mean",         "soil_silt_0_30cm_centroid",         "silt (g/kg)"
+  ~property  , ~mean_var                   , ~centroid_var                   , ~label             ,
+  "bdod"     , "soil_bdod_0_30cm_mean"     , "soil_bdod_0_30cm_centroid"     , "bdod (cg/cm³)"    ,
+  "cec"      , "soil_cec_0_30cm_mean"      , "soil_cec_0_30cm_centroid"      , "cec (mmol(c)/kg)" ,
+  "cfvo"     , "soil_cfvo_0_30cm_mean"     , "soil_cfvo_0_30cm_centroid"     , "cfvo (cm³/dm³)"   ,
+  "clay"     , "soil_clay_0_30cm_mean"     , "soil_clay_0_30cm_centroid"     , "clay (g/kg)"      ,
+  "nitrogen" , "soil_nitrogen_0_30cm_mean" , "soil_nitrogen_0_30cm_centroid" , "nitrogen (cg/kg)" ,
+  "ocd"      , "soil_ocd_0_30cm_mean"      , "soil_ocd_0_30cm_centroid"      , "ocd (hg/m³)"      ,
+  "ocs"      , "soil_ocs_0_30cm_mean"      , "soil_ocs_0_30cm_centroid"      , "ocs (t/ha)"       ,
+  "phh2o"    , "soil_phh2o_0_30cm_mean"    , "soil_phh2o_0_30cm_centroid"    , "phh2o (pH × 10)"  ,
+  "sand"     , "soil_sand_0_30cm_mean"     , "soil_sand_0_30cm_centroid"     , "sand (g/kg)"      ,
+  "silt"     , "soil_silt_0_30cm_mean"     , "soil_silt_0_30cm_centroid"     , "silt (g/kg)"
 )
 
 soil_mean <- covariates |>
@@ -38,7 +38,9 @@ soil_compare <- soil_mean |>
   inner_join(soil_centroid, by = c("parcel_id", "property")) |>
   mutate(observed = mean_source == "observed" & centroid_source == "observed")
 
-if (nrow(soil_compare) != 10 * n_distinct(covariates$parcel_id)) cli_abort("Soil pairs do not cover 10 properties for every parcel.")
+if (nrow(soil_compare) != 10 * n_distinct(covariates$parcel_id)) {
+  cli_abort("Soil pairs do not cover 10 properties for every parcel.")
+}
 
 soil_stats_observed <- soil_compare |>
   filter(observed) |>
@@ -66,8 +68,12 @@ soil_stats_all <- soil_compare |>
 soil_stats <- bind_rows(soil_stats_observed, soil_stats_all) |>
   arrange(property, desc(rows))
 
-if (anyNA(soil_stats$pearson) || anyNA(soil_stats$spearman)) cli_abort("Some soil correlations are missing.")
-if (any(abs(soil_stats$pearson) > 1) || any(abs(soil_stats$spearman) > 1)) cli_abort("Soil correlations outside [-1, 1].")
+if (anyNA(soil_stats$pearson) || anyNA(soil_stats$spearman)) {
+  cli_abort("Some soil correlations are missing.")
+}
+if (any(abs(soil_stats$pearson) > 1) || any(abs(soil_stats$spearman) > 1)) {
+  cli_abort("Soil correlations outside [-1, 1].")
+}
 
 print(soil_stats, n = Inf)
 write_csv(soil_stats, soil_centroid_vs_polygon_path)
@@ -79,11 +85,20 @@ soil_plot_data <- soil_compare |>
 
 soil_plot <- ggplot(soil_plot_data, aes(x = mean_value, y = centroid_value)) +
   geom_blank(aes(x = centroid_value, y = mean_value)) +
-  geom_abline(slope = 1, intercept = 0, colour = "#52514e", linewidth = 0.4, linetype = "dashed") +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    colour = "#52514e",
+    linewidth = 0.4,
+    linetype = "dashed"
+  ) +
   geom_point(aes(colour = fill), size = 0.9, alpha = 0.5) +
   facet_wrap(vars(label), ncol = 5, scales = "free") +
   scale_colour_manual(
-    values = c("Observed" = "#2a78d6", "Filled (H3 or oblast mean)" = "#eb6834"),
+    values = c(
+      "Observed" = "#2a78d6",
+      "Filled (H3 or oblast mean)" = "#eb6834"
+    ),
     breaks = c("Observed", "Filled (H3 or oblast mean)")
   ) +
   guides(colour = guide_legend(override.aes = list(size = 2.5, alpha = 1))) +
@@ -103,7 +118,14 @@ soil_plot <- ggplot(soil_plot_data, aes(x = mean_value, y = centroid_value)) +
     plot.background = element_rect(fill = "white", colour = NA)
   )
 
-ggsave(soil_centroid_vs_polygon_png_path, soil_plot, width = 12, height = 6, dpi = 200, bg = "white")
+ggsave(
+  soil_centroid_vs_polygon_png_path,
+  soil_plot,
+  width = 12,
+  height = 6,
+  dpi = 200,
+  bg = "white"
+)
 
 # Crop share by group and year ---------------------------------------------------
 
@@ -115,7 +137,7 @@ crop_by_year <- covariates |>
   summarise(
     mean_share = mean(value),
     median_share = median(value),
-    share_parcels_above_half = mean(value > 0.5),   # for ag: share of parcels with crop_ag > 0.5
+    share_parcels_above_half = mean(value > 0.5), # for ag: share of parcels with crop_ag > 0.5
     n = n(),
     .groups = "drop"
   ) |>
@@ -123,15 +145,20 @@ crop_by_year <- covariates |>
 
 print(crop_by_year, n = Inf)
 cli_inform("Share of parcels with {.field crop_ag} > 0.5, by year:")
-print(filter(crop_by_year, group == "ag") |> select(year, share_parcels_above_half))
+print(
+  filter(crop_by_year, group == "ag") |> select(year, share_parcels_above_half)
+)
 write_csv(crop_by_year, crop_by_year_path)
 
 # Distance quantiles (metres) ----------------------------------------------------
 
 distance_vars <- c(
-  "dist_elevator_centroid", "dist_elevator_edge",
-  "dist_road_main_centroid", "dist_road_main_edge",
-  "dist_road_local_centroid", "dist_road_local_edge"
+  "dist_elevator_centroid",
+  "dist_elevator_edge",
+  "dist_road_main_centroid",
+  "dist_road_main_edge",
+  "dist_road_local_centroid",
+  "dist_road_local_edge"
 )
 
 distance_summary <- covariates |>
@@ -156,13 +183,13 @@ write_csv(distance_summary, distance_summary_path)
 # Relief quantiles -----------------------------------------------------------------
 
 relief_units <- tribble(
-  ~variable,             ~unit,
-  "relief_elev_mean",    "m",
-  "relief_elev_range",   "m",
-  "relief_slope_mean",   "degrees",
-  "relief_slope_max",    "degrees",
-  "relief_aspect_south", "index -1 to 1",
-  "relief_aspect_east",  "index -1 to 1"
+  ~variable             , ~unit           ,
+  "relief_elev_mean"    , "m"             ,
+  "relief_elev_range"   , "m"             ,
+  "relief_slope_mean"   , "degrees"       ,
+  "relief_slope_max"    , "degrees"       ,
+  "relief_aspect_south" , "index -1 to 1" ,
+  "relief_aspect_east"  , "index -1 to 1"
 )
 
 relief_summary <- covariates |>
@@ -190,7 +217,9 @@ write_csv(relief_summary, relief_summary_path)
 soil_source_by_case <- covariates |>
   filter(variable %in% c(soil_pairs$mean_var, soil_pairs$centroid_var)) |>
   inner_join(parcels, by = "parcel_id") |>
-  mutate(source = factor(source, levels = c("observed", "h3_6", "h3_5", "oblast"))) |>
+  mutate(
+    source = factor(source, levels = c("observed", "h3_6", "h3_5", "oblast"))
+  ) |>
   count(case, source, .drop = FALSE) |>
   pivot_wider(names_from = source, values_from = n) |>
   mutate(total = observed + h3_6 + h3_5 + oblast)
@@ -198,4 +227,6 @@ soil_source_by_case <- covariates |>
 print(soil_source_by_case)
 write_csv(soil_source_by_case, soil_source_by_case_path)
 
-cli_inform("Descriptives written to {.path {tables_dir}} and {.path {soil_centroid_vs_polygon_png_path}}.")
+cli_inform(
+  "Descriptives written to {.path {tables_dir}} and {.path {soil_centroid_vs_polygon_png_path}}."
+)

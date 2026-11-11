@@ -8,7 +8,7 @@ library(sf)
 library(terra)
 library(exactextractr)
 library(arrow)
-library(geoarrow)   # GDAL has no Parquet driver here: GeoParquet is read and written with geoarrow + arrow
+library(geoarrow) # GDAL has no Parquet driver here: GeoParquet is read and written with geoarrow + arrow
 library(h3o)
 library(curl)
 library(cli)
@@ -17,15 +17,17 @@ library(lwgeom)
 sf_use_s2(TRUE)
 
 # Paths are relative to the project root, so scripts must run from there
-if (!file.exists("00-setup.R")) cli_abort("Run the scripts from the project root folder.")
+if (!file.exists("00-setup.R")) {
+  cli_abort("Run the scripts from the project root folder.")
+}
 
 # Parameters ------------------------------------------------------------------
 
-n_parcels <- 1000                # number of simulated reference parcels
-study_oblast_en <- "Poltavska"   # Poltava oblast (UA53); COD-AB uses the adjectival English name "Poltavska"
-crs_work <- "EPSG:3035"          # equal-area CRS in metres, for parcel shapes, areas and maps
-dem_product <- "GLO-30"          # Copernicus DEM product: "GLO-30" (default) or "GLO-90"
-flat_slope_deg <- 0.5            # pixels with a slope below this (degrees) count as flat
+n_parcels <- 1000 # number of simulated reference parcels
+study_oblast_en <- "Poltavska" # Poltava oblast (UA53); COD-AB uses the adjectival English name "Poltavska"
+crs_work <- "EPSG:3035" # equal-area CRS in metres, for parcel shapes, areas and maps
+dem_product <- "GLO-30" # Copernicus DEM product: "GLO-30" (default) or "GLO-90"
+flat_slope_deg <- 0.5 # pixels with a slope below this (degrees) count as flat
 
 # Input folders (outside the repo, read-only) ---------------------------------
 
@@ -41,26 +43,44 @@ crop_2024 <- file.path(crop_dir, "Ukraine_september_2024.tif")
 crop_2025_summer <- file.path(crop_dir, "SummerMap_Ukraine_2025_WB.tif")
 crop_2025_winter <- file.path(crop_dir, "Winter2025_Rape_Cereal.tif")
 
-if (!dir.exists(soil_dir)) cli_abort("Soil folder not found: {.path {soil_dir}}")
-if (!file.exists(crop_2019)) cli_abort("Crop map not found: {.path {crop_2019}}")
-if (!file.exists(crop_2020)) cli_abort("Crop map not found: {.path {crop_2020}}")
-if (!file.exists(crop_2021)) cli_abort("Crop map not found: {.path {crop_2021}}")
-if (!file.exists(crop_2022)) cli_abort("Crop map not found: {.path {crop_2022}}")
-if (!file.exists(crop_2023)) cli_abort("Crop map not found: {.path {crop_2023}}")
-if (!file.exists(crop_2024)) cli_abort("Crop map not found: {.path {crop_2024}}")
-if (!file.exists(crop_2025_summer)) cli_abort("Crop map not found: {.path {crop_2025_summer}}")
-if (!file.exists(crop_2025_winter)) cli_abort("Crop map not found: {.path {crop_2025_winter}}")
+if (!dir.exists(soil_dir)) {
+  cli_abort("Soil folder not found: {.path {soil_dir}}")
+}
+if (!file.exists(crop_2019)) {
+  cli_abort("Crop map not found: {.path {crop_2019}}")
+}
+if (!file.exists(crop_2020)) {
+  cli_abort("Crop map not found: {.path {crop_2020}}")
+}
+if (!file.exists(crop_2021)) {
+  cli_abort("Crop map not found: {.path {crop_2021}}")
+}
+if (!file.exists(crop_2022)) {
+  cli_abort("Crop map not found: {.path {crop_2022}}")
+}
+if (!file.exists(crop_2023)) {
+  cli_abort("Crop map not found: {.path {crop_2023}}")
+}
+if (!file.exists(crop_2024)) {
+  cli_abort("Crop map not found: {.path {crop_2024}}")
+}
+if (!file.exists(crop_2025_summer)) {
+  cli_abort("Crop map not found: {.path {crop_2025_summer}}")
+}
+if (!file.exists(crop_2025_winter)) {
+  cli_abort("Crop map not found: {.path {crop_2025_winter}}")
+}
 
 # Crop codes to groups, one table for every year (0 is NoData; unlisted codes become "other")
 crop_groups <- tribble(
-  ~code, ~group,
-  1,  "built",
-  2,  "ag",  3,  "ag",  4,  "ag",  5,  "ag",  6,  "ag",  7,  "ag",  8,  "ag",  9,  "ag",
-  15, "ag",  16, "ag",  17, "ag",  19, "ag",  21, "ag",  24, "ag",  26, "ag",  27, "ag",
-  10, "forest", 23, "forest", 25, "forest",
-  11, "grass",  18, "grass",
-  12, "bare",   20, "bare",   22, "bare",
-  13, "water",  14, "water"
+  ~code , ~group   ,
+      1 , "built"  ,
+      2 , "ag"     ,  3 , "ag"     ,  4 , "ag"     ,  5 , "ag" ,  6 , "ag" ,  7 , "ag" ,  8 , "ag" ,  9 , "ag" ,
+     15 , "ag"     , 16 , "ag"     , 17 , "ag"     , 19 , "ag" , 21 , "ag" , 24 , "ag" , 26 , "ag" , 27 , "ag" ,
+     10 , "forest" , 23 , "forest" , 25 , "forest" ,
+     11 , "grass"  , 18 , "grass"  ,
+     12 , "bare"   , 20 , "bare"   , 22 , "bare"   ,
+     13 , "water"  , 14 , "water"
 )
 
 # Downloaded inputs -----------------------------------------------------------
@@ -108,4 +128,6 @@ dir.create(interim_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(tables_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(figures_dir, recursive = TRUE, showWarnings = FALSE)
 
-cli_inform("Setup done: study oblast {study_oblast_en}, DEM {dem_product}, {n_parcels} parcels.")
+cli_inform(
+  "Setup done: study oblast {study_oblast_en}, DEM {dem_product}, {n_parcels} parcels."
+)

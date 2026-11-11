@@ -16,7 +16,8 @@ source("00-setup.R")
 
 # Parcels and DEM -------------------------------------------------------------
 
-parcels <- arrow::read_parquet(parcels_path, as_data_frame = FALSE) |> st_as_sf()
+parcels <- arrow::read_parquet(parcels_path, as_data_frame = FALSE) |>
+  st_as_sf()
 
 # Parcels' extent plus 0.02 degrees, so terrain() has neighbours at the edge of every parcel
 parcels_box <- ext(vect(parcels)) + 0.02
@@ -38,7 +39,13 @@ names(relief) <- c("elev", "slope", "south", "east")
 
 # Parcel values ---------------------------------------------------------------
 
-relief_stats <- exact_extract(relief, parcels, c("mean", "max", "min"), append_cols = "parcel_id", progress = FALSE)
+relief_stats <- exact_extract(
+  relief,
+  parcels,
+  c("mean", "max", "min"),
+  append_cols = "parcel_id",
+  progress = FALSE
+)
 
 relief_wide <- relief_stats |>
   transmute(
@@ -55,8 +62,12 @@ long_relief <- relief_wide |>
   pivot_longer(-parcel_id, names_to = "variable", values_to = "value") |>
   mutate(source = "observed")
 
-if (anyNA(long_relief$value)) cli_abort("Some relief values are missing.")
-if (nrow(long_relief) != 6 * nrow(parcels)) cli_abort("Expected 6 relief rows per parcel, got {nrow(long_relief)} rows.")
+if (anyNA(long_relief$value)) {
+  cli_abort("Some relief values are missing.")
+}
+if (nrow(long_relief) != 6 * nrow(parcels)) {
+  cli_abort("Expected 6 relief rows per parcel, got {nrow(long_relief)} rows.")
+}
 
 # Range of each variable
 long_relief |>
@@ -66,7 +77,9 @@ long_relief |>
 
 # Save ------------------------------------------------------------------------
 
-gc()   # release memory-mapped files before overwriting (Windows)
+gc() # release memory-mapped files before overwriting (Windows)
 arrow::write_parquet(long_relief, long_relief_path)
 
-cli_inform("Relief done: {n_distinct(long_relief$variable)} variables, {nrow(long_relief)} rows in {.path {long_relief_path}}.")
+cli_inform(
+  "Relief done: {n_distinct(long_relief$variable)} variables, {nrow(long_relief)} rows in {.path {long_relief_path}}."
+)
