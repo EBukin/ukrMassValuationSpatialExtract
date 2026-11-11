@@ -10,7 +10,7 @@ Forty-nine variables give the **share of each parcel** in seven land-cover group
 Variables are named `crop_<group>_<year>`. Each is a share from 0 to 1 of the parcel's classified (non-NoData) area. For a parcel and a year, the seven shares sum to 1.
 
 | Group | Variables (2019 … 2025) | Meaning |
-|---|---|---|
+|--------|-------------------------------------------|-------------------------------------------------|
 | `built` | `crop_built_2019` … `crop_built_2025` | Artificial surfaces: buildings, roads, towns |
 | `ag` | `crop_ag_2019` … `crop_ag_2025` | Cropland: all crop classes, including vineyards and nut trees |
 | `forest` | `crop_forest_2019` … `crop_forest_2025` | Forest, including damaged forest |
@@ -26,7 +26,7 @@ The full list of 49 names is on the [Output](output.qmd) page. All rows have `so
 The class codes of the maps changed over the years. Categories are matched by **label**, not by code: for example, "Not cultivated" is 22 in 2022 and 20 from 2023, and "Damaged forest" is 23 in 2022 and 25 from 2024. No code means two unrelated things in different years, so **one table of codes serves every year**.
 
 | Group | Category | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 summer | 2025 winter |
-|---|---|---|---|---|---|---|---|---|---|
+|----------|---------------------------------------------|-------|-------|-------|-------|-------|-------|----------------------------|--------------|
 | built | Artificial | 1 | 1 | 1 | 1 | 1 | 1 | 1 | |
 | ag | Wheat | 2 | 2 | 2 | 2 | 2 | 2 | 2 | |
 | ag | Winter cereal | | | | | | | | 2 |
@@ -101,6 +101,7 @@ The two maps have the same size but their origins differ by about 2 m (less than
 ```{r}
 #| label: tbl-crop-by-year
 #| tbl-cap: "Mean share of each group over the 1,000 parcels, by year. From `output/tables/crop_by_year.csv`."
+#| tbl-colwidths: [16, 12, 12, 12, 12, 12, 12, 12]
 crop_by_year <- read.csv("../../output/tables/crop_by_year.csv")
 crop_mean <- reshape(crop_by_year[, c("year", "group", "mean_share")],
                      idvar = "group", timevar = "year", direction = "wide")
@@ -111,6 +112,7 @@ knitr::kable(crop_mean, digits = 3, row.names = FALSE)
 ```{r}
 #| label: tbl-crop-ag
 #| tbl-cap: "Share of parcels where cropland (`crop_ag`) covers more than half of the parcel, by year."
+#| tbl-colwidths: [15, 85]
 crop_ag <- crop_by_year[crop_by_year$group == "ag", c("year", "share_parcels_above_half")]
 names(crop_ag) <- c("Year", "Share of parcels with crop_ag > 0.5")
 knitr::kable(crop_ag, digits = 3, row.names = FALSE)

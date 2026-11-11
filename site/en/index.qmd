@@ -13,7 +13,7 @@ It builds a **reference dataset**: a fixed set of 1,000 simulated land parcels, 
 The covariates cover four families:
 
 | Family | Variables | What it measures | Page |
-|---|---|---|---|
+|-------------------|-----------|---------------------------------------------------|-------------------|
 | Distance | 6 | Distance on the sphere to the nearest elevator, main road and local road, from the parcel centroid and from its edge | [Distance](distance.qmd) |
 | Soil | 20 | Ten SoilGrids topsoil (0–30 cm) properties, as the parcel polygon mean and as the value at the centroid | [Soil](soil.qmd) |
 | Relief | 6 | Elevation, slope and aspect exposure from the Copernicus 30 m DEM, over the whole parcel polygon | [Relief](relief.qmd) |

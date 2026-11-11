@@ -1,0 +1,55 @@
+# Renders the Quarto site from the committed pages, figures and tables, then deploys it to GitHub Pages.
+# The spatial analysis (00-22 scripts) is NOT run here; run it locally and commit output/.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", "output/**", "data/clean/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  # Do not bootstrap renv (.Rprofile); the site needs only knitr and rmarkdown
+  RENV_CONFIG_AUTOLOADER_ENABLED: "false"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: quarto-dev/quarto-actions/setup@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::knitr
+            any::rmarkdown
+          needs: ""
+      - name: Render Ukrainian site (default profile)
+        run: quarto render site
+      - name: Render English site
+        run: quarto render site/en --profile en
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

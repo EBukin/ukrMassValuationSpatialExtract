@@ -1,0 +1,40 @@
+project:
+  render:
+    - index.qmd
+    - uk/*.qmd
+
+website:
+  title: "Просторові коваріати, Україна"
+  navbar:
+    logo-href: index.html            # every Ukrainian page sits in uk/, so this is uk/index.html
+    left:
+      - href: uk/index.qmd
+        text: Головна
+      - href: uk/data.qmd
+        text: Дані
+      - href: uk/pipeline.qmd
+        text: Конвеєр обробки
+      - text: Показники
+        menu:
+          - href: uk/reference.qmd
+            text: Еталонні вхідні дані
+          - href: uk/distance.qmd
+            text: Відстані
+          - href: uk/soil.qmd
+            text: Ґрунт
+          - href: uk/relief.qmd
+            text: Рельєф
+          - href: uk/crop.qmd
+            text: Посівний покрив
+      - href: uk/output.qmd
+        text: Результати
+    right:
+      - text: English
+        icon: translate
+        href: en/index.html          # _language-switch.R changes it to the same page in en/
+        aria-label: English version of this page
+      - icon: github
+        href: https://github.com/EBukin/ukrMassValuationSpatialExtract
+        aria-label: Репозиторій GitHub
+  page-footer:
+    left: "Змодельовані еталонні ділянки; реальні публічні растри та растри користувача. Ліцензії див. на сторінці «Дані»."

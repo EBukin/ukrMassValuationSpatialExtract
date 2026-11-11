@@ -10,7 +10,7 @@ lang: uk
 Одиниці — **картографічні одиниці** SoilGrids, без перерахунку (коефіцієнти перерахунку див. на сторінці [Дані](data.qmd)).
 
 | Властивість | Середнє по полігону | Центроїд | Одиниця | Опис |
-|---|---|---|---|---|
+|----------|----------------------|-------------------------|---------|----------------------------------|
 | bdod | `soil_bdod_0_30cm_mean` | `soil_bdod_0_30cm_centroid` | сг/см³ | Щільність складення дрібнозему |
 | cec | `soil_cec_0_30cm_mean` | `soil_cec_0_30cm_centroid` | ммоль(+)/кг | Ємність катіонного обміну за pH 7 |
 | cfvo | `soil_cfvo_0_30cm_mean` | `soil_cfvo_0_30cm_centroid` | см³/дм³ | Об'ємна частка крупних уламків |
@@ -66,6 +66,7 @@ source = case_when(!is.na(value_raw) ~ "observed", !is.na(h3_6_value) ~ "h3_6",
 ```{r}
 #| label: tbl-soil-source
 #| tbl-cap: "Ґрунтові рядки (ділянка × ґрунтова змінна, 20 на ділянку) за типом ділянки та `source`. З `output/tables/soil_source_by_case.csv`."
+#| tbl-colwidths: [20, 20, 15, 15, 15, 15]
 soil_source <- read.csv("../../output/tables/soil_source_by_case.csv")
 knitr::kable(soil_source, format.args = list(big.mark = ","))
 ```
@@ -87,6 +88,7 @@ knitr::kable(soil_source, format.args = list(big.mark = ","))
 ```{r}
 #| label: tbl-soil-compare
 #| tbl-cap: "Узгодженість значення в центроїді та середнього по полігону. `observed`: ділянки, де обидва значення спостережені; `all`: усі 1 000 ділянок. З `output/tables/soil_centroid_vs_polygon.csv`."
+#| tbl-colwidths: [30, 11, 10, 11, 29, 9]
 soil_compare <- read.csv("../../output/tables/soil_centroid_vs_polygon.csv")
 soil_compare <- soil_compare[, c("label", "rows", "pearson", "spearman", "mean_abs_diff", "n")]
 names(soil_compare) <- c("Властивість (одиниця)", "Рядки", "Пірсон", "Спірмен", "Середня абс. різниця", "n")

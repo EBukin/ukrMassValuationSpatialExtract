@@ -14,7 +14,7 @@ A baseline for computing spatial covariates for the mass valuation of agricultur
 ## Run order
 
 | Script | Purpose |
-|---|---|
+|-------------------------------------|---------------------------------------------------------------|
 | `00-setup.R` | Packages, parameters and paths; sourced by every script |
 | `00b-download.R` | Download COD-AB oblast boundaries and Copernicus DEM tiles |
 | `01-simulate-reference.R` | Simulated the committed reference parcels, elevators and roads once; not part of the normal run |
@@ -27,4 +27,11 @@ A baseline for computing spatial covariates for the mass valuation of agricultur
 | `21-combine.R` | One long table: `output/tables/spatial_covariates.parquet` |
 | `22-descriptives.R` | Summary tables and figures in `output/` |
 
-The website is rendered locally with `quarto render site` into `docs/`.
+The website is built by GitHub Actions (`.github/workflows/pages.yml`) from the committed `site/*.qmd`, `output/figures/` and `output/tables/`; the analysis is not rerun in the cloud and `docs/` is not committed. To preview locally, render in two steps, Ukrainian first:
+
+```sh
+quarto render site                  # Ukrainian pages and the root page (default profile)
+quarto render site/en --profile en  # English pages, added to docs/
+```
+
+Workflow: rerun the analysis scripts locally, commit the updated `output/` files, push to `main`. In the repository settings, set Pages > Source to "GitHub Actions".

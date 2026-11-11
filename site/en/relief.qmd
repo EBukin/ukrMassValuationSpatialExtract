@@ -8,7 +8,7 @@ Six variables describe the relief of each parcel: elevation, slope and aspect ex
 ## Variables
 
 | Variable | Unit | Meaning |
-|---|---|---|
+|-------------------------|------------------------|---------------------------------------------------|
 | `relief_elev_mean` | m | Coverage-weighted mean elevation over the parcel |
 | `relief_slope_mean` | degrees | Coverage-weighted mean slope over the parcel |
 | `relief_slope_max` | degrees | Maximum slope over the pixels the parcel touches |
@@ -66,6 +66,7 @@ The cost: in the northern strip, one column in every three repeats its neighbour
 ```{r}
 #| label: tbl-relief-summary
 #| tbl-cap: "Relief quantiles over the 1,000 parcels. From `output/tables/relief_summary.csv`."
+#| tbl-colwidths: [22, 15, 7, 7, 7, 7, 7, 7, 7, 7, 7]
 relief_summary <- read.csv("../../output/tables/relief_summary.csv")
 knitr::kable(relief_summary, digits = 2)
 ```

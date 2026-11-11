@@ -12,7 +12,7 @@ All shapes are built in EPSG:3035 (equal-area, metres) inside **Poltava oblast**
 ### Three cases
 
 | Case | Parcels | How the centre is drawn | What it tests |
-|---|---|---|---|
+|---------|-------|------------------------------------------|------------------------------------------|
 | `interior` | 700 | Random point in Poltava, more than 1 km from its boundary | The normal case |
 | `border` | 150 | Random point on the part of Poltava's boundary shared with a neighbouring oblast | Parcels that cross an oblast boundary |
 | `nodata` | 150 | Random soil NoData cell (SoilGrids clay 0–5 cm) inside Poltava shrunk by 1 km, shifted by at most 100 m | Missing soil data: towns, rivers, the Kremenchuk reservoir |
@@ -35,7 +35,7 @@ Each parcel is a rectangle or a parallelogram, built from a unit square by **sca
 ### Attributes
 
 | Column | Meaning |
-|---|---|
+|--------------------|--------------------------------------------------------------------------------|
 | `parcel_id` | `P00001` … `P01000` (`P00001`–`P00700` interior, `P00701`–`P00850` border, `P00851`–`P01000` nodata) |
 | `case` | `interior`, `border` or `nodata` |
 | `area_ha` | Area in hectares, from `st_area()` in EPSG:3035 |

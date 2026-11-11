@@ -1,49 +1,21 @@
+# Two renders, one per language profile, both into ../docs:
+#   quarto render site                    # Ukrainian (default profile): root redirect + uk/ pages; new search index
+#   quarto render site/en --profile en    # English: en/ pages, added to docs/ and to the search index
+# Each profile has its own navbar, title and footer, so links stay in one language without JavaScript.
 project:
   type: website
   output-dir: ../docs
-  pre-render: _copy-figures.R   # copies the committed figures from output/figures into site/figures
+  pre-render: _copy-figures.R        # copies the committed figures from output/figures into site/figures
+  post-render: _language-switch.R    # points the language link at the same page in the other language
   resources:
-    - .nojekyll                 # GitHub Pages serves docs/ as plain static files
+    - .nojekyll                      # GitHub Pages serves docs/ as plain static files
+
+profile:
+  default: uk
 
 website:
-  title: "Spatial covariates, Ukraine"
   site-url: https://ebukin.github.io/ukrMassValuationSpatialExtract/
   repo-url: https://github.com/EBukin/ukrMassValuationSpatialExtract
-  navbar:
-    left:
-      - href: en/index.qmd
-        text: Home
-      - href: en/data.qmd
-        text: Data
-      - href: en/pipeline.qmd
-        text: Pipeline
-      - text: Indicators
-        menu:
-          - href: en/reference.qmd
-            text: Reference inputs
-          - href: en/distance.qmd
-            text: Distance
-          - href: en/soil.qmd
-            text: Soil
-          - href: en/relief.qmd
-            text: Relief
-          - href: en/crop.qmd
-            text: Crop cover
-      - href: en/output.qmd
-        text: Output
-    right:
-      - text: Language
-        icon: translate
-        menu:
-          - text: English
-            href: en/index.qmd
-          - text: Українська
-            href: uk/index.qmd
-      - icon: github
-        href: https://github.com/EBukin/ukrMassValuationSpatialExtract
-        aria-label: GitHub repository
-  page-footer:
-    left: "Simulated reference parcels; real public and user-provided rasters. See the Data page for licences."
 
 format:
   html:
@@ -51,7 +23,7 @@ format:
     toc: true
     code-copy: true
     code-overflow: wrap
-    include-after-body: _language-switch.html
+    tbl-colwidths: true              # keep the column widths set by the dashes under each table header, also in tables with links
 
 execute:
   echo: false

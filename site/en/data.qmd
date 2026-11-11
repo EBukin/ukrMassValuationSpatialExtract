@@ -16,7 +16,7 @@ The inputs come in three kinds: rasters **you provide**, public data that a scri
 - **Units:** SoilGrids *mapped units* (integers stored as floats). The pipeline does not convert them:
 
 | Property | Description | Mapped unit | Divide by | Conventional unit |
-|---|---|---|---|---|
+|-----------|----------------------------------------|---------------------|-----------|-----------------|
 | `bdod` | Bulk density of the fine earth fraction | cg/cm³ | 100 | kg/dm³ |
 | `cec` | Cation exchange capacity at pH 7 | mmol(c)/kg | 10 | cmol(c)/kg |
 | `cfvo` | Volumetric fraction of coarse fragments (> 2 mm) | cm³/dm³ (vol ‰) | 10 | vol % |
@@ -35,7 +35,7 @@ The inputs come in three kinds: rasters **you provide**, public data that a scri
 - **Folder:** `crop_dir` in `00-setup.R`. File names are written out in full, one object per year:
 
 | Object in `00-setup.R` | File | Grid |
-|---|---|---|
+|----------------------|---------------------------------|---------------------------------------------|
 | `crop_2019` | `GEE_15102019.tif` | 90772 × 134691 pixels, larger extent |
 | `crop_2020` | `ukr_2020.tif` | 88823 × 132874 pixels |
 | `crop_2021` | `Ukr_October2021.tif` | same as 2020 |
@@ -74,7 +74,7 @@ The download script skips files already on disk, so a second run downloads nothi
 `01-simulate-reference.R` generated the reference inputs **once**, with `set.seed(20261110)`. They are committed as GeoParquet in EPSG:4326 and are never regenerated: the script aborts if `parcels.parquet` exists.
 
 | File | Content |
-|---|---|
+|-------------------------------------------------|---------------------------------------------------|
 | `data/clean/reference/parcels.parquet` | 1,000 parcels: `parcel_id`, `case` (`interior`, `border`, `nodata`), `area_ha`, `oblast`, `h3_6`, `h3_5` |
 | `data/clean/reference/elevators.parquet` | 30 elevator points: `elevator_id` |
 | `data/clean/reference/roads.parquet` | 54 roads (4 main, 50 local): `road_id`, `type` |

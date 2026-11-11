@@ -25,3 +25,8 @@ data/interim/*
 
 # Outputs too large to commit (the Parquet copy is committed)
 output/tables/spatial_covariates.csv
+
+# Rendered website: built by .github/workflows/pages.yml, never committed
+/docs/
+/site/.quarto/
+/site/_site/

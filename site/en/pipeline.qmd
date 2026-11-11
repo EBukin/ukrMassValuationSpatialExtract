@@ -8,7 +8,7 @@ The project is a set of short, numbered R scripts in the project root. Each is r
 ## Run order
 
 | Script | In | Out | Purpose | Time |
-|---|---|---|---|---|
+|---------------|--------------------------|--------------------------|--------------------------|-------|
 | `00-setup.R` | — | packages, parameters and paths in the session; output folders | Shared setup, sourced by every script | — |
 | `00b-download.R` | internet | `data/raw/cod-ab/`, `data/raw/dem/GLO-30/`, `data/interim/oblasts.gpkg`, `data/interim/dem.vrt` | Download the public inputs once; existing files are skipped | 8 s (cached) |
 | `01-simulate-reference.R` | `oblasts.gpkg`, soil clay 0–5 cm, crop 2024 | `data/clean/reference/parcels.parquet`, `elevators.parquet`, `roads.parquet` | Simulate the fixed reference inputs. **Ran once; not part of the normal run** | 7 s |

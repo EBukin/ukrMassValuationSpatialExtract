@@ -8,7 +8,7 @@ The result is one long table, `output/tables/spatial_covariates.parquet`, writte
 ## Schema
 
 | Column | Type | Meaning |
-|---|---|---|
+|----------------|---------------|---------------------------------------------------------------------|
 | `parcel_id` | character | Parcel ID, `P00001` … `P01000`; joins to `data/clean/reference/parcels.parquet` |
 | `variable` | character | Variable name, one of the 81 below |
 | `value` | double | Value, in the unit listed for the variable |
@@ -27,7 +27,7 @@ and reshape to one row per parcel, if needed, with `tidyr::pivot_wider(covariate
 ## `source` levels
 
 | Level | Meaning |
-|---|---|
+|-----------------|-----------------------------------------------------------------------------------|
 | `observed` | Measured directly from the raster or vector data over the parcel. All distance, relief and crop rows, and soil rows where the parcel (or its centroid) has soil data |
 | `h3_6` | Soil only: filled with the mean over the parcel's H3 resolution-6 cell |
 | `h3_5` | Soil only: filled with the mean over the parcel's H3 resolution-5 cell |
@@ -36,6 +36,7 @@ and reshape to one row per parcel, if needed, with `tidyr::pivot_wider(covariate
 ```{r}
 #| label: tbl-source-counts
 #| tbl-cap: "Soil rows by `source` and parcel case. All other rows (61,000) are `observed`. From `output/tables/soil_source_by_case.csv`."
+#| tbl-colwidths: [20, 20, 15, 15, 15, 15]
 soil_source <- read.csv("../../output/tables/soil_source_by_case.csv")
 knitr::kable(soil_source, format.args = list(big.mark = ","))
 ```
@@ -43,7 +44,7 @@ knitr::kable(soil_source, format.args = list(big.mark = ","))
 ## All 81 variables
 
 | # | Variable | Unit | Family | Meaning |
-|---|---|---|---|---|
+|-----|---------------------------|-----------------|--------------|-------------------------------------|
 | 1 | `dist_elevator_centroid` | m | distance | Distance from the parcel centroid to the nearest elevator |
 | 2 | `dist_elevator_edge` | m | distance | Distance from the parcel polygon to the nearest elevator (0 if touching) |
 | 3 | `dist_road_main_centroid` | m | distance | Distance from the parcel centroid to the nearest main road |
@@ -133,7 +134,7 @@ Families: distance 6, soil 20, relief 6, crop 49; total 81. Soil units are SoilG
 The summary tables are written by `22-descriptives.R` to `output/tables/` and shown on the indicator pages:
 
 | Table | File | Shown on |
-|---|---|---|
+|----------------------------------------------|-------------------------------------|-----------------|
 | Sphere vs ellipsoid distance gap | `distance_sphere_vs_ellipsoid.csv` | [Distance](distance.qmd) |
 | Distance quantiles | `distance_summary.csv` | [Distance](distance.qmd) |
 | Soil centroid vs polygon mean | `soil_centroid_vs_polygon.csv` | [Soil](soil.qmd) |

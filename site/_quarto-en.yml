@@ -1,0 +1,39 @@
+project:
+  render:
+    - en/*.qmd
+
+website:
+  title: "Spatial covariates, Ukraine"
+  navbar:
+    logo-href: index.html            # every English page sits in en/, so this is en/index.html
+    left:
+      - href: en/index.qmd
+        text: Home
+      - href: en/data.qmd
+        text: Data
+      - href: en/pipeline.qmd
+        text: Pipeline
+      - text: Indicators
+        menu:
+          - href: en/reference.qmd
+            text: Reference inputs
+          - href: en/distance.qmd
+            text: Distance
+          - href: en/soil.qmd
+            text: Soil
+          - href: en/relief.qmd
+            text: Relief
+          - href: en/crop.qmd
+            text: Crop cover
+      - href: en/output.qmd
+        text: Output
+    right:
+      - text: Українська
+        icon: translate
+        href: uk/index.html          # _language-switch.R changes it to the same page in uk/
+        aria-label: Українська версія цієї сторінки
+      - icon: github
+        href: https://github.com/EBukin/ukrMassValuationSpatialExtract
+        aria-label: GitHub repository
+  page-footer:
+    left: "Simulated reference parcels; real public and user-provided rasters. See the Data page for licences."

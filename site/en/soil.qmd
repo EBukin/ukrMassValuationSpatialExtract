@@ -10,7 +10,7 @@ Twenty variables describe the topsoil (0–30 cm): ten SoilGrids properties, eac
 Units are SoilGrids **mapped units**, not converted (see [Data](data.qmd) for the conversion factors).
 
 | Property | Polygon mean | Centroid | Unit | Meaning |
-|---|---|---|---|---|
+|----------|----------------------|-------------------------|---------|----------------------------------|
 | bdod | `soil_bdod_0_30cm_mean` | `soil_bdod_0_30cm_centroid` | cg/cm³ | Bulk density of the fine earth fraction |
 | cec | `soil_cec_0_30cm_mean` | `soil_cec_0_30cm_centroid` | mmol(c)/kg | Cation exchange capacity at pH 7 |
 | cfvo | `soil_cfvo_0_30cm_mean` | `soil_cfvo_0_30cm_centroid` | cm³/dm³ | Volumetric fraction of coarse fragments |
@@ -66,6 +66,7 @@ The fill is applied to the `_mean` and `_centroid` variables separately: a parce
 ```{r}
 #| label: tbl-soil-source
 #| tbl-cap: "Soil rows (parcel × soil variable, 20 per parcel) by parcel case and `source`. From `output/tables/soil_source_by_case.csv`."
+#| tbl-colwidths: [20, 20, 15, 15, 15, 15]
 soil_source <- read.csv("../../output/tables/soil_source_by_case.csv")
 knitr::kable(soil_source, format.args = list(big.mark = ","))
 ```
@@ -87,6 +88,7 @@ How much does the measurement method matter? The figure compares the two values 
 ```{r}
 #| label: tbl-soil-compare
 #| tbl-cap: "Agreement between centroid value and polygon mean. `observed`: parcels where both values are observed; `all`: all 1,000 parcels. From `output/tables/soil_centroid_vs_polygon.csv`."
+#| tbl-colwidths: [30, 11, 10, 11, 29, 9]
 soil_compare <- read.csv("../../output/tables/soil_centroid_vs_polygon.csv")
 soil_compare <- soil_compare[, c("label", "rows", "pearson", "spearman", "mean_abs_diff", "n")]
 names(soil_compare) <- c("Property (unit)", "Rows", "Pearson", "Spearman", "Mean abs. difference", "n")
